@@ -36,10 +36,7 @@ namespace maQx.Models
         {
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             userIdentity.AddClaim(new Claim("Firstname", Firstname));
-            userIdentity.AddClaim(new Claim("Code", Code));       
-   
-            
-
+            userIdentity.AddClaim(new Claim("Code", Code));  
             return userIdentity;
         }
     }
@@ -180,12 +177,14 @@ namespace maQx.Models
                 {
                     Manager.Create(new IdentityRole { Name = x });
                 }
-            });
+            });         
 
             List<Menus> Menus = new List<Menus>();
-            Menus.Add(new Menus() { ID = "Organizations", Name = "Organizations", Access = Roles.AppAdmin, Order = 1 });
-            Menus.Add(new Menus() { ID = "Invites", Name = "Invites", Access = Roles.Inviter, Order = 2 });
-            Menus.Add(new Menus() { ID = "Administrators", Name = "Administrators", Access = Roles.AppAdmin, Order = 3 });
+            Menus.Add(new Menus { ID = "Organizations", Name = "Organizations", Access = Roles.AppAdmin, Order = 1 });
+            Menus.Add(new Menus { ID = "Invites", Name = "Invites", Access = Roles.Inviter, Order = 2 });
+            Menus.Add(new Menus { ID = "Administrators", Name = "People", Access = Roles.Inviter, Order = 3 });
+            Menus.Add(new Menus { ID = "Plants", Name = "Plants", Access = Roles.SysAdmin, Order = 4 });
+            Menus.Add(new Menus { ID = "Divisions", Name = "Divisions", Access = Roles.SysAdmin, Order = 5 });
 
             foreach (Menus std in Menus)
                 context.Menus.Add(std);

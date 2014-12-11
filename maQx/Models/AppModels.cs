@@ -185,5 +185,8 @@ namespace maQx.Models
         [InverseProperty("Administrators")]
         [Index("IX_OrganizationAdministrator", 2, IsUnique = true)]
         public virtual Organization Organization { get; set; }
+
+        [Required]
+        public string Role { get; set; }
     }
 }

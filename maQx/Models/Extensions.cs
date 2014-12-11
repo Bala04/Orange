@@ -400,7 +400,7 @@ namespace maQx.Utilities
         public static void SetSecuredSessionCookie(this HttpContextBase HttpContext, string Name, string Value, string Key = null)
         {
             HttpContext.SetSessionCookie(Name, Value.Encrypt(String.IsNullOrWhiteSpace(Key) ? HttpContext.GetSessionKey() : Key));
-        }       
+        }
         public static List<string> GetRoles(this System.Security.Principal.IPrincipal User)
         {
             var Roles = (((ClaimsIdentity)User.Identity).Claims
@@ -408,7 +408,7 @@ namespace maQx.Utilities
                 .Select(c => c.Value)).ToList();
 
             return Roles;
-        } 
+        }
 
         /// <summary>
         /// Returns all the values of constants of the specified type
@@ -474,31 +474,24 @@ namespace maQx.Utilities
         {
             try
             {
-                if (Request.IsAuthenticated)
+                if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
                 {
-                    if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
-                    {
-                        var data = await value.Where(exp).ToListAsync();
+                    var data = await value.Where(exp).ToListAsync();
 
-                        if (operation != null)
-                        {
-                            return await operation(data).toJson();
-                        }
-
-                        return await new JsonListViewModel<T1>(data, String.IsNullOrWhiteSpace(Controller) ? null : TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller))).toJson();
-                    }
-                    else
+                    if (operation != null)
                     {
-                        return await new JsonErrorViewModel()
-                        {
-                            Message = "No roles found for the active user.",
-                            Status = "CRITICAL",
-                        }.toJson();
+                        return await operation(data).toJson();
                     }
+
+                    return await new JsonListViewModel<T1>(data, String.IsNullOrWhiteSpace(Controller) ? null : TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller))).toJson();
                 }
                 else
                 {
-                    return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
+                    return await new JsonErrorViewModel()
+                    {
+                        Message = "No roles found for the active user.",
+                        Status = "CRITICAL",
+                    }.toJson();
                 }
             }
             catch (Exception ex)
@@ -524,6 +517,22 @@ namespace maQx.Utilities
             {
                 filterContext.HttpContext.Response.StatusCode = 404;
                 filterContext.Result = new HttpNotFoundResult();
+            }
+            else
+            {
+                base.OnActionExecuting(filterContext);
+            }
+        }
+    }
+
+    public class AuthorizeGetViewAttribute : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (!filterContext.HttpContext.Request.IsAuthenticated)
+            {
+                filterContext.HttpContext.Response.StatusCode = 403;
+                filterContext.Result = (JsonErrorViewModel.GetUserUnauhorizedError().toJson()).Result;
             }
             else
             {

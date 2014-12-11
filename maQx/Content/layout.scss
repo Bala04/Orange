@@ -598,6 +598,7 @@ input + input {
 }
 
 .alert{
+	@include font-size(14px);
 	strong {
 		@extend %font-semibold;
 		font-weight: normal;

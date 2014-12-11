@@ -10,6 +10,7 @@ using System.Data.Entity;
 namespace maQx.Controllers
 {
     [AjaxOnly]
+    [AuthorizeGetView]
     public class GetController : Controller
     {
         private AppContext db = new AppContext();
@@ -23,36 +24,28 @@ namespace maQx.Controllers
         [HttpGet]
         public async Task<JsonResult> Invites()
         {
-            if (Request.IsAuthenticated)
-            {
-                var AccessRole = User.IsInRole(Roles.SysAdmin) ? Roles.AppUser : Roles.SysAdmin;
-                return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole);
-            }
-            else
-            {
-                return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
-            }
+            var AccessRole = User.IsInRole(Roles.AppAdmin) ? Roles.SysAdmin : Roles.AppUser;
+            return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> Administrators()
+        {
+            var AccessRole = User.IsInRole(Roles.AppAdmin) ? Roles.SysAdmin : Roles.AppUser;
+            return await List(Roles.Inviter, db.Administrators, "AdministratorsController", x => x.ActiveFlag && x.Role == AccessRole);
+        }      
 
         [HttpGet]
         public async Task<JsonResult> Menus()
         {
-            if (Request.IsAuthenticated)
+            var Roles = User.GetRoles();
+            return await List(null, db.Menus, null, x => Roles.Contains(x.Access), (value) =>
             {
-                var Roles = User.GetRoles();
-
-                return await List(null, db.Menus, null, x => Roles.Contains(x.Access), (value) =>
+                return new JsonMenuViewModel()
                 {
-                    return new JsonMenuViewModel()
-                    {
-                        Menus = value.OrderBy(x => x.Order).ToList()
-                    };
-                });
-            }
-            else
-            {
-                return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
-            }
+                    Menus = value.OrderBy(x => x.Order).ToList()
+                };
+            });
         }
 
         [HttpGet]

@@ -77,7 +77,7 @@ namespace maQx.Controllers
             {
                 if (String.IsNullOrWhiteSpace(ReturnUrl))
                 {
-                    return RedirectToAction("Index","App");
+                    return RedirectToAction("Index", "App");
                 }
             }
 
@@ -141,7 +141,7 @@ namespace maQx.Controllers
                 // Allow default user to access the application for creating Administrator account.
                 // Check for provided values are DefaultUsername & DefaultPassword to allow them access the appilication until the Administrator account is created.
                 if (model.UserName.ToLower() == AdminUsername.ToLower() && model.Password == AdminPassword.ToLower())
-                {                   
+                {
                     // If 'true' check whether a Administrator account is exists in the database or not.
                     var User = await db.Users.Where(x => x.UserName.ToLower() == model.UserName.ToLower()).FirstOrDefaultAsync();
 
@@ -469,7 +469,7 @@ namespace maQx.Controllers
                 // if the collection is empty return to false, because user can't exists without an organization.
                 if (Count == 0) return false;
                 // if the collection has only one organization append the domain name with the specified username.
-                else if (Count == 1) Username = Username + "@" + List.First().Domain;       
+                else if (Count == 1) Username = Username + "@" + List.First().Domain;
                 // else nothing to do here.
             }
 
@@ -516,11 +516,12 @@ namespace maQx.Controllers
                 {
                     throw "Unable to retive the information of the specified organization. Please try again.".asException();
                 }
-
+                
                 db.Administrators.Add(new Administrator
                 {
                     User = User,
-                    Organization = Invite.Organization
+                    Organization = Invite.Organization,
+                    Role = AdminBase.Role
                 });
 
                 db.Invites.Remove(Invite);
