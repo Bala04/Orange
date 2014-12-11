@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<header>
+    <div class="brand"></div>
+    <div class="title" ng-bind="aCtrl.getPageTitle()"></div>
+    <div class="profile" ng-controller="UserController as uCtrl">
+        <div class="profile-layout">
+            <div class="user-profile" ng-class="{profileLoaded: uCtrl.isLoaded()}">
+                <div class="user-img-layout">
+                    <div class="user-img" ng-class="{imgLoaded: uCtrl.IsImgEnabled()}">
+                        <img ng-src="{{uCtrl.user.ImgURL}}" src="" alt="" />
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-name" ng-bind="uCtrl.user.Name"></div>
+                    <div class="user-department" ng-bind="uCtrl.user.Designation"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="index-layout">
+    <div>
+        @RenderBody()
+    </div>
+</div>
+<footer>
+
+</footer>

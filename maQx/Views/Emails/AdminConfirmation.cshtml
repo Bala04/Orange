@@ -1,0 +1,15 @@
+﻿@{
+    Layout = null;
+}
+
+@model maQx.Models.AdminConfirmationEmail
+
+To: @Model.To
+From: @Model.From
+Subject: @Model.Subject
+
+Hello @Model.Name,
+
+Your confirmation code for your email address @Model.To is @(Model.ConfirmationCode). 
+
+

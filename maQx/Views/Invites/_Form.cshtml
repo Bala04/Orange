@@ -1,0 +1,47 @@
+﻿@model maQx.Models.InviteViewModel
+
+<div class="admin-form-layout">
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @{
+        var data_init = String.IsNullOrWhiteSpace(Model.Organization) ? "-1" : Model.Organization;
+    }
+
+    <div class="form-group">
+        <div>
+            <div class="input-group">
+                @Html.DropDownListFor(model => model.Organization, Model.Organizations, new { data_init = data_init, ng_model = "iCtrl.organization", ng_change = "iCtrl.setOrganizationState()" })
+                @Html.ValidationMessageFor(model => model.Organization, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.Username, new { placeholder = "Username", @class = "lower-case", ng_model = "iCtrl.username", ng_disabled = "iCtrl.organizationState()", typing = "1000", type_start = "iCtrl.typeStart(value)", type_end = "iCtrl.typeEnd(value)", autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                <span aria-hidden="true" ng-class="iCtrl.getUsernameStateClass()" ng-show="iCtrl.usernameState()"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            @Html.TextBoxFor(model => model.Email, new { placeholder = "Email Address", ng_model = "iCtrl.email", ng_disabled = "iCtrl.organizationState()" })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            <div>
+                @{
+                    var a = @ViewContext.RouteData.Values["action"].ToString();
+                }
+                <input type="submit" ng-disabled="iCtrl.formState()" value="@(a == "Create" ? "Send Invite" : "Resend Invite")" @(data_init == "-1" ? "disabled=\"disabled\"" : "") class="btn btn-default @(a == "Edit" ? "btn-warning" : "app-btn")" />
+                <input type="reset" value="Clear" class="btn btn-default inverse-btn" />
+            </div>
+        </div>
+    </div>
+</div>

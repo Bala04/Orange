@@ -1,0 +1,19 @@
+﻿@model maQx.Models.GetEmailConfirmViewModel
+
+<div class="confrim-admin-email-template">   
+        
+        <div>
+            <h1>Create your account</h1>
+
+            <p>
+                Follow the steps to create your account. Administrator accounts require a confrimed email address which will used for account recovery and other options. To proceed enter a vaild email address and click Continue.
+            </p>
+
+            <div>
+               @{Html.RenderPartial("_SubGetEmailConfrimPartial", Model);}
+            </div>                     
+        </div>   
+
+</div>
+
+
