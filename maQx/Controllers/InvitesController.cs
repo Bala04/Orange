@@ -10,10 +10,9 @@ using System.Web.Mvc;
 using maQx.Models;
 using maQx.Utilities;
 
-
 namespace maQx.Controllers
 {
-    [Authorize(Roles = Roles.AppAdmin)]
+    [Authorize(Roles = Roles.Inviter)]
     public class InvitesController : Controller
     {
         private AppContext db = new AppContext();
@@ -21,9 +20,7 @@ namespace maQx.Controllers
         // GET: Invites
         public ActionResult Index()
         {
-            SetInfo();
-
-            // return View(await db.Invites.ToListAsync());
+            SetInfo();           
             return View();
         }
 
@@ -173,7 +170,7 @@ namespace maQx.Controllers
                             Password = Auth,
                             Username = Name,
                             Organization = Organization,
-                            Role = Roles.SysAdmin
+                            Role = User.IsInRole(Roles.AppAdmin) ? Roles.SysAdmin : Roles.AppUser
                         });
 
                         await db.SaveChangesAsync();
@@ -186,7 +183,7 @@ namespace maQx.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("Username", "Specified username already exists.");
+                        ModelState.AddModelError("Username", "Specified username is already taken.");
                     }
                 }
                 else

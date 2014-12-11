@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -402,13 +403,10 @@ namespace maQx.Utilities
         }       
         public static List<string> GetRoles(this System.Security.Principal.IPrincipal User)
         {
-            var db = new AppContext();
+            var Roles = (((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)).ToList();
 
-            var Roles = (from name in db.Users.Where(u => u.UserName == User.Identity.Name).SelectMany(x => x.Roles.Select(r => r.RoleId))
-                         join role in db.Roles on name equals role.Id
-                         select role.Name).ToList();
-
-            db.Dispose();
             return Roles;
         } 
 

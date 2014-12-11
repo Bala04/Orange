@@ -32,13 +32,13 @@ namespace maQx.Models
         public string Code { get; set; }
         public string Firstname { get; set; }
 
-
-
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             userIdentity.AddClaim(new Claim("Firstname", Firstname));
-            userIdentity.AddClaim(new Claim("Code", Code));
+            userIdentity.AddClaim(new Claim("Code", Code));       
+   
+            
 
             return userIdentity;
         }

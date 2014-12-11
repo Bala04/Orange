@@ -23,7 +23,15 @@ namespace maQx.Controllers
         [HttpGet]
         public async Task<JsonResult> Invites()
         {
-            return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag);
+            if (Request.IsAuthenticated)
+            {
+                var AccessRole = User.IsInRole(Roles.SysAdmin) ? Roles.AppUser : Roles.SysAdmin;
+                return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole);
+            }
+            else
+            {
+                return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
+            }
         }
 
         [HttpGet]

@@ -16,7 +16,6 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 
-
 namespace maQx.Controllers
 {
     [OutputCache(NoStore = true, Location = OutputCacheLocation.None, Duration = 0)]
@@ -61,22 +60,30 @@ namespace maQx.Controllers
         [HttpGet]
         public ActionResult Index()
         {
+            // Remove session cookie always while a new session starts.
             HttpContext.RemoveSessionCookie(_SessionName);
+            // If the user IsAuthenticated return Index view, other wise ask them to login to the application.
             return Request.IsAuthenticated ? View() : View("Login");
         }
 
         [HttpGet]
         public ActionResult Login(string ReturnUrl = "")
         {
+            // Remove session cookie always while a new session starts.
             HttpContext.RemoveSessionCookie(_SessionName);
 
-            if (Request.IsAuthenticated && String.IsNullOrWhiteSpace(ReturnUrl))
+            // If the user IsAuthenticated return to Index action, skip login only if the ReturnUrl IsNullOrWhiteSpace.
+            if (Request.IsAuthenticated)
             {
-                return RedirectToLocal(HttpUtility.UrlDecode(ReturnUrl));
+                if (String.IsNullOrWhiteSpace(ReturnUrl))
+                {
+                    return RedirectToAction("Index","App");
+                }
             }
 
             return View(new LoginViewModel()
             {
+                // Assign ReturnUrl to Model
                 _ReturnUrl = HttpUtility.UrlEncode(ReturnUrl)
             });
         }
@@ -87,6 +94,7 @@ namespace maQx.Controllers
         {
             try
             {
+                // Send the Current user as a Json object to the client if the user is authenticated
                 if (Request.IsAuthenticated)
                 {
                     var identity = (ClaimsIdentity)User.Identity;
@@ -97,16 +105,20 @@ namespace maQx.Controllers
                 }
                 else
                 {
+                    // While sending current to the client user check whether user in user Init Action by checking the session cookie.
+                    // For more security check the Auth code against the database to verify the received Auth is valid.
                     string Auth = HttpContext.GetSecuredSessionCookie(_SessionName);
 
+                    // If 'true' return temp user configuration to the client.
                     if (!String.IsNullOrWhiteSpace(Auth))
                     {
                         return await new JsonCurrentUserViewModel()
                         {
-                            Name = "Administrator",
+                            Name = "New User",
                             Role = "TempSession",
                         }.toJson();
                     }
+                    // Otherwisw return UserUnauhorizedError to client.
                     else
                     {
                         return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
@@ -123,29 +135,39 @@ namespace maQx.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login([Bind(Include = "UserName, Password, RememberMe, _ReturnUrl")]LoginViewModel model)
         {
+            // The submitted data should be valid.
             if (ModelState.IsValid)
             {
+                // Allow default user to access the application for creating Administrator account.
+                // Check for provided values are DefaultUsername & DefaultPassword to allow them access the appilication until the Administrator account is created.
                 if (model.UserName.ToLower() == AdminUsername.ToLower() && model.Password == AdminPassword.ToLower())
-                {
+                {                   
+                    // If 'true' check whether a Administrator account is exists in the database or not.
                     var User = await db.Users.Where(x => x.UserName.ToLower() == model.UserName.ToLower()).FirstOrDefaultAsync();
 
+                    // If the account dosen't exists allow them to continue the user creation process. Otherwise skip the user creation process.
                     if (User == null)
                     {
+                        // Find the current step of the process
                         var InitStep = await db.InitStep.Where(x => x.Mode == model.UserName).FirstOrDefaultAsync();
 
+                        // If no step where found Call ProcessStep to continue the process
                         if (InitStep == null)
                         {
                             await ProcessStep(model);
                             return RedirectToAction("Init");
                         }
+                        // Otherwise check whether the steps are completed or not.
                         else if (InitStep.Auth <= 4)
                         {
+                            // If not secure the Code and set as cookie and let them proceed.
                             HttpContext.SetSecuredSessionCookie(_SessionName, InitStep.Code);
                             return RedirectToAction("Init");
                         }
                     }
                 }
 
+                // If the account 
                 if (await AuthenticateUser(model.UserName, model.Password, model.RememberMe))
                 {
                     return RedirectToLocal(HttpUtility.UrlDecode(model._ReturnUrl));
@@ -430,8 +452,31 @@ namespace maQx.Controllers
         }
         private async Task<bool> AuthenticateUser(string Username, string Password, bool RememberMe)
         {
+            // Authenticate non-admin users
+            // Default Count 
+            var Count = -1;
+
+            // Allows user to specify only the username without the domain if only one organization exists in the application scope.
+            // Check whether the user have entered the fully qualified username ie) username@organization.com. If 'true' skip the control.
+            // BUG: if (Username.IndexOf('@') == -1)
+            // FIX: The user should not be a administrator. 11/12/2014
+            if (Username != AdminUsername.ToLower() && Username.IndexOf('@') == -1)
+            {
+                // if the username dosen't have '@', retrive the organization collection to find the number of enitites.                
+                var List = await db.Organizations.ToListAsync();
+                Count = List.Count();
+
+                // if the collection is empty return to false, because user can't exists without an organization.
+                if (Count == 0) return false;
+                // if the collection has only one organization append the domain name with the specified username.
+                else if (Count == 1) Username = Username + "@" + List.First().Domain;       
+                // else nothing to do here.
+            }
+
+            // Check for whether the user is exists
             var user = await UserManager.FindAsync(Username, Password);
 
+            // If 'true' SignIn user to the application, otherwise return 'false' to login action.
             if (user != null)
             {
                 await SignInAsync(user, RememberMe);
@@ -462,10 +507,10 @@ namespace maQx.Controllers
             {
                 var Invite = await db.Invites.Include("Organization").SingleOrDefaultAsync(x => x.Password == AdminBase.ConfirmationCode);
 
-                if(Invite == null)
+                if (Invite == null)
                 {
-                     throw "Unable to retive the information of the specified invite. Please try again.".asException();
-                }               
+                    throw "Unable to retive the information of the specified invite. Please try again.".asException();
+                }
 
                 if (Invite.Organization == null)
                 {
