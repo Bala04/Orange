@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Data.Entity;
+using System.Security.Claims;
 
 namespace maQx.Controllers
 {
@@ -25,15 +26,48 @@ namespace maQx.Controllers
         public async Task<JsonResult> Invites()
         {
             var AccessRole = User.IsInRole(Roles.AppAdmin) ? Roles.SysAdmin : Roles.AppUser;
-            return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole);
+            var Claim = ((ClaimsIdentity)User.Identity);
+
+            if (User.IsInRole(Roles.AppAdmin))
+                return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole);
+            else
+            {
+                var Key = Claim.FindFirst("Organization.Key").Value;
+                return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole && x.Organization.Key == Key);
+            }
         }
 
         [HttpGet]
         public async Task<JsonResult> Administrators()
         {
-            var AccessRole = User.IsInRole(Roles.AppAdmin) ? Roles.SysAdmin : Roles.AppUser;
-            return await List(Roles.Inviter, db.Administrators, "AdministratorsController", x => x.ActiveFlag && x.Role == AccessRole);
-        }      
+            try
+            {
+                List<UserViewModel> Users = null;
+                var Claim = ((ClaimsIdentity)User.Identity);
+
+                if (User.IsInRole(Roles.Inviter))
+                {
+                    if (User.IsInRole(Roles.AppAdmin))
+                        Users = await GetAdministrator(db.Administrators.Include("User").Include("Organization"), x => x.Role == Roles.SysAdmin && x.ActiveFlag, null);
+                    else
+                    {
+                        var Key = Claim.FindFirst("Organization.Key").Value;
+                        Users = await GetAdministrator(db.Administrators.Include("User"), x => x.Role == Roles.AppUser && x.ActiveFlag && x.Organization.Key == Key, Claim.FindFirst("Organization.Name").Value);
+                    }
+                }
+
+                if (Users == null)
+                {
+                    return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
+                }
+
+                return await new JsonListViewModel<UserViewModel>(Users, TableTools.GetTools(Type.GetType("maQx.Controllers.Administrators"))).toJson();
+            }
+            catch (Exception ex)
+            {
+                return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+            }
+        }
 
         [HttpGet]
         public async Task<JsonResult> Menus()
@@ -82,6 +116,26 @@ namespace maQx.Controllers
                     }
 
                 default: return await JsonErrorViewModel.GetResourceNotFoundError().toJson();
+            }
+        }
+
+        static async Task<List<UserViewModel>> GetAdministrator(IQueryable<Administrator> Value, System.Linq.Expressions.Expression<Func<Administrator, bool>> Exp, string Organization)
+        {
+            try
+            {
+                var b = String.IsNullOrWhiteSpace(Organization);
+                return await Value.Where(Exp).Select(x => new UserViewModel
+                 {
+                     Code = x.User.Code,
+                     Name = x.User.Firstname,
+                     Email = x.User.Email,
+                     Organization = b ? x.Organization.Name : Organization
+
+                 }).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 

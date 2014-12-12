@@ -178,4 +178,14 @@ namespace maQx.Models
         public AdminRegisterViewModel AdminModel { get; set; }
     }
 
+    public class UserViewModel
+    {
+        public string Key { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }       
+        public string Organization { get; set; }
+        public bool ShowOrganization { get; set; }
+    }
+
 }

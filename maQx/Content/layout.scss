@@ -432,11 +432,14 @@ select {
 	padding-top: 0;
 	padding-bottom: 0;
 }
-
-.form-control:focus {
-	border-color:#66cccc;
-	outline: none;
+.form-control{
 	box-shadow: none;
+
+	&:focus{
+		border-color:#66cccc;
+		outline: none;			
+		box-shadow: none;
+	}
 }
 
 label {

@@ -80,7 +80,7 @@
         sInfo: "Showing <span class='ui-bold'>_START_</span> to <span class='ui-bold'>_END_</span> of <span class='ui-bold'>_TOTAL_</span> entries",
         sInfoEmpty: 'No entries to show',
         sZeroRecords: 'No records were found that match the specified search.',
-        sEmptyTable: 'Oops.. No data available to show here.'
+        sEmptyTable: 'No data available to show here.'
     }).withOption('fnRowCallback', function (c, d, e, f) {
         var g = $('.dataTables_filter input').val();
         $('td', c).each(function (i) {
