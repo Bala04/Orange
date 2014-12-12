@@ -64,7 +64,9 @@ namespace maQx.Controllers
 
                             if (Invite == null)
                             {
-                                return await List(Roles.AppAdmin, (System.Data.Entity.DbSet<ApplicationUser>)db.Users, null, x => x.UserName == Name, (value) =>
+                                // BUG: return await List(Roles.AppAdmin, (System.Data.Entity.DbSet<ApplicationUser>)db.Users, null, x => x.UserName == Name, (value) =>
+                                // FIX: Username for Invite sholud be access by the Role Role.Inviter. 12/12/2014
+                                return await List(Roles.Inviter, (System.Data.Entity.DbSet<ApplicationUser>)db.Users, null, x => x.UserName == Name, (value) =>
                                 {
                                     return new JsonViewModel<bool>()
                                     {

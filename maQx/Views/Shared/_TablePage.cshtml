@@ -9,18 +9,15 @@
     <div ng-controller="TableController as tCtrl"  class="table-layout">
         <div class="default-toolbar">
             <div class="btn-group">               
-                @Html.ActionLink("Create", "Create", null, new { @class = "btn btn-sm btn-primary app-btn" })
+               
+
+                <a href="@Url.Action("Create")" class="btn btn-sm btn-primary app-btn"><span class="fa fa-plus"></span> Create</a>
                 <input type="hidden" id="baseNode" value="@ViewContext.RouteData.Values["controller"]" /> 
-                <button ng-click="tCtrl.reloadData()" type="button" class="btn btn-sm btn-primary app-btn">Refresh</button>
+                <button ng-click="tCtrl.reloadData()" type="button" class="btn btn-sm btn-primary app-btn"><span class="fa fa-refresh"></span> Refresh</button>
             </div>
-        </div>
-       
-            <table class="table table-responsive table-striped" datatable dt-options="dtOptions" dt-columns="dtColumns"></table>
-       
+        </div>       
+            <table class="table table-responsive table-striped" datatable dt-options="dtOptions" dt-columns="dtColumns"></table>       
     </div>
-   
-    
-   
 </div>
 
 @section Scripts {

@@ -8,6 +8,9 @@ _app = {
         this.enableTooltip();
         return this;
     },
+    logOff:function(){
+        document.getElementById('logoutForm').submit();
+    },
     enableTooltip: function () {
         $('[data-toggle="tooltip"]').tooltip('destroy').tooltip({ container: 'body' });
     },

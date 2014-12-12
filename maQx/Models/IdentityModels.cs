@@ -36,7 +36,7 @@ namespace maQx.Models
         {
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             userIdentity.AddClaim(new Claim("Firstname", Firstname));
-            userIdentity.AddClaim(new Claim("Code", Code));  
+            userIdentity.AddClaim(new Claim("Code", Code));
             return userIdentity;
         }
     }
@@ -155,14 +155,16 @@ namespace maQx.Models
             return base.SaveChanges();
         }
 
-
-
         public DbSet<IntilizationStep> InitStep { get; set; }
         public DbSet<AdminRegistrationBase> AdminBase { get; set; }
         public DbSet<Menus> Menus { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<DepartmentMenu> DepartmentMenus { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Administrator> Administrators { get; set; }
         public DbSet<Invite> Invites { get; set; }
+        public DbSet<Plant> Plants { get; set; }
+        public DbSet<Division> Divisions { get; set; }
     }
 
     public class AppContextInitializer : DropCreateDatabaseIfModelChanges<AppContext>
@@ -177,17 +179,23 @@ namespace maQx.Models
                 {
                     Manager.Create(new IdentityRole { Name = x });
                 }
-            });         
+            });
 
-            List<Menus> Menus = new List<Menus>();
-            Menus.Add(new Menus { ID = "Organizations", Name = "Organizations", Access = Roles.AppAdmin, Order = 1 });
-            Menus.Add(new Menus { ID = "Invites", Name = "Invites", Access = Roles.Inviter, Order = 2 });
-            Menus.Add(new Menus { ID = "Administrators", Name = "People", Access = Roles.Inviter, Order = 3 });
-            Menus.Add(new Menus { ID = "Plants", Name = "Plants", Access = Roles.SysAdmin, Order = 4 });
-            Menus.Add(new Menus { ID = "Divisions", Name = "Divisions", Access = Roles.SysAdmin, Order = 5 });
+            (new List<Menus> {
+                new Menus { ID = "Organizations", Name = "Organizations", Access = Roles.AppAdmin, Order = 1, IsMappable = false },
+                new Menus { ID = "Invites", Name = "Invites", Access = Roles.Inviter, Order = 2, IsMappable = false },
+                new Menus { ID = "Administrators", Name = "People", Access = Roles.Inviter, Order = 3, IsMappable = false },
+                new Menus { ID = "Plants", Name = "Plants", Access = Roles.SysAdmin, Order = 4, IsMappable = false },
+                new Menus { ID = "Divisions", Name = "Divisions", Access = Roles.SysAdmin, Order = 5, IsMappable = false },
+            }).ForEach(x => { context.Menus.Add(x); });
 
-            foreach (Menus std in Menus)
-                context.Menus.Add(std);
+            (new List<Department> {
+                new Department { ID = "Systems", Name = "Systems", Access = Roles.SysAdmin },
+                new Department { ID = "Production", Name = "Production", Access = Roles.SysAdmin },
+                new Department { ID = "Engineering", Name = "Engineering", Access = Roles.SysAdmin },
+                new Department { ID = "Maintenance", Name = "Maintenance", Access = Roles.SysAdmin },
+                new Department { ID = "Quality", Name = "Quality", Access = Roles.SysAdmin },
+            }).ForEach(x => { context.Departments.Add(x); });
 
             base.Seed(context);
         }
