@@ -1,0 +1,43 @@
+﻿@model maQx.Models.OrganizationEditViewModel
+
+<div class="admin-form-layout">
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        <div>
+            @Html.TextBoxFor(model => model.Code, new { placeholder = "Organization Code" })
+            @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            @Html.TextBoxFor(model => model.Name, new { placeholder = "Organization Name" })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            <div class="input-group">
+                <div class="input-group-addon addon-50">www.</div>
+                @Html.TextBoxFor(model => model.Domain, new { placeholder = "Domain Address", @type = "tel" })
+                @Html.ValidationMessageFor(model => model.Domain, "", new { @class = "text-danger" })
+                <span data-toggle="tooltip" data-placement="bottom" title="Used to identify the users with in the organization." class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            <div>
+                @{
+                    var a = @ViewContext.RouteData.Values["action"].ToString();                    
+                }
+                <input type="submit" value="@a" class="btn btn-default @(a == "Edit" ? "btn-warning" : "app-btn")" />
+                <input type="reset" value="Clear" class="btn btn-default inverse-btn" />
+            </div>
+        </div>
+    </div>
+</div>

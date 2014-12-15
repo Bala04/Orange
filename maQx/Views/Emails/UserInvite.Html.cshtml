@@ -1,0 +1,15 @@
+﻿@{
+    Layout = null;
+}
+
+@model maQx.Models.UserInvite
+
+Content-Type: text/html; charset=utf-8
+
+<html>
+<body>
+    Hello @Model.Name,
+
+    <p>Welcome to maQx. You have been invited to join maQx as a @Model.Position in @Model.OrganizationName. Before you go out and play on maQx, please verify your account by clicking the following link <a href="@Model.AcivationLink">Verify my account</a></p>
+</body>
+</html>

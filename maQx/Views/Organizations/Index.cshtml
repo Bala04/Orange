@@ -1,0 +1,22 @@
+﻿@model IEnumerable<maQx.Models.Organization>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_TablePage.cshtml";
+}
+
+@section Scripts{
+    <script>
+        angular.module("tabularApp").service("DataService", ['$resource', function ($resource) {
+            return {
+                query: function () {                   
+                    return $resource('get/organizations').get();                   
+                },
+                init: function () {
+                    return [{ a: 'Code', b: 'Code' }, { a: 'Name', b: 'Name' }, { a: 'Domain', b: 'Domain' }, { a: 'Modified', b: 'Modified' }];
+                }
+            }
+        }]);        
+    </script>
+}
+

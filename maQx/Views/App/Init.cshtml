@@ -1,0 +1,50 @@
+﻿@model maQx.Models.InitViewModel
+@{
+    ViewBag.Title = "Administration";
+    Layout = "~/Views/Shared/_GenericPage.cshtml";
+}
+
+@using InfoType = maQx.Models.ClientInfoType;
+@helper Alert(string alertClass, string type)
+{
+    <div class="alert alert-@alertClass alert-dismissible init-alert" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <strong>@type!</strong> @(ViewBag.Info != null ? ViewBag.Info.Message : "")
+    </div>
+}
+
+<div class="admin-index full-height">
+    <div class="init-alert-panel">
+        @if (ViewBag.Info != null)
+        {
+            var Info = ViewBag.Info as maQx.Models.ClientInfo;
+
+            switch (Info.Type)
+            {
+                case InfoType.Error: @Alert("danger", "Error") break;
+                case InfoType.Success: @Alert("success", "Success") break;
+                case InfoType.Info: @Alert("info", "Info") break;
+                case InfoType.Warning: @Alert("warning", "Warning") break;
+            }
+        }
+    </div>
+    @if (Model.GetEmail != null)
+    {
+        Html.RenderPartial("_GetEmailConfrimPartial", Model.GetEmail);
+    }
+    else if (Model.SetEmail != null)
+    {
+        Html.RenderPartial("_SetEmailConfrimPartial", Model.SetEmail);
+    }
+    else if (Model.AdminModel != null)
+    {
+        Html.RenderPartial("_AdminRegisterPartial", Model.AdminModel);
+    }
+    else
+    {
+        <div>
+            <h1>Opps! Something went worng here.</h1>
+        </div>
+    }
+
+</div>
