@@ -167,16 +167,17 @@ namespace maQx.Controllers
                     }
                 }
 
-                // If the account 
-                if (await AuthenticateUser(model.UserName, model.Password, model.RememberMe))
+                // If the account is not default account then authenicate the user
+                // BUG: if (await AuthenticateUser(model.UserName, model.Password, model.RememberMe))
+                // FIX: Username should be in lowercase. 12/12/2014.
+                if (await AuthenticateUser(model.UserName.ToLower(), model.Password, model.RememberMe))
                 {
+                    // If authenticated redirect to Index or ReturnUrl
                     return RedirectToLocal(HttpUtility.UrlDecode(model._ReturnUrl));
                 }
             }
 
             TempData.SetError("Invalid username or password.", SetInfo);
-
-
             return View(model);
         }
 
@@ -185,7 +186,7 @@ namespace maQx.Controllers
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "App");
         }
 
         [HttpGet]
@@ -520,7 +521,8 @@ namespace maQx.Controllers
                 db.Administrators.Add(new Administrator
                 {
                     User = User,
-                    Organization = Invite.Organization
+                    Organization = Invite.Organization,
+                    Role = AdminBase.Role
                 });
 
                 db.Invites.Remove(Invite);
