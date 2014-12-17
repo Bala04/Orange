@@ -16,6 +16,8 @@ namespace maQx.Models
     /// </summary>
     /// 
 
+    #region BaseClasses
+
     public class DateTimeStamp
     {
         [Required]
@@ -73,18 +75,21 @@ namespace maQx.Models
         public string UserModified { get; set; }
     }
 
-    public class IntilizationStep : DateTimeStamp
+    #endregion
+
+    public class Department
     {
         [Key]
         [Required]
-        [MinLength(16), MaxLength(32)]
-        public string Code { get; set; }
+        public string ID { get; set; }
+
+        [Index("IX_Name", IsUnique = true)]
+        [Required]
+        [MaxLength(50), MinLength(2)]
+        public string Name { get; set; }
 
         [Required]
-        public string Mode { get; set; }
-
-        [Required]
-        public int Auth { get; set; }
+        public string Access { get; set; }
     }
 
     public class Menus
@@ -103,6 +108,36 @@ namespace maQx.Models
 
         [Required]
         public int Order { get; set; }
+
+        [Required]
+        public bool IsMappable { get; set; }
+    }
+
+    public class DepartmentMenu : AppBaseStamp
+    {
+        [Index("IX_DepartmentMenu", 1, IsUnique = true)]
+        [Required]
+        public virtual Department Department { get; set; }
+
+        [Index("IX_DepartmentMenu", 2, IsUnique = true)]
+        [Required]
+        public virtual Menus Menu { get; set; }
+    }
+
+    #region RegistrationClasses
+
+    public class IntilizationStep : DateTimeStamp
+    {
+        [Key]
+        [Required]
+        [MinLength(16), MaxLength(32)]
+        public string Code { get; set; }
+
+        [Required]
+        public string Mode { get; set; }
+
+        [Required]
+        public int Auth { get; set; }
     }
 
     public class AdminRegistrationBase : DateTimeStamp
@@ -133,6 +168,8 @@ namespace maQx.Models
         public string Role { get; set; }
     }
 
+    #endregion
+
     public class Organization : AppBaseStamp
     {
         [Index("IX_OrganizationCode", 1, IsUnique = true)]
@@ -151,6 +188,9 @@ namespace maQx.Models
 
         [InverseProperty("Organization")]
         public ICollection<Administrator> Administrators { get; set; }
+
+        [InverseProperty("Organization")]
+        public ICollection<Plant> Plants { get; set; }
     }
 
     public class Invite : AppBaseStamp
@@ -185,5 +225,46 @@ namespace maQx.Models
         [InverseProperty("Administrators")]
         [Index("IX_OrganizationAdministrator", 2, IsUnique = true)]
         public virtual Organization Organization { get; set; }
+
+        [Required]
+        public string Role { get; set; }
+    }
+
+    public class Plant : AppBaseStamp
+    {
+        [Required]
+        [MaxLength(50), MinLength(2)]
+        public string Code { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string Name { get; set; }
+
+        [Required]
+        [MaxLength(50), MinLength(2)]
+        public string Location { get; set; }
+
+        [Required]
+        [InverseProperty("Plants")]
+        public virtual Organization Organization { get; set; }
+
+        [Required]
+        [InverseProperty("Plant")]
+        public ICollection<Division> Divisions { get; set; }
+    }
+
+    public class Division : AppBaseStamp
+    {
+        [Required]
+        [MaxLength(50), MinLength(2)]
+        public string Code { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string Name { get; set; }
+
+        [Required]
+        [InverseProperty("Divisions")]
+        public virtual Plant Plant { get; set; }
     }
 }

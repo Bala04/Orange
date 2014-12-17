@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@using Microsoft.AspNet.Identity
 
 <header>
     <div class="brand"></div>
@@ -18,6 +19,19 @@
                     <div class="user-department" ng-bind="uCtrl.user.Designation"></div>
                 </div>
             </div>
+            @if (Request.IsAuthenticated)
+            {
+                <div class="profile-dropout">
+                    @using (Html.BeginForm("Logout", "App", FormMethod.Post, new { id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <ul>
+                            <li><a href="@Url.Action("Index","Profile")"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                            <li><a href="javascript:_app.logOff()"><span class="glyphicon glyphicon-log-out"></span> Log off</a></li>
+                        </ul>                       
+                    }
+                </div>
+            }
         </div>
     </div>
 </header>
@@ -26,6 +40,4 @@
         @RenderBody()
     </div>
 </div>
-<footer>
-
-</footer>
+<footer></footer>
