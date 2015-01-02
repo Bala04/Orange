@@ -45,9 +45,10 @@
             return self.currentMenu == menu.ID ? self.loadingMenu == menu.ID ? "selected load" : "selected" : "";
         };
 
-        $rootScope.$on("AppFrameLoaded", function (event, frame) {
-            $timeout(function myfunction() {
-                $rootScope.$broadcast("FrameLoaded", MenuService.getMenu(self.currentMenu));
+        $rootScope.$on("AppFrameLoaded", function (event, menuID) {
+            $timeout(function myfunction() {               
+                self.currentMenu = menuID;
+                $rootScope.$broadcast("FrameLoaded", MenuService.getMenu(menuID));
             });
             self.loadingMenu = null;
         });
