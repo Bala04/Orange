@@ -6,22 +6,25 @@
 
     @RenderBody()
 
-    <div ng-controller="TableController as tCtrl"  class="table-layout">
+    <div ng-controller="TableController as tCtrl" class="table-layout">
         <div class="default-toolbar">
-            <div class="btn-group">               
-               
+            <div class="btn-group">
 
-                <a href="@Url.Action("Create")" class="btn btn-sm btn-primary app-btn"><span class="fa fa-plus"></span> Create</a>
-                <input type="hidden" id="baseNode" value="@ViewContext.RouteData.Values["controller"]" /> 
+                @{
+                    var Controller = ViewContext.RouteData.Values["controller"].ToString();
+                }
+
+                <a href="@(Controller == "Administrators" ? Url.Action("Create","Invites") : Url.Action("Create") )" class="btn btn-sm btn-primary app-btn"><span class="fa fa-plus"></span> Create</a>
+                <input type="hidden" id="baseNode" value="@Controller" />
                 <button ng-click="tCtrl.reloadData()" type="button" class="btn btn-sm btn-primary app-btn"><span class="fa fa-refresh"></span> Refresh</button>
             </div>
-        </div>       
-            <table class="table table-responsive table-striped" datatable dt-options="dtOptions" dt-columns="dtColumns"></table>       
+        </div>
+        <table class="table table-responsive table-striped" datatable dt-options="dtOptions" dt-columns="dtColumns"></table>
     </div>
 </div>
 
 @section Scripts {
-@RenderSection("Scripts", false)
-   @Scripts.Render("~/bundles/angular-table-controller")  
+    @RenderSection("Scripts", false)
+    @Scripts.Render("~/bundles/angular-table-controller")
 }
 
