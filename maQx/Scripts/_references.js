@@ -34,3 +34,4 @@
 /// <reference path="angular-aria.min.js" />
 /// <reference path="angular-animate.min.js" />
 /// <reference path="angular.min.js" />
+/// <reference path="section/shared-controller.js" />

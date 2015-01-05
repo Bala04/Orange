@@ -10,11 +10,11 @@ namespace maQx.Models
     public class BaseLoginViewModel
     {
         [Required]
-        [Display(Name = "Username")]      
+        [Display(Name = "Username")]
         public string UserName { get; set; }
 
         [Required]
-        [Display(Name = "Password")]      
+        [Display(Name = "Password")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
@@ -25,7 +25,7 @@ namespace maQx.Models
         public bool RememberMe { get; set; }
 
         public string _ReturnUrl { get; set; }
-    }   
+    }
 
     public class AdminRegisterViewModel
     {
@@ -69,19 +69,19 @@ namespace maQx.Models
         [Required]
         [Display(Name = "Username")]
         [RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid username.")]
-        [MaxLength(100)]  
+        [MaxLength(100)]
         public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress)]
         [Display(Name = "Email Address")]
         [RegularExpression(RegExPatterns.Email, ErrorMessage = "Please enter a valid email address.")]
-        [MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]        
-        public string Email { get; set; }       
+        [MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]
+        public string Email { get; set; }
     }
 
-    public class OrganizationViewModel 
-    {       
+    public class OrganizationViewModel
+    {
         [Required]
         [MaxLength(50)]
         [Display(Name = "Organization Code")]
@@ -107,7 +107,21 @@ namespace maQx.Models
         public string Key { get; set; }
     }
 
-    public class InviteViewModel
+    public class PlantEditViewModel : PlantViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+    }
+
+    public class OrganizationBaseViewModel
+    {
+        [Required]
+        public string Organization { get; set; }
+
+        public System.Web.Mvc.SelectList Organizations { get; set; }
+    }
+
+    public class InviteViewModel : OrganizationBaseViewModel
     {
         [Required]
         [Display(Name = "Username")]
@@ -120,15 +134,29 @@ namespace maQx.Models
         [Display(Name = "Email Address")]
         [RegularExpression(RegExPatterns.Email, ErrorMessage = "Please enter a valid email address.")]
         [MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]
-        public string Email { get; set; }   
+        public string Email { get; set; }
+    }
+
+    public class PlantViewModel 
+    {
+        [Required]
+        [MaxLength(50)]
+        [Display(Name = "Plant Code")]
+        [RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid plant code.")]
+        public string Code { get; set; }
 
         [Required]
-        public string Organization { get; set; }
+        [MaxLength(50)]
+        [Display(Name = "Plant Name")]
+        [RegularExpression(RegExPatterns.SpecialAlphaNumeric, ErrorMessage = "Please enter a valid plant name.")]
+        public string Name { get; set; }
 
-        public System.Web.Mvc.SelectList Organizations { get; set; }
+        [Required]
+        [Display(Name = "Plant Name")]
+        [MaxLength(50)]
+        public string Location { get; set; }
     }
-    
-    
+
     public enum ClientInfoType
     {
         Error,
@@ -141,8 +169,8 @@ namespace maQx.Models
     {
         public DateTime Time { get; set; }
         public ClientInfoType Type { get; set; }
-        public string Message { get; set; }          
-    }    
+        public string Message { get; set; }
+    }
 
     public class GetEmailConfirmViewModel
     {
@@ -183,7 +211,7 @@ namespace maQx.Models
         public string Key { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }       
+        public string Email { get; set; }
         public string Organization { get; set; }
         public bool ShowOrganization { get; set; }
     }

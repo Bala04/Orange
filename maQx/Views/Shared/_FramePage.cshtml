@@ -14,7 +14,7 @@
     <title></title>
     <script>
         (function () {
-            if (window.self === window.top) {                
+            if (window.self === window.top) {
                 window.location.href = "/#" + window.self.location.pathname;
             }
         })();
@@ -51,5 +51,11 @@
     @Scripts.Render("~/bundles/angular")
 
     @RenderSection("scripts", required: false)
+
+    <script type="text/javascript">
+        $(window).on('beforeunload', function () {
+            console.log(window.location.pathname);
+        });
+    </script>
 </body>
 </html>

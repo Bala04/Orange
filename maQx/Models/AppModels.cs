@@ -233,7 +233,7 @@ namespace maQx.Models
     public class Plant : AppBaseStamp
     {
         [Required]
-        [MaxLength(50), MinLength(2)]
+        [MaxLength(50)]
         public string Code { get; set; }
 
         [Required]
@@ -241,14 +241,13 @@ namespace maQx.Models
         public string Name { get; set; }
 
         [Required]
-        [MaxLength(50), MinLength(2)]
+        [MaxLength(50)]
         public string Location { get; set; }
 
         [Required]
         [InverseProperty("Plants")]
         public virtual Organization Organization { get; set; }
-
-        [Required]
+        
         [InverseProperty("Plant")]
         public ICollection<Division> Divisions { get; set; }
     }
@@ -256,7 +255,7 @@ namespace maQx.Models
     public class Division : AppBaseStamp
     {
         [Required]
-        [MaxLength(50), MinLength(2)]
+        [MaxLength(50)]
         public string Code { get; set; }
 
         [Required]

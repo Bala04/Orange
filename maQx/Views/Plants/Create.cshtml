@@ -1,0 +1,27 @@
+﻿@model maQx.Models.PlantViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+<div class="generic-template generic-form" ng-app="sectionApp">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="admin-form">
+            <h1>Create a plant</h1>
+            <p>Plants are subsets of a organization. Plants identified based on there locations.</p>
+
+            @{Html.RenderPartial("_Form", Model);}
+
+            <div class="generic-form-bottom-tools">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
+            </div>
+        </div>
+    }
+
+</div>
+

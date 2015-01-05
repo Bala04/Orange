@@ -153,8 +153,7 @@ namespace maQx.Controllers
 
             if (ModelState.IsValid)
             {
-                var Organization = Organizations.Where(x => x.Key == invite.Organization).FirstOrDefault();
-                invite.Organizations = Organizations.ToSelectList("Name", "- Organizations -");
+                var Organization = Organizations.Where(x => x.Key == invite.Organization).FirstOrDefault();              
 
                 if (Organization != null)
                 {

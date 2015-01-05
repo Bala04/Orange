@@ -1222,8 +1222,8 @@ header {
 				white-space: nowrap;
 				@extend %text-right;	
 
-				.btn {				
-					padding: 7px 14px;
+				.btn {
+					padding: 7px 7px 7px 14px;
 					border-radius: 0;
 					background: transparent;
 					color: #333;
@@ -1276,7 +1276,11 @@ header {
 .confrim-admin-email-template,.generic-template {
 	width: 100%;
 	max-width: 800px;	
-	padding:10px 20px;
+	padding: 0 20px 10px 20px;
+
+	h1{
+		@include font-size(32px);
+	}
 
 	.detail-table{
 		@include font-size(14px);

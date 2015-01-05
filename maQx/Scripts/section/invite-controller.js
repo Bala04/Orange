@@ -1,5 +1,4 @@
-﻿angular.module("sectionApp", ['jquery-typing']);
-angular.module("sectionApp").directive('input', ["$parse", function ($parse) {
+﻿angular.module("sectionApp").directive('input', ["$parse", function ($parse) {
     return {
         restrict: 'E',
         require: '?ngModel',
@@ -34,7 +33,7 @@ angular.module("sectionApp").directive('input', ["$parse", function ($parse) {
     self.className = "glyphicon glyphicon form-control-feedback";
 
     self.setOrganizationState = function () {
-        
+
     };
 
     self.typeStart = function (value) {

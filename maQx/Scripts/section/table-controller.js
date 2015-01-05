@@ -19,17 +19,22 @@
                     o._u._d = n.query();
                     o._u._t = Date.now()
                 }
-                var d = o._u._d;
-                d.$promise.then(function (a) {
-                    if (a.Type == "SUCCESS") {
-                        o._k(o._l, a);
-                        b(a.List)
-                    } else if (a.Type == "ERROR") {
-                        c("Authentication Failed. You are not authorized to access the requested resource")
-                    }
-                }, function (a) {
-                    c(a)
-                })
+
+                if (o._u._d.$promise) {
+                    o._u._d.$promise.then(function (a) {
+                        if (a.Type == "SUCCESS") {
+                            o._k(o._l, a);
+                            b(a.List)
+                        } else if (a.Type == "ERROR") {
+                            c("Authentication Failed. You are not authorized to access the requested resource")
+                        }
+                    }, function (a) {
+                        console.log(a);
+                        c(a)
+                    });
+                } else {
+                    console.log(o._u._d)
+                }
             })
         },
         _t: function () {

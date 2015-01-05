@@ -7,9 +7,11 @@ using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -49,6 +51,7 @@ namespace maQx.Utilities
         public const string Email = "^([a-zA-Z0-9_.+-]{2,})+\\@(([a-zA-Z0-9-])+\\.)+([a-zA-Z0-9.]{2,})+$";
         public const string Domain = "^(([a-zA-Z0-9-])+\\.)+([a-zA-Z0-9.]{2,})+$";
         public const string AlphaNumeric = "^[a-zA-Z0-9 ]+$";
+        public const string SpecialAlphaNumeric = "^[a-zA-Z0-9-_ ]+$";
         public const string Alpha = "^[a-zA-Z ]+$";
         public const string AlphaWithOutSpace = "^[a-zA-Z]+$";
         public const string AlphaNumericWithOutSpace = "^[a-zA-Z0-9]+$";
@@ -255,7 +258,7 @@ namespace maQx.Utilities
                 MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
                 byte[] Result = MD5.Hash;
 
-                StringBuilder StrBuilder = new System.Text.StringBuilder();
+                StringBuilder StrBuilder = new StringBuilder();
                 for (int i = 0; i < Result.Length; i++)
                 {
                     StrBuilder.Append(Result[i].ToString("x2"));
@@ -401,13 +404,30 @@ namespace maQx.Utilities
         {
             HttpContext.SetSessionCookie(Name, Value.Encrypt(String.IsNullOrWhiteSpace(Key) ? HttpContext.GetSessionKey() : Key));
         }
-        public static List<string> GetRoles(this System.Security.Principal.IPrincipal User)
+        public static List<string> GetRoles(this IPrincipal User)
         {
             var Roles = (((ClaimsIdentity)User.Identity).Claims
                 .Where(c => c.Type == ClaimTypes.Role)
                 .Select(c => c.Value)).ToList();
 
             return Roles;
+        }
+
+        public static string GetOrganization(this IPrincipal User)
+        {
+            return ((ClaimsIdentity)User.Identity).FindFirst("Organization.Key").Value;
+        }
+
+        /// <summary>
+        /// Acts similar of .Include() LINQ method, but allows to include several object properties at once.
+        /// </summary>
+        public static IQueryable<T> IncludeMultiple<T>(this IQueryable<T> query, Expression<Func<T, object>>[] paths)
+            where T : class
+        {
+            foreach (var path in paths)
+                query = query.Include(path);
+
+            return query;
         }
 
         /// <summary>
@@ -468,7 +488,19 @@ namespace maQx.Utilities
 
     public class ViewHelper
     {
-        public static async Task<JsonResult> List<T1, T2>(System.Web.HttpRequestBase Request, System.Web.HttpResponseBase Response, string Controller, string Role, System.Security.Principal.IPrincipal User, DbSet<T1> value, System.Linq.Expressions.Expression<Func<T1, bool>> exp, Func<List<T1>, T2> operation = null)
+        private static async Task<JsonResult> List<T1, T2, T3>(string Controller, Func<List<T3>, T2> operation, List<T3> data)
+            where T2 : maQx.Models.JsonViewModel
+            where T3 : class
+        {
+            if (operation != null)
+            {
+                return await operation(data).toJson();
+            }
+
+            return await new JsonListViewModel<T3>(data, String.IsNullOrWhiteSpace(Controller) ? null : TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller))).toJson();
+        }
+
+        public static async Task<JsonResult> List<T1, T2>(HttpRequestBase Request, HttpResponseBase Response, string Controller, string Role, IPrincipal User, DbSet<T1> value, Expression<Func<T1, bool>> exp, Expression<Func<T1, object>>[] Includes, Func<List<T1>, T2> operation = null)
             where T1 : class
             where T2 : maQx.Models.JsonViewModel
         {
@@ -476,22 +508,38 @@ namespace maQx.Utilities
             {
                 if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
                 {
-                    var data = await value.Where(exp).ToListAsync();
+                    var data = await value.IncludeMultiple(Includes).Where(exp).ToListAsync();
 
-                    if (operation != null)
-                    {
-                        return await operation(data).toJson();
-                    }
-
-                    return await new JsonListViewModel<T1>(data, String.IsNullOrWhiteSpace(Controller) ? null : TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller))).toJson();
+                    return await List<T1, T2, T1>(Controller, operation, data);
                 }
                 else
                 {
-                    return await new JsonErrorViewModel()
-                    {
-                        Message = "No roles found for the active user.",
-                        Status = "CRITICAL",
-                    }.toJson();
+                    return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
+                }
+            }
+            catch (Exception ex)
+            {
+                return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+            }
+        }
+
+        public static async Task<JsonResult> Format<T1, T2, T3>(HttpRequestBase Request, HttpResponseBase Response, string Controller, string Role, IPrincipal User, DbSet<T1> value, Expression<Func<T1, bool>> exp, Expression<Func<T1, object>>[] Includes, Func<List<T3>, T2> operation = null)
+            where T1 : class
+            where T2 : maQx.Models.JsonViewModel
+            where T3 : class, IJsonBase<T1, T3>
+        {
+            try
+            {
+                if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
+                {
+                    var format = Activator.CreateInstance<T3>();
+                    var data = (await value.IncludeMultiple(Includes).Where(exp).ToListAsync()).Select(x => { return format.To(x); }).ToList();
+
+                    return await List<T1, T2, T3>(Controller, operation, data);
+                }
+                else
+                {
+                    return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
                 }
             }
             catch (Exception ex)

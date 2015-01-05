@@ -15,7 +15,7 @@ _app = {
         $('[data-toggle="tooltip"]').tooltip('destroy').tooltip({ container: 'body' });
     },
     tableCopied: function (rows) {
-        $(".copyInfo").text((rows > 0 ? rows == 1 ? "One row" : rows + " rows " : "") + "copied to clipboard.");
+        $(".copyInfo").text(rows == 0 ? "No rows to copy" : ((rows > 0 ? rows == 1 ? "One row" : rows + " rows " : "") + "copied to clipboard."));
 
         setTimeout(function () {
             $(".copyInfo").text("");
@@ -44,6 +44,7 @@ _app = {
 angular.module("dependencies", ['angular-loading-bar', 'ngResource', 'ngAnimate']);
 angular.module("orangeApp", ['dependencies']);
 angular.module("tabularApp", ['dependencies', 'datatables']);
+angular.module("sectionApp", ['jquery-typing']);
 
 angular.module("orangeApp").config(['$httpProvider', 'cfpLoadingBarProvider', function ($httpProvider, cfpLoadingBarProvider) {
     _app.configModule($httpProvider, cfpLoadingBarProvider);

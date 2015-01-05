@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Data.Entity;
 using System.Security.Claims;
+using System.Linq.Expressions;
 
 namespace maQx.Controllers
 {
@@ -19,22 +20,28 @@ namespace maQx.Controllers
         [HttpGet]
         public async Task<JsonResult> Organizations()
         {
-            return await List(Roles.AppAdmin, db.Organizations, "OrganizationsController", x => x.ActiveFlag);
+            return await Format<Organization, JOrganization>(Roles.AppAdmin, db.Organizations, "OrganizationsController", x => x.ActiveFlag);
         }
 
         [HttpGet]
         public async Task<JsonResult> Invites()
         {
             var AccessRole = User.IsInRole(Roles.AppAdmin) ? Roles.SysAdmin : Roles.AppUser;
-            var Claim = ((ClaimsIdentity)User.Identity);
 
             if (User.IsInRole(Roles.AppAdmin))
-                return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole);
+                return await Format<Invite, JInvite>(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole);
             else
             {
-                var Key = Claim.FindFirst("Organization.Key").Value;
-                return await List(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole && x.Organization.Key == Key);
+                var Organization = User.GetOrganization();
+                return await Format<Invite, JInvite>(Roles.Inviter, db.Invites, "InvitesController", x => x.ActiveFlag && x.Role == AccessRole && x.Organization.Key == Organization, x => x.Organization);
             }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Plants()
+        {
+            var Organization = User.GetOrganization();
+            return await Format<Plant, JPlant>(Roles.SysAdmin, db.Plants, "PlantsController", x => x.ActiveFlag && x.Organization.Key == Organization, x => x.Organization);
         }
 
         [HttpGet]
@@ -52,7 +59,7 @@ namespace maQx.Controllers
                     else
                     {
                         var Key = Claim.FindFirst("Organization.Key").Value;
-                        Users = await GetAdministrator(db.Administrators.Include("User"), x => x.Role == Roles.AppUser && x.ActiveFlag && x.Organization.Key == Key, Claim.FindFirst("Organization.Name").Value);
+                        Users = await GetAdministrator(db.Administrators.Include("User").Include("Organization"), x => x.Role == Roles.AppUser && x.ActiveFlag && x.Organization.Key == Key, Claim.FindFirst("Organization.Name").Value);
                     }
                 }
 
@@ -73,7 +80,7 @@ namespace maQx.Controllers
         public async Task<JsonResult> Menus()
         {
             var Roles = User.GetRoles();
-            return await List(null, db.Menus, null, x => Roles.Contains(x.Access), (value) =>
+            return await Format<Menus, JsonMenuViewModel, JMenus>(null, db.Menus, null, x => Roles.Contains(x.Access), (value) =>
             {
                 return new JsonMenuViewModel()
                 {
@@ -100,7 +107,7 @@ namespace maQx.Controllers
                             {
                                 // BUG: return await List(Roles.AppAdmin, (System.Data.Entity.DbSet<ApplicationUser>)db.Users, null, x => x.UserName == Name, (value) =>
                                 // FIX: Username for Invite sholud be access by the Role Role.Inviter. 12/12/2014
-                                return await List(Roles.Inviter, (System.Data.Entity.DbSet<ApplicationUser>)db.Users, null, x => x.UserName == Name, (value) =>
+                                return await List(Roles.Inviter, (DbSet<ApplicationUser>)db.Users, null, x => x.UserName == Name, (value) =>
                                 {
                                     return new JsonViewModel<bool>()
                                     {
@@ -119,7 +126,7 @@ namespace maQx.Controllers
             }
         }
 
-        static async Task<List<UserViewModel>> GetAdministrator(IQueryable<Administrator> Value, System.Linq.Expressions.Expression<Func<Administrator, bool>> Exp, string Organization)
+        static async Task<List<UserViewModel>> GetAdministrator(IQueryable<Administrator> Value, Expression<Func<Administrator, bool>> Exp, string Organization)
         {
             try
             {
@@ -139,17 +146,32 @@ namespace maQx.Controllers
             }
         }
 
-        private async Task<JsonResult> List<T>(string Role, System.Data.Entity.DbSet<T> value, string Controller, System.Linq.Expressions.Expression<Func<T, bool>> exp)
-            where T : class
+        private async Task<JsonResult> List<T>(string Role, DbSet<T> value, string Controller, Expression<Func<T, bool>> exp, params Expression<Func<T, object>>[] Includes)
+     where T : class
         {
-            return await ViewHelper.List<T, JsonViewModel>(Request, Response, Controller, Role, User, value, exp, null);
+            return await ViewHelper.List<T, JsonViewModel>(Request, Response, Controller, Role, User, value, exp, Includes, null);
         }
 
-        private async Task<JsonResult> List<T1, T2>(string Role, System.Data.Entity.DbSet<T1> value, string Controller, System.Linq.Expressions.Expression<Func<T1, bool>> exp, Func<List<T1>, T2> operation = null)
+        private async Task<JsonResult> List<T1, T2>(string Role, DbSet<T1> value, string Controller, Expression<Func<T1, bool>> exp, Func<List<T1>, T2> operation = null, params Expression<Func<T1, object>>[] Includes)
             where T1 : class
             where T2 : JsonViewModel
         {
-            return await ViewHelper.List(Request, Response, Controller, Role, User, value, exp, operation);
+            return await ViewHelper.List(Request, Response, Controller, Role, User, value, exp, Includes, operation);
+        }
+
+        private async Task<JsonResult> Format<T1, T2>(string Role, DbSet<T1> value, string Controller, Expression<Func<T1, bool>> exp, params Expression<Func<T1, object>>[] Includes)
+            where T1 : class
+            where T2 : class, IJsonBase<T1, T2>
+        {
+            return await ViewHelper.Format<T1, JsonViewModel, T2>(Request, Response, Controller, Role, User, value, exp, Includes, null);
+        }
+
+        private async Task<JsonResult> Format<T1, T2, T3>(string Role, DbSet<T1> value, string Controller, Expression<Func<T1, bool>> exp, Func<List<T3>, T2> operation = null, params Expression<Func<T1, object>>[] Includes)
+            where T1 : class
+            where T2 : JsonViewModel
+            where T3 : class, IJsonBase<T1, T3>
+        {
+            return await ViewHelper.Format<T1, T2, T3>(Request, Response, Controller, Role, User, value, exp, Includes, operation);
         }
 
         protected override void Dispose(bool disposing)

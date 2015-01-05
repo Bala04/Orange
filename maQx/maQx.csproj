@@ -242,6 +242,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InvitesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
+    <Compile Include="Controllers\PlantsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1081,6 +1082,7 @@
     <Content Include="Scripts\section\login-controller.js" />
     <Content Include="Scripts\section\menu-controller.js" />
     <Content Include="Scripts\section\page-controller.js" />
+    <Content Include="Scripts\section\shared-controller.js" />
     <Content Include="Scripts\section\table-controller.js" />
     <Content Include="Scripts\section\user-controller.js" />
     <Content Include="Scripts\_references.js" />
@@ -1140,6 +1142,13 @@
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Invites\_View.cshtml" />
     <Content Include="Views\Administrators\Index.cshtml" />
+    <Content Include="Views\Plants\Create.cshtml" />
+    <Content Include="Views\Plants\Delete.cshtml" />
+    <Content Include="Views\Plants\Details.cshtml" />
+    <Content Include="Views\Plants\Edit.cshtml" />
+    <Content Include="Views\Plants\Index.cshtml" />
+    <Content Include="Views\Plants\_Form.cshtml" />
+    <Content Include="Views\Plants\_View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

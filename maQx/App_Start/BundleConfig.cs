@@ -52,7 +52,10 @@ namespace maQx
                "~/Scripts/section/table-controller.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/section-invite-controller").Include(
-            "~/Scripts/section/invite-controller.js")); 
+            "~/Scripts/section/invite-controller.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/section-shared-controller").Include(
+          "~/Scripts/section/shared-controller.js")); 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(                     
                       "~/Content/bootstrap.css",
