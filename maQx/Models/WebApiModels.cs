@@ -91,4 +91,6 @@ namespace maQx.Models
             };
         }
     }
+
+public class Hello{}
 }
