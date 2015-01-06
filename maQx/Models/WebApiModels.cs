@@ -12,6 +12,19 @@ namespace maQx.Models
 
     public class JsonBase
     {
+        public JsonBase() { }
+
+        public JsonBase(DateTimeStamp input)
+        {
+            this.Modified = input.Modified;
+        }
+
+        public JsonBase(AppBaseStamp input)
+        {
+            this.Key = input.Key;
+            this.Modified = input.Modified;
+        }
+
         public string Key { get; set; }
         public string Modified { get; set; }
     }
@@ -22,16 +35,18 @@ namespace maQx.Models
         public string Name { get; set; }
         public string Domain { get; set; }
 
+        public JOrganization() { }
+        public JOrganization(Organization input)
+            : base(input)
+        {
+            Code = input.Code;
+            Name = input.Name;
+            Domain = input.Domain;
+        }
+
         public JOrganization To(Organization input)
         {
-            return new JOrganization
-            {
-                Key = input.Key,
-                Code = input.Code,
-                Name = input.Name,
-                Domain = input.Domain,
-                Modified = input.Modified
-            };
+            return new JOrganization(input);
         }
     }
 
@@ -52,43 +67,66 @@ namespace maQx.Models
         }
     }
 
-    public class JPlant : JsonBase, IJsonBase<Plant, JPlant>
-    {
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public string Location { get; set; }
-        public JOrganization Organization { get; set; }
-
-        public JPlant To(Plant input)
-        {
-            return new JPlant
-            {
-                Key = input.Key,
-                Code = input.Code,
-                Name = input.Name,
-                Location = input.Location,
-                Modified = input.Modified,
-                Organization = new JOrganization().To(input.Organization)
-            };
-        }
-    }
-
     public class JInvite : JsonBase, IJsonBase<Invite, JInvite>
     {
         public string Username { get; set; }
         public string Email { get; set; }
         public JOrganization Organization { get; set; }
 
+        public JInvite() { }
+        public JInvite(Invite input)
+            : base(input)
+        {
+            Username = input.Username;
+            Email = input.Email;
+            Organization = new JOrganization(input.Organization);
+        }
+
         public JInvite To(Invite input)
         {
-            return new JInvite
-            {
-                Key = input.Key,
-                Username = input.Username,
-                Email = input.Email,
-                Modified = input.Modified,
-                Organization = new JOrganization().To(input.Organization)
-            };
+            return new JInvite(input);
+        }
+    }
+
+    public class JPlant : JsonBase, IJsonBase<Plant, JPlant>
+    {
+        public string Code { get; set; }
+        public string Location { get; set; }
+        public JOrganization Organization { get; set; }
+
+        public JPlant() { }
+        public JPlant(Plant input)
+            : base(input)
+        {
+            Code = input.Code;
+            Location = input.Location;
+            Organization = new JOrganization(input.Organization);
+        }
+
+        public JPlant To(Plant input)
+        {
+            return new JPlant(input);
+        }
+    }
+
+    public class JDivision : JsonBase, IJsonBase<Division, JDivision>
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public JPlant Plant { get; set; }
+
+        public JDivision() { }
+        public JDivision(Division input)
+            : base(input)
+        {
+            Code = input.Code;
+            Name = input.Name;
+            Plant = new JPlant(input.Plant);
+        }
+
+        public JDivision To(Division input)
+        {
+            return new JDivision(input);           
         }
     }
 }
