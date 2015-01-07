@@ -126,7 +126,7 @@ namespace maQx.Models
 
         public JDivision To(Division input)
         {
-            return new JDivision(input);           
+            return new JDivision(input);
         }
     }
 }
