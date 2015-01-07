@@ -20,7 +20,7 @@ namespace maQx.Controllers
         // GET: Invites
         public ActionResult Index()
         {
-            SetInfo();           
+            SetInfo();
             return View();
         }
 
@@ -71,7 +71,7 @@ namespace maQx.Controllers
 
             return View(new InviteViewModel()
             {
-                Organizations = Organization.ToSelectList("Name", "- Organizations -")
+                Organizations = Organization.ToSelectList("Name", "- Organizations -")               
             });
         }
 
@@ -100,7 +100,7 @@ namespace maQx.Controllers
                     {
                         Auth = 3,
                         Code = id,
-                        Mode = Invite.Username,                       
+                        Mode = Invite.Username,
                     };
 
                     var AdminBase = new AdminRegistrationBase()
@@ -128,7 +128,7 @@ namespace maQx.Controllers
                         {
                             Transaction.Rollback();
                             throw;
-                        }                        
+                        }
                     }
                 }
 
@@ -153,7 +153,7 @@ namespace maQx.Controllers
 
             if (ModelState.IsValid)
             {
-                var Organization = Organizations.Where(x => x.Key == invite.Organization).FirstOrDefault();              
+                var Organization = Organizations.Where(x => x.Key == invite.Organization).FirstOrDefault();
 
                 if (Organization != null)
                 {

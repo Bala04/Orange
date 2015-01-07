@@ -12,6 +12,7 @@ using maQx.Utilities;
 
 namespace maQx.Controllers
 {
+    [Authorize(Roles = Roles.SysAdmin)]
     public class PlantsController : Controller
     {
         private AppContext db = new AppContext();
@@ -104,18 +105,23 @@ namespace maQx.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Key,Code,Name,Location")] PlantEditViewModel plant)
         {
-            if (ModelState.IsValid)
+            var pln = await db.Plants.Include("Organization").Where(x => x.Key == plant.Key).SingleOrDefaultAsync();
+
+            if (pln == null)
             {
-                Plant pln = await db.Plants.Include("Organization").Where(x => x.Key == plant.Key).SingleOrDefaultAsync();
+                return HttpNotFound();
+            }
+
+            if (ModelState.IsValid)
+            {                
                 pln.Name = plant.Name;
                 pln.Code = plant.Code;
                 pln.Location = plant.Location;
-
                 db.Entry(pln).State = EntityState.Modified;
-
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+
             return View(plant);
         }
 

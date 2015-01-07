@@ -1168,6 +1168,8 @@
     <Content Include="Views\Divisions\Details.cshtml" />
     <Content Include="Views\Divisions\Edit.cshtml" />
     <Content Include="Views\Divisions\Index.cshtml" />
+    <Content Include="Views\Divisions\_Form.cshtml" />
+    <Content Include="Views\Divisions\_View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

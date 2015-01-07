@@ -13,12 +13,10 @@ namespace maQx.Models
     public class JsonBase
     {
         public JsonBase() { }
-
         public JsonBase(DateTimeStamp input)
         {
             this.Modified = input.Modified;
         }
-
         public JsonBase(AppBaseStamp input)
         {
             this.Key = input.Key;
@@ -91,6 +89,7 @@ namespace maQx.Models
     public class JPlant : JsonBase, IJsonBase<Plant, JPlant>
     {
         public string Code { get; set; }
+        public string Name { get; set; }
         public string Location { get; set; }
         public JOrganization Organization { get; set; }
 
@@ -99,6 +98,7 @@ namespace maQx.Models
             : base(input)
         {
             Code = input.Code;
+            Name = input.Name;
             Location = input.Location;
             Organization = new JOrganization(input.Organization);
         }
