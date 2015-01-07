@@ -129,4 +129,6 @@ namespace maQx.Models
             return new JDivision(input);           
         }
     }
+
+public class Hello{}
 }
