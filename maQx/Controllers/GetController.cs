@@ -45,6 +45,13 @@ namespace maQx.Controllers
         }
 
         [HttpGet]
+        public async Task<JsonResult> Divisions()
+        {
+            var Organization = User.GetOrganization();
+            return await Format<Division, JDivision>(Roles.SysAdmin, db.Divisions, "DivisionsController", x => x.ActiveFlag && x.Plant.Organization.Key == Organization, x => x.Plant, x => x.Plant.Organization);
+        }
+
+        [HttpGet]
         public async Task<JsonResult> Administrators()
         {
             try

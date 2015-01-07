@@ -336,14 +336,14 @@ namespace maQx.Utilities
         {
             return value.GetType().GetProperties().Single(x => x.Name == propertyName).GetValue(value, null);
         }
-        public static SelectListItem DefaultListValue(string DisplayName = "-Select-")
+        public static SelectListItem DefaultListValue(string DisplayName = "-Select-", bool Selected = true)
         {
-            return new SelectListItem() { Disabled = true, Selected = true, Text = DisplayName, Value = "-1" };
+            return new SelectListItem() { Disabled = true, Selected = Selected, Text = DisplayName, Value = "-1" };
         }
         public static SelectList ToSelectList<T>(this IEnumerable<T> list, string valueField, string DisplayName = "-Select-", string keyField = "Key", object selectedField = null)
         {
             var SelectList = new List<SelectListItem>();
-            var defaultValue = DefaultListValue(DisplayName);
+            var defaultValue = DefaultListValue(DisplayName, selectedField == null);
             SelectList.Add(defaultValue);
 
             list.ForEach(x =>
@@ -351,7 +351,7 @@ namespace maQx.Utilities
                 SelectList.Add(new SelectListItem() { Text = (string)x.GetPropertyValue(valueField), Value = (string)x.GetPropertyValue(keyField) });
             });
 
-            return new SelectList(SelectList, "Value", "Text", (selectedField == null ? -1 : selectedField), new List<string>() { "-1" });
+            return new SelectList(SelectList, "Value", "Text", (selectedField == null ? "-1" : selectedField), new List<string>() { "-1" });
         }
         public static maQx.Models.ClientInfo Info(string Message, maQx.Models.ClientInfoType Type = maQx.Models.ClientInfoType.Success)
         {

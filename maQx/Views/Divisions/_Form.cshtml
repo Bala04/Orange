@@ -1,0 +1,43 @@
+﻿@model maQx.Models.DivisionViewModel
+
+<div class="admin-form-layout">
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @{
+        var data_init = String.IsNullOrWhiteSpace(Model.Plant) ? "-1" : Model.Plant;
+        var a = @ViewContext.RouteData.Values["action"].ToString();
+    }
+
+    <div class="form-group">
+        <div>
+            @Html.TextBoxFor(model => model.Code, new { placeholder = "Division Code" })
+            @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+        </div>
+    </div>  
+
+    <div class="form-group">
+        <div>
+            @Html.TextBoxFor(model => model.Name, new { placeholder = "Division Name" })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div> 
+
+    <div class="form-group">
+        <div>
+            <div class="input-group">
+                @Html.DropDownListFor(model => model.Plant, Model.Plants, new { data_init = data_init })
+                @Html.ValidationMessageFor(model => model.Plant, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>         
+
+    <div class="form-group">
+        <div>
+            <div>
+                <input type="submit" value="@a" class="btn btn-default @(a == "Edit" ? "btn-warning" : "app-btn")" />
+                <input type="reset" value="Clear" class="btn btn-default inverse-btn" />
+            </div>
+        </div>
+    </div>
+</div>
+

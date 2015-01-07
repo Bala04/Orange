@@ -108,7 +108,23 @@ namespace maQx.Models
     }
 
     public class PlantEditViewModel : PlantViewModel
+    {       
+        [Required]
+        public string Key { get; set; }
+    }
+
+    public class DivisionEditViewModel : DivisionViewModel
     {
+        public DivisionEditViewModel() { }
+        public DivisionEditViewModel(Division division, System.Web.Mvc.SelectList Plants)
+        {
+            Key = division.Key;
+            Code = division.Code;
+            Name = division.Name;
+            Plant = division.Plant.Key;
+            this.Plants = Plants;
+        }
+
         [Required]
         public string Key { get; set; }
     }
@@ -120,6 +136,14 @@ namespace maQx.Models
 
         public System.Web.Mvc.SelectList Organizations { get; set; }
     }
+
+    public class PlantBaseViewModel
+    {
+        [Required]
+        public string Plant { get; set; }
+
+        public System.Web.Mvc.SelectList Plants { get; set; }
+    }   
 
     public class InviteViewModel : OrganizationBaseViewModel
     {
@@ -155,6 +179,22 @@ namespace maQx.Models
         [Display(Name = "Plant Name")]
         [MaxLength(50)]
         public string Location { get; set; }
+    }
+
+    public class DivisionViewModel : PlantBaseViewModel
+    {
+        [Required]
+        [MaxLength(50)]
+        [Display(Name = "Division Code")]
+        [RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid division code.")]
+        public string Code { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        [Display(Name = "Division Name")]
+        [RegularExpression(RegExPatterns.SpecialAlphaNumeric, ErrorMessage = "Please enter a valid division name.")]
+        public string Name { get; set; }
+
     }
 
     public enum ClientInfoType
