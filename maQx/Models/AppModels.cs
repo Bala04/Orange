@@ -228,7 +228,7 @@ namespace maQx.Models
 
         [Required]
         public string Role { get; set; }
-    }
+    }  
 
     public class Plant : AppBaseStamp
     {
@@ -265,5 +265,21 @@ namespace maQx.Models
         [Required]
         [InverseProperty("Divisions")]
         public virtual Plant Plant { get; set; }
+
+        [InverseProperty("Plant")]
+        public ICollection<Division> Divisions { get; set; }       
     }
+
+    public class AppUser : AppBaseStamp
+    {
+        [Required]
+        [Index("IX_AppUser", IsUnique = true)]        
+        public virtual ApplicationUser User { get; set; }
+
+        [Required]        
+        public virtual Division Division { get; set; }
+
+        [Required]       
+        public virtual Department Department { get; set; }
+    }    
 }

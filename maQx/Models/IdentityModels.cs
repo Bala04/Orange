@@ -24,13 +24,16 @@ namespace maQx.Models
         public const string SysAdmin = "SysAdmin";
         public const string AppUser = "AppUser";
         public const string Inviter = "Inviter";
+        public const string Organization = "Organization";
+        public const string Plant = "Plant";
+        public const string Division = "Division";
     }
 
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
         public string Code { get; set; }
-        public string Firstname { get; set; }
+        public string Firstname { get; set; }       
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -156,8 +159,6 @@ namespace maQx.Models
 
                 throw;
             }
-
-
         }
         public override int SaveChanges()
         {
@@ -197,6 +198,7 @@ namespace maQx.Models
                 new Menus { ID = "Administrators", Name = "People", Access = Roles.Inviter, Order = 3, IsMappable = false },
                 new Menus { ID = "Plants", Name = "Plants", Access = Roles.SysAdmin, Order = 4, IsMappable = false },
                 new Menus { ID = "Divisions", Name = "Divisions", Access = Roles.SysAdmin, Order = 5, IsMappable = false },
+                new Menus { ID = "AppAccess", Name = "Access Levels", Access = Roles.SysAdmin, Order = 5, IsMappable = false },
             }).ForEach(x => { context.Menus.Add(x); });
 
             (new List<Department> {
@@ -206,6 +208,7 @@ namespace maQx.Models
                 new Department { ID = "Maintenance", Name = "Maintenance", Access = Roles.SysAdmin },
                 new Department { ID = "Quality", Name = "Quality", Access = Roles.SysAdmin },
             }).ForEach(x => { context.Departments.Add(x); });
+
 
             base.Seed(context);
         }
