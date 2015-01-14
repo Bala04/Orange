@@ -17,7 +17,7 @@
     @Scripts.Render("~/bundles/modernizr")
 
 </head>
-<body class="full-height app-scope">
+<body class="full-height app-scope ng-cloak">
     <div class="page-layout" ng-controller="PageController as pCtrl">
         <div class="page-cover" ng-show="pCtrl.isPageLoading()"></div>
         @RenderBody()

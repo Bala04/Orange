@@ -1,4 +1,4 @@
-﻿angular.module('tabularApp').controller('TableController', ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "$resource", "$q", 'DataService', function (h, j, k, l, m, n) {
+﻿angular.module('tabularApp').controller('TableController', ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "$resource", "$q", 'DataService', '$rootScope', function (h, j, k, l, m, n, $rootScope) {
     var o = {
         _l: [],
         _k: function (a, b) {
@@ -27,8 +27,10 @@
                             b(a.List)
                         } else if (a.Type == "ERROR") {
                             c("Authentication Failed. You are not authorized to access the requested resource")
+                            $rootScope.$broadcast("alert", { type: "Error", message: a.Message });
                         }
                     }, function (a) {
+                        $rootScope.$broadcast("alert", { type: "Error", message: a });
                         console.log(a);
                         c(a)
                     });

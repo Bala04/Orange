@@ -35,3 +35,5 @@
 /// <reference path="angular-animate.min.js" />
 /// <reference path="angular.min.js" />
 /// <reference path="section/shared-controller.js" />
+/// <reference path="section/department-controller.js" />
+/// <reference path="components/services/department-service.js" />

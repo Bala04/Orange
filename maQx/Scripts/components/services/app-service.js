@@ -20,9 +20,19 @@
 
     self.getAppVersion = function () {
         return self.appVersion;
-    };
-
-    function linq(object) {
-        return Enumerable.from(object);
-    }
+    };    
 }]);
+
+//angular.module("base").factory('$exceptionHandler', [function () {
+//    return function (exception, cause) {
+//        this.$get = function ($injector) {
+//            return function (exception, cause) {
+//                var rScope = $injector.get('$rootScope');
+//                rScope.$broadcast("alert", { type: "Error", message: exception.message });
+//            }
+//        };      
+
+//        exception.message += ' (caused by "' + cause + '")';
+//        throw exception;
+//    };
+//}]);

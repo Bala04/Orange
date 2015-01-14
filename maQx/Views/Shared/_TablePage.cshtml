@@ -2,11 +2,11 @@
     Layout = "~/Views/Shared/_FramePage.cshtml";
 }
 
-<div ng-app="tabularApp">
+<div>
 
     @RenderBody()
 
-    <div ng-controller="TableController as tCtrl" class="table-layout">
+    <div  ng-controller="TableController as tCtrl" class="table-layout ng-cloak">
         <div class="default-toolbar">
             <div class="btn-group">
 

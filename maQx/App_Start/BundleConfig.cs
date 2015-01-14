@@ -9,9 +9,9 @@ namespace maQx
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js", 
-                        "~/Scripts/jquery.validate*", 
-                        "~/Scripts/linq.js", 
+                        "~/Scripts/jquery-{version}.js",
+                        "~/Scripts/jquery.validate*",
+                        "~/Scripts/linq.js",
                         "~/Scripts/linq.jquery.js",
                         "~/Scripts/jquery.dataTables.js"));
 
@@ -40,6 +40,7 @@ namespace maQx
                     "~/Scripts/section/user-controller.js",
                     "~/Scripts/section/menu-controller.js",
                     "~/Scripts/section/frame-controller.js",
+                    "~/Scripts/section/shared-controller.js",
                     "~/Scripts/components/services/app-service.js",
                     "~/Scripts/components/services/user-service.js",
                     "~/Scripts/components/services/menu-service.js",
@@ -54,13 +55,17 @@ namespace maQx
             bundles.Add(new ScriptBundle("~/bundles/section-invite-controller").Include(
             "~/Scripts/section/invite-controller.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/section-shared-controller").Include(
-          "~/Scripts/section/shared-controller.js")); 
+            bundles.Add(new ScriptBundle("~/bundles/department-controller").Include(
+                "~/Scripts/components/services/department-service.js",
+                "~/Scripts/section/department-controller.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(                     
+            bundles.Add(new ScriptBundle("~/bundles/section-shared-controller").Include(
+          "~/Scripts/section/shared-controller.js"));
+
+            bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/font-awesome.min.css",
-                      "~/Content/layout.css","~/Content/loading-bar.css"));
+                      "~/Content/layout.css", "~/Content/loading-bar.css"));
 
             bundles.Add(new StyleBundle("~/Content/datatables").Include(
                      "~/Content/jquery.dataTables.min.css",
@@ -68,7 +73,7 @@ namespace maQx
                      "~/Content/dataTables.tableTools.css"));
 
 
-           // BundleTable.EnableOptimizations = true;
+            // BundleTable.EnableOptimizations = true;
         }
     }
 }

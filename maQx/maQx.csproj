@@ -250,6 +250,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdministratorsController.cs" />
     <Compile Include="Controllers\AppController.cs" />
+    <Compile Include="Controllers\DepartmentsController.cs" />
     <Compile Include="Controllers\DivisionsController.cs" />
     <Compile Include="Controllers\GetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -310,6 +311,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\components\directives\app-directive.js" />
     <Content Include="Scripts\components\services\app-service.js" />
+    <Content Include="Scripts\components\services\department-service.js" />
     <Content Include="Scripts\components\services\menu-service.js" />
     <Content Include="Scripts\components\services\user-service.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -1091,6 +1093,7 @@
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\section\app-controller.js" />
+    <Content Include="Scripts\section\department-controller.js" />
     <Content Include="Scripts\section\frame-controller.js" />
     <Content Include="Scripts\section\invite-controller.js" />
     <Content Include="Scripts\section\login-controller.js" />
@@ -1170,6 +1173,11 @@
     <Content Include="Views\Divisions\Index.cshtml" />
     <Content Include="Views\Divisions\_Form.cshtml" />
     <Content Include="Views\Divisions\_View.cshtml" />
+    <Content Include="Views\Departments\Create.cshtml" />
+    <Content Include="Views\Departments\Delete.cshtml" />
+    <Content Include="Views\Departments\Details.cshtml" />
+    <Content Include="Views\Departments\Edit.cshtml" />
+    <Content Include="Views\Departments\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

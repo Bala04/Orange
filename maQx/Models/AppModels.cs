@@ -85,7 +85,7 @@ namespace maQx.Models
 
         [Index("IX_Name", IsUnique = true)]
         [Required]
-        [MaxLength(50), MinLength(2)]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         [Required]
@@ -111,18 +111,7 @@ namespace maQx.Models
 
         [Required]
         public bool IsMappable { get; set; }
-    }
-
-    public class DepartmentMenu : AppBaseStamp
-    {
-        [Index("IX_DepartmentMenu", 1, IsUnique = true)]
-        [Required]
-        public virtual Department Department { get; set; }
-
-        [Index("IX_DepartmentMenu", 2, IsUnique = true)]
-        [Required]
-        public virtual Menus Menu { get; set; }
-    }
+    }   
 
     #region RegistrationClasses
 
@@ -264,10 +253,22 @@ namespace maQx.Models
 
         [Required]
         [InverseProperty("Divisions")]
-        public virtual Plant Plant { get; set; }
+        public virtual Plant Plant { get; set; }                     
+    }
 
-        [InverseProperty("Plant")]
-        public ICollection<Division> Divisions { get; set; }       
+    public class DepartmentMenu : AppBaseStamp
+    {
+        [Index("IX_DepartmentMenu", 1, IsUnique = true)]
+        [Required]
+        public virtual Division Division { get; set; }
+
+        [Index("IX_DepartmentMenu", 2, IsUnique = true)]
+        [Required]
+        public virtual Department Department { get; set; }
+
+        [Index("IX_DepartmentMenu", 3, IsUnique = true)]
+        [Required]
+        public virtual Menus Menu { get; set; }
     }
 
     public class AppUser : AppBaseStamp
@@ -281,5 +282,7 @@ namespace maQx.Models
 
         [Required]       
         public virtual Department Department { get; set; }
-    }    
+    }  
+  
+
 }

@@ -33,7 +33,7 @@ namespace maQx.Models
     public class ApplicationUser : IdentityUser
     {
         public string Code { get; set; }
-        public string Firstname { get; set; }       
+        public string Firstname { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -198,17 +198,16 @@ namespace maQx.Models
                 new Menus { ID = "Administrators", Name = "People", Access = Roles.Inviter, Order = 3, IsMappable = false },
                 new Menus { ID = "Plants", Name = "Plants", Access = Roles.SysAdmin, Order = 4, IsMappable = false },
                 new Menus { ID = "Divisions", Name = "Divisions", Access = Roles.SysAdmin, Order = 5, IsMappable = false },
-                new Menus { ID = "AppAccess", Name = "Access Levels", Access = Roles.SysAdmin, Order = 5, IsMappable = false },
+                new Menus { ID = "Departments", Name = "Departments", Access = Roles.SysAdmin, Order = 6, IsMappable = false },
+                new Menus { ID = "AppAccess", Name = "Access Levels", Access = Roles.SysAdmin, Order = 7, IsMappable = false },
             }).ForEach(x => { context.Menus.Add(x); });
 
-            (new List<Department> {
-                new Department { ID = "Systems", Name = "Systems", Access = Roles.SysAdmin },
+            (new List<Department> {                
                 new Department { ID = "Production", Name = "Production", Access = Roles.SysAdmin },
                 new Department { ID = "Engineering", Name = "Engineering", Access = Roles.SysAdmin },
                 new Department { ID = "Maintenance", Name = "Maintenance", Access = Roles.SysAdmin },
                 new Department { ID = "Quality", Name = "Quality", Access = Roles.SysAdmin },
             }).ForEach(x => { context.Departments.Add(x); });
-
 
             base.Seed(context);
         }

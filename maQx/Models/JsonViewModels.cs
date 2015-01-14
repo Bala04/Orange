@@ -120,8 +120,11 @@ namespace maQx.Models
             };
         }
 
-        public static JsonErrorViewModel GetResourceNotFoundError()
+        public static JsonErrorViewModel GetResourceNotFoundError(HttpResponseBase Response = null)
         {
+            if (Response != null)
+                Response.StatusCode = 400;
+
             return new JsonErrorViewModel()
             {
                 Message = "Requested resource is not found.",
@@ -149,5 +152,5 @@ namespace maQx.Models
                 Status = "HANDLED"
             };
         }
-    }   
+    }
 }

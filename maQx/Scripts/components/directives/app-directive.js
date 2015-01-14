@@ -30,3 +30,36 @@
         return $sce.trustAsResourceUrl(val);
     };
 }]);
+
+angular.module("base").directive('showWhen', [function () {
+    return {
+        restrict: 'A',
+        scope: {
+            showWhen: "=",
+        },
+        link: function (scope, element, attrs) {
+            scope.$watch("showWhen", function (a) {
+                if (a) {
+                    $(element).delay(80).fadeIn(200);
+                } else {
+                    $(element).fadeOut(80);
+                }
+            });
+        }
+    }
+}]).directive('disableWhen', [function () {
+    return {
+        restrict: 'A',
+        scope: {
+            disableWhen: "=",
+        },
+        link: function (scope, element, attrs) {
+            scope.$watch("disableWhen", function (a) {
+                if (a)
+                    $(element).attr("disabled", "disabled");
+                else
+                    $(element).removeAttr("disabled");
+            });
+        }
+    }
+}]);

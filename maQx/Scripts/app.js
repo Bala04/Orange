@@ -8,7 +8,7 @@ _app = {
         this.enableTooltip();
         return this;
     },
-    logOff:function(){
+    logOff: function () {
         document.getElementById('logoutForm').submit();
     },
     enableTooltip: function () {
@@ -41,10 +41,16 @@ _app = {
 //
 // Version: 2.0.1
 // Author:  Prasanth <@prashanth702>
-angular.module("dependencies", ['angular-loading-bar', 'ngResource', 'ngAnimate']);
-angular.module("orangeApp", ['dependencies']);
-angular.module("tabularApp", ['dependencies', 'datatables']);
-angular.module("sectionApp", ['jquery-typing']);
+angular.module("base", ['angular-loading-bar', 'ngResource', 'ngAnimate']);
+angular.module("orangeApp", ['base']);
+angular.module("tabularApp", ['base', 'datatables']);
+angular.module("sectionApp", ['jquery-typing', 'tabularApp']);
+
+angular.module("tabularApp").factory('DTLoadingTemplate', function () {
+    return {
+        html: '<div class="circle-loader css-fade"><div class="loader-animate"></div><div><h3>Loading..</h3></div></div>'
+    };
+});
 
 angular.module("orangeApp").config(['$httpProvider', 'cfpLoadingBarProvider', function ($httpProvider, cfpLoadingBarProvider) {
     _app.configModule($httpProvider, cfpLoadingBarProvider);
@@ -53,6 +59,10 @@ angular.module("orangeApp").config(['$httpProvider', 'cfpLoadingBarProvider', fu
 angular.module("tabularApp").config(['$httpProvider', 'cfpLoadingBarProvider', function ($httpProvider, cfpLoadingBarProvider) {
     _app.configModule($httpProvider, cfpLoadingBarProvider);
 }]);
+
+function linq(object) {
+    return Enumerable.from(object);
+}
 
 // jQuery-typing
 //

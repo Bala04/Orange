@@ -126,8 +126,8 @@ namespace maQx.Controllers
                 }
             }
             catch (Exception ex)
-            {
-                return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+            {               
+                return Json(JsonExceptionViewModel.Get(ex), JsonRequestBehavior.AllowGet);
             }
         }
 

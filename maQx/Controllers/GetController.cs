@@ -78,8 +78,8 @@ namespace maQx.Controllers
                 return await new JsonListViewModel<UserViewModel>(Users, TableTools.GetTools(Type.GetType("maQx.Controllers.Administrators"))).toJson();
             }
             catch (Exception ex)
-            {
-                return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+            {               
+                return Json(JsonExceptionViewModel.Get(ex), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -126,10 +126,10 @@ namespace maQx.Controllers
                             return await new JsonViewModel<bool>() { Value = true }.toJson();
                         }
 
-                        return await JsonErrorViewModel.GetResourceNotFoundError().toJson();
+                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                     }
 
-                default: return await JsonErrorViewModel.GetResourceNotFoundError().toJson();
+                default: return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
             }
         }
 
