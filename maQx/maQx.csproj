@@ -1132,6 +1132,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\App\Index.cshtml" />
     <Content Include="Views\App\Login.cshtml" />
+    <Content Include="Scripts\jquery-2.1.1.min.map" />
     <Content Include="Views\App\Init.cshtml" />
     <Content Include="Views\Shared\_GenericPage.cshtml" />
     <Content Include="Views\App\_GetEmailConfrimPartial.cshtml" />
@@ -1158,6 +1159,7 @@
     <Content Include="Views\Invites\_Form.cshtml" />
     <Content Include="Views\Emails\UserInvite.cshtml" />
     <Content Include="Views\Emails\UserInvite.Html.cshtml" />
+    <Content Include="Scripts\version.json" />
     <Content Include="Views\Invites\_View.cshtml" />
     <Content Include="Views\Administrators\Index.cshtml" />
     <Content Include="Views\Plants\Create.cshtml" />
@@ -1181,6 +1183,10 @@
     <Folder Include="Content\Temp\" />
     <Folder Include="Views\Get\" />
   </ItemGroup>
+   <ItemGroup>    
+    <TypeScriptCompile Include="Scripts\linq.d.ts" />    
+    <TypeScriptCompile Include="Scripts\linq.jquery.d.ts" />   
+ </ItemGroup>
   <ItemGroup>
     <None Include="Project_Readme.html" />
   </ItemGroup>
