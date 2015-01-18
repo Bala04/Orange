@@ -488,16 +488,16 @@ namespace maQx.Utilities
 
     public class ViewHelper
     {
-        private static async Task<JsonResult> List<T1, T2, T3>(string Controller, Func<List<T3>, T2> operation, List<T3> data)
-            where T2 : maQx.Models.JsonViewModel
-            where T3 : class
+        private static async Task<JsonResult> List<T1, T2>(string Controller, Func<List<T2>, T1> operation, List<T2> data)
+            where T1 : maQx.Models.JsonViewModel
+            where T2 : class
         {
             if (operation != null)
             {
                 return await operation(data).toJson();
             }
 
-            return await new JsonListViewModel<T3>(data, String.IsNullOrWhiteSpace(Controller) ? null : TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller))).toJson();
+            return await new JsonListViewModel<T2>(data, String.IsNullOrWhiteSpace(Controller) ? null : TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller))).toJson();
         }
 
         public static async Task<JsonResult> List<T1, T2>(HttpRequestBase Request, HttpResponseBase Response, string Controller, string Role, IPrincipal User, DbSet<T1> value, Expression<Func<T1, bool>> exp, Expression<Func<T1, object>>[] Includes, Func<List<T1>, T2> operation = null)
@@ -510,7 +510,7 @@ namespace maQx.Utilities
                 {
                     var data = await value.IncludeMultiple(Includes).Where(exp).ToListAsync();
 
-                    return await List<T1, T2, T1>(Controller, operation, data);
+                    return await List<T2, T1>(Controller, operation, data);
                 }
                 else
                 {
@@ -521,21 +521,20 @@ namespace maQx.Utilities
             {
                 return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
             }
-        }
+        }       
 
         public static async Task<JsonResult> Format<T1, T2, T3>(HttpRequestBase Request, HttpResponseBase Response, string Controller, string Role, IPrincipal User, DbSet<T1> value, Expression<Func<T1, bool>> exp, Expression<Func<T1, object>>[] Includes, Func<List<T3>, T2> operation = null)
-            where T1 : class
+            where T1 : class, T3
             where T2 : maQx.Models.JsonViewModel
-            where T3 : class, IJsonBase<T1, T3>
+            where T3 : class, IAppBase
         {
             try
             {
                 if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
-                {
-                    var format = Activator.CreateInstance<T3>();
-                    var data = (await value.IncludeMultiple(Includes).Where(exp).ToListAsync()).Select(x => { return format.To(x); }).ToList();
+                {                    
+                    var data = (await value.IncludeMultiple(Includes).Where(exp).ToListAsync()).Select(x => { return (T3)x; }).ToList();
 
-                    return await List<T1, T2, T3>(Controller, operation, data);
+                    return await List<T2, T3>(Controller, operation, data);
                 }
                 else
                 {

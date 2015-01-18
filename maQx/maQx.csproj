@@ -261,13 +261,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AppInterface.cs" />
     <Compile Include="Models\AppModels.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JsonViewModels.cs" />
     <Compile Include="Models\ViewModels.cs" />
-    <Compile Include="Models\WebApiModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -312,7 +312,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-<Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\components\directives\app-directive.js" />
     <Content Include="Scripts\components\services\app-service.js" />
@@ -1183,10 +1183,10 @@
     <Folder Include="Content\Temp\" />
     <Folder Include="Views\Get\" />
   </ItemGroup>
-   <ItemGroup>    
-    <TypeScriptCompile Include="Scripts\linq.d.ts" />    
-    <TypeScriptCompile Include="Scripts\linq.jquery.d.ts" />   
- </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Scripts\linq.d.ts" />
+    <TypeScriptCompile Include="Scripts\linq.jquery.d.ts" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Project_Readme.html" />
   </ItemGroup>
