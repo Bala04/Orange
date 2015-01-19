@@ -1,14 +1,20 @@
 ﻿angular.module("orangeApp")
-    .controller('MenuController', ['$rootScope', 'MenuService', '$timeout', function ($rootScope, MenuService, $timeout) {
+    .controller('MenuController', ['$rootScope', 'MenuService', '$timeout', '$location', function ($rootScope, MenuService, $timeout, $location) {
         var self = this;
         self.currentMenu = null;
         self.loadingMenu = null;
         self.loaded = false;
+        self.menus = [];
 
-        function loadFrame(menu) {
-            $timeout(function myfunction() {              
-                $rootScope.$broadcast("FrameLoading", menu);
-            });
+        function loadFrame(value) {
+            if (value.menu !== undefined) {
+                self.currentMenu = value.menu.ID;
+
+                $timeout(function () {
+                    $rootScope.$broadcast("FrameLoading", value.url);
+                    self.loadingMenu = value.menu.ID;
+                });
+            }
         }
 
         function init() {
@@ -18,12 +24,19 @@
                 menuQuery.$promise.then(function (data) {
                     if (data.Type == "SUCCESS") {
                         self.menus = data.Menus;
-                        if (self.menus != null) {
-                            self.currentMenu = self.menus[0].ID;
-                            loadFrame(self.menus[0]);
+                        if (self.menus != null && self.menus.length > 0) {
+                            var path = $location.path();
+                            var menuID = path.split('/')[1];
+
+                            if (path == "" || menuID === undefined) {
+                                loadFrame({ menu: self.menus[0], url: "/" + self.menus[0].ID });
+                            } else {
+                                loadFrame({ menu: linq(self.menus).where('$.ID=="' + menuID + '"').toArray()[0], url: path });
+                            }
+
                             self.loaded = true;
                         }
-                    } else if (data.Type == "ERROR") {
+                    } else {
                         console.log(data);
                     }
                 }, function (error) {
@@ -37,24 +50,27 @@
         };
 
         self.selectMenu = function (menu) {
-            self.currentMenu = menu.ID;
-            loadFrame(menu);
+            loadFrame({ menu: menu, url: "/" + menu.ID });
         }
 
         self.selectedMenu = function (menu) {
             return self.currentMenu == menu.ID ? self.loadingMenu == menu.ID ? "selected load" : "selected" : "";
         };
 
-        $rootScope.$on("AppFrameLoaded", function (event, menuID) {
-            $timeout(function myfunction() {               
-                self.currentMenu = menuID;
-                $rootScope.$broadcast("FrameLoaded", MenuService.getMenu(menuID));
+        $rootScope.$on("AppFrameLoaded", function (event, frame) {
+            $timeout(function () {
+                self.currentMenu = frame.menuID;
+                $rootScope.$broadcast("FrameLoaded", MenuService.getMenu(frame.menuID));
             });
             self.loadingMenu = null;
         });
 
-        $rootScope.$on("FrameLoading", function (event, menu) {
-            self.loadingMenu = menu.ID;
+        $rootScope.$on("LoadFrame", function (event, path) {
+            var menuID = path.split('/')[1];
+
+            if (menuID !== undefined) {
+                loadFrame({ menu: linq(self.menus).where('$.ID=="' + menuID + '"').toArray()[0], url: path });
+            }
         });
 
         init();
