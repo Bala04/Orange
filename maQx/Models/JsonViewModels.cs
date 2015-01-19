@@ -64,7 +64,7 @@ namespace maQx.Models
 
         }
 
-        public List<JMenus> Menus { get; set; }
+        public List<IMenu> Menus { get; set; }
     }
 
     public class JsonListViewModel<T> : JsonItemViewModel where T : class

@@ -28,23 +28,25 @@
             }
         }
     </div>
-    @if (Model.GetEmail != null)
-    {
-        Html.RenderPartial("_GetEmailConfrimPartial", Model.GetEmail);
-    }
-    else if (Model.SetEmail != null)
-    {
-        Html.RenderPartial("_SetEmailConfrimPartial", Model.SetEmail);
-    }
-    else if (Model.AdminModel != null)
-    {
-        Html.RenderPartial("_AdminRegisterPartial", Model.AdminModel);
-    }
-    else
-    {
-        <div>
-            <h1>Opps! Something went worng here.</h1>
-        </div>
-    }
+    <div class="init-generic-page">
+        @if (Model.GetEmail != null)
+        {
+            Html.RenderPartial("_GetEmailConfrimPartial", Model.GetEmail);
+        }
+        else if (Model.SetEmail != null)
+        {
+            Html.RenderPartial("_SetEmailConfrimPartial", Model.SetEmail);
+        }
+        else if (Model.AdminModel != null)
+        {
+            Html.RenderPartial("_AdminRegisterPartial", Model.AdminModel);
+        }
+        else
+        {
+            <div>
+                <h1>Opps! Something went worng here.</h1>
+            </div>
+        }
+    </div>
 
 </div>

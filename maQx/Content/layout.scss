@@ -1320,6 +1320,10 @@ header {
     margin: 0 auto;
 }
 
+.init-generic-page {
+	margin-top:25px;
+}
+
 .inline-form {
     h1{
         @include font-size(32px);
@@ -1434,7 +1438,7 @@ header {
         }
     }
 }
-.confrim- admin-email-template,.generic-template {
+.confrim-admin-email-template,.generic-template {
     width: 100%;
     max-width: 800px;   
     padding: 0 20px 10px 20px;

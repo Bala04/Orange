@@ -38,7 +38,6 @@ namespace maQx.Models
         [ScaffoldColumn(false)]
         public bool ActiveFlag { get; set; }
 
-        [NotMapped]
         public string Modified
         {
             get
@@ -47,7 +46,6 @@ namespace maQx.Models
             }
         }
 
-        [NotMapped]
         public string Created
         {
             get
@@ -92,7 +90,7 @@ namespace maQx.Models
         public string Access { get; set; }
     }
 
-    public class Menus
+    public class Menus : IMenu
     {
         [Key]
         [Required]
@@ -111,7 +109,7 @@ namespace maQx.Models
 
         [Required]
         public bool IsMappable { get; set; }
-    }   
+    }
 
     #region RegistrationClasses
 
@@ -159,7 +157,7 @@ namespace maQx.Models
 
     #endregion
 
-    public class Organization : AppBaseStamp
+    public class Organization : AppBaseStamp, IOrganization
     {
         [Index("IX_OrganizationCode", 1, IsUnique = true)]
         [Required]
@@ -175,14 +173,11 @@ namespace maQx.Models
         [MinLength(5), MaxLength(50)]
         public string Domain { get; set; }
 
-        [InverseProperty("Organization")]
         public ICollection<Administrator> Administrators { get; set; }
-
-        [InverseProperty("Organization")]
         public ICollection<Plant> Plants { get; set; }
     }
 
-    public class Invite : AppBaseStamp
+    public class Invite : AppBaseStamp, IInvite
     {
         [Index("IX_Username", IsUnique = true)]
         [Required]
@@ -202,6 +197,14 @@ namespace maQx.Models
 
         [Required]
         public string Role { get; set; }
+
+        IOrganization IInvite.Organization
+        {
+            get
+            {
+                return Organization;
+            }
+        }
     }
 
     public class Administrator : AppBaseStamp
@@ -211,15 +214,14 @@ namespace maQx.Models
         public virtual ApplicationUser User { get; set; }
 
         [Required]
-        [InverseProperty("Administrators")]
         [Index("IX_OrganizationAdministrator", 2, IsUnique = true)]
         public virtual Organization Organization { get; set; }
 
         [Required]
         public string Role { get; set; }
-    }  
+    }
 
-    public class Plant : AppBaseStamp
+    public class Plant : AppBaseStamp, IPlant
     {
         [Required]
         [MaxLength(50)]
@@ -234,14 +236,19 @@ namespace maQx.Models
         public string Location { get; set; }
 
         [Required]
-        [InverseProperty("Plants")]
         public virtual Organization Organization { get; set; }
-        
-        [InverseProperty("Plant")]
         public ICollection<Division> Divisions { get; set; }
+
+        IOrganization IPlant.Organization
+        {
+            get
+            {
+                return Organization;
+            }
+        }
     }
 
-    public class Division : AppBaseStamp
+    public class Division : AppBaseStamp, IDivision
     {
         [Required]
         [MaxLength(50)]
@@ -252,37 +259,42 @@ namespace maQx.Models
         public string Name { get; set; }
 
         [Required]
-        [InverseProperty("Divisions")]
-        public virtual Plant Plant { get; set; }                     
+        public virtual Plant Plant { get; set; }
+
+        IPlant IDivision.Plant
+        {
+            get
+            {
+                return Plant;
+            }
+        }
     }
 
     public class DepartmentMenu : AppBaseStamp
     {
-        [Index("IX_DepartmentMenu", 1, IsUnique = true)]
         [Required]
+        [Index("IX_DepartmentMenu", 1, IsUnique = true)]        
         public virtual Division Division { get; set; }
 
-        [Index("IX_DepartmentMenu", 2, IsUnique = true)]
         [Required]
+        [Index("IX_DepartmentMenu", 2, IsUnique = true)]        
         public virtual Department Department { get; set; }
 
-        [Index("IX_DepartmentMenu", 3, IsUnique = true)]
         [Required]
+        [Index("IX_DepartmentMenu", 3, IsUnique = true)]
         public virtual Menus Menu { get; set; }
     }
 
     public class AppUser : AppBaseStamp
     {
         [Required]
-        [Index("IX_AppUser", IsUnique = true)]        
+        [Index("IX_AppUser", IsUnique = true)]
         public virtual ApplicationUser User { get; set; }
 
-        [Required]        
+        [Required]
         public virtual Division Division { get; set; }
 
-        [Required]       
+        [Required]
         public virtual Department Department { get; set; }
-    }  
-  
-
+    }
 }
