@@ -36,4 +36,7 @@
 /// <reference path="angular.min.js" />
 /// <reference path="section/shared-controller.js" />
 /// <reference path="section/department-controller.js" />
+/// <reference path="section/department-menu-controller.js" />
 /// <reference path="components/services/department-service.js" />
+/// <reference path="components/services/department-menu-service.js" />
+/// <reference path="ui-bootstrap-0.12.0.min.js" />

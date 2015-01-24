@@ -177,11 +177,11 @@ a[href], input[type='submit'],input[type='button'], input[type='reset'], input[t
 
 
 %align-top{
-    vertical-align: top;
+    vertical-align: top !important;
 }   
 
 %align-middle{
-    vertical-align: middle;
+    vertical-align: middle !important;
 }   
 
 %text-overflow{
@@ -299,6 +299,71 @@ $profile-width: 250;
 $left-width: 108;
 $header-height : 54;
 
+.nav, .pagination, .carousel, .panel-title a { @extend %pointer; }
+.modal-backdrop {
+    height: 100%;
+}
+
+.modal-header{
+    border-bottom: none;
+    padding: 10px 18px;
+    @extend %relative;
+
+    .modal-title {
+        @extend %font-regular;
+        color:#4F4F4F;
+    }
+
+    h3 {
+        @extend %inline-block;
+    }
+
+    .modal-search {
+       @extend %absolute;
+       right: 20px;
+       top: 15px;
+
+       .addon-icon{
+        padding-left: 17px;
+        padding-top: 5px;
+    }
+}   
+}
+
+.modal-body{
+   max-height: 500px;
+   overflow: auto;
+   list-style: none;
+   padding: 5px  18px 10px 18px;
+
+   .modal-content-title{
+    @include font-size(14px);
+}
+
+ul.menu-selector-list {
+    margin: 15px 0 0 5px;
+    padding: 0;
+
+    li {
+        @extend %inline-block;
+        width: 25%;
+        padding: 5px;
+        @include font-size(14px);
+
+        span{
+            white-space: nowrap;
+        }
+    }
+}
+}
+
+.modal-content{
+    border:none;
+}
+.modal-footer{
+    border-top: none;
+}
+
 @include keyframes(rotate) {
     from { -webkit-transform: rotate(0deg); }
     to {-webkit-transform: rotate(360deg);  }
@@ -400,6 +465,14 @@ ul.DTTT_dropdown.dropdown-menu li:hover a {
 
 .lower-case{
     text-transform: lowercase;
+}
+
+.display-none{
+    display: none;
+}
+
+.display-override{
+   display: block !important;
 }
 
 input, select{
@@ -640,6 +713,10 @@ input + input {
         color: #C85A5A;
         background-color: #FFE5E5;
         border-color: #F5B8B8;
+    }
+
+    .fa {
+        padding-right: 5px;
     }
 }
 
@@ -911,11 +988,11 @@ a.btn + a.btn{
         @extend %relative;
 
         .menu-loader{
-         width: 100%;
-         @extend %absolute;           
-         @extend %text-center;
+           width: 100%;
+           @extend %absolute;           
+           @extend %text-center;
 
-         .loader-animate{
+           .loader-animate{
             border: 2px solid transparent;
             border-left-color: #ddd;
             border-bottom-color: #ddd;
@@ -941,7 +1018,7 @@ a.btn + a.btn{
         }
     }
 
-    .menu-items{            
+    .menu-items {            
         padding: 7px 10px;  
         color:#777;
         text-indent: 10px;      
@@ -988,7 +1065,6 @@ a.btn + a.btn{
     background: #fff;
 }
 }
-
 header {
     width: 100%;
     height: #{$header-height}px;        
@@ -1154,7 +1230,6 @@ header {
     }
 
 }
-
 .frame-layout {
     padding:10px;
     @include font-size(13px);   
@@ -1306,24 +1381,19 @@ header {
         }
     }   
 }
-
 .init-alert{
     margin-bottom:0;
 }
-
 .init-alert-panel > div {
     max-width:800px; 
     margin:10px auto 0 auto;
 }
-
 .confrim-admin-email-template {
     margin: 0 auto;
 }
-
 .init-generic-page {
-	margin-top:25px;
+    margin-top:25px;
 }
-
 .inline-form {
     h1{
         @include font-size(32px);
@@ -1338,12 +1408,79 @@ header {
     max-width: 500px;
 }
 
+
+
 .app-generic-template {
     padding: 0 20px 10px 20px;
 
     .modular-layout     {
         @extend %relative;
+
         padding-top: 10px;
+
+        .department-menu-layer {
+            padding: 10px 0;
+            @extend %relative;
+
+            .menu-content {                             
+                @extend %inline-block;
+                @extend %align-top;
+                @extend %relative;
+                margin-right: 10px;  
+
+                & > div:first-child {
+                    border-top-left-radius: 5px;
+                    border-top-right-radius: 5px;                    
+                    background: #50C0B7;                    
+                    color:#fff;
+                    border: #52C1B8 thin solid;
+
+                    span {
+                        padding: 4px 10px;
+                        @extend %inline-block;
+
+                        &.fa {
+                            padding-top: 8px;
+                            @extend %transition;
+                            @extend %pointer;
+
+                            &:hover {
+                                background: #42A09E;
+                            }
+
+                            &:active{
+                                background: #50C0B7;
+                            }
+                        }
+                    }
+                }
+
+                & > div:last-child {
+                    border: #ECECEC thin solid;
+                    border-top-color: #52C1B8; 
+                    border-bottom-left-radius: 5px;
+                    border-bottom-right-radius: 5px;
+
+                    ul {
+                        margin: 2px 0 2px 0;
+                        padding: 0;
+                        list-style: none;
+
+                        li {
+                            padding: 4px 10px;
+                            
+                            &.text-center {
+                                color:#ABABAB;
+                            }
+                        }
+                    }
+                }
+            }
+        }   
+
+        .active-warning-info{
+            margin-top: -10px;
+        }
         
         .generic-template {
             padding-left: 0;
@@ -1359,84 +1496,103 @@ header {
             @extend %absolute;
             width: 100%;
         }
-        .modular-controls{
+        .modular-controls {
 
+           margin-bottom: 20px;
+
+           & > div {
+            @extend %inline-block;
+            @extend %align-middle;
+            white-space: nowrap;
+
+            & > div:first-child{
+                width: 90px;
+            }
+
+            & > div:last-child {
+             width: 205px;
+             padding-left: 5px;
+         }
+
+         &.select-control {
+            width: 300px;
 
             & > div {
                 @extend %inline-block;
                 @extend %align-middle;
             }
-
-            label .form-control {
-                margin:0;
-            }
-        }
-
-        ul.material-list-view   {
-            @include font-size(14px);
-            padding: 0;
-            border-radius: 5px;
-            background: #fff;           
-            list-style: none;
-            border:#ECECEC thin solid;
-            margin-top: 20px;
-
-            li {
-                padding: 10px;
-                border-bottom: #ECECEC thin solid;
-                @extend %relative;
-
-                & > div {
-                    @extend %inline-block;
-                    @extend %align-middle;
-                }   
-
-                .item-controls {
-                    @extend %absolute;
-                    top:0;
-                    right: 0;
-
-                    & > div {
-                        padding: 10px 15px;
-                        @extend %inline-block;                      
-                        @extend %align-middle;
-                        @extend %pointer;
-
-                        &:hover{
-                            .fa {                               
-                                color:#fff;
-                            }                           
-                        }
-
-                        &.tp-details:hover {
-                            background:#71D7C9;                     
-                        }
-
-                        &.tp-edit:hover {
-                            background:#FDCC72;                     
-                        }                   
-
-                        &.tp-delete:hover {
-                            background:#FF8C78;                     
-                        }
-
-                        &:active{
-                            box-shadow: inset  0 7px 10px -4px rgba(0,0,0,0.2);
-                        }
-                        .fa {
-                            padding:0px;
-                            color:#000;
-                        }
-                    }                   
-                }
-
-                .fa {
-                    padding-right: 10px;
-                    color:#71D7C9;
-                }
-            }
         }
     }
+
+    label .form-control {
+        margin:0;
+    }
+}
+
+ul.material-list-view   {
+    @include font-size(14px);
+    padding: 0;
+    border-radius: 5px;
+    background: #fff;           
+    list-style: none;
+    border:#ECECEC thin solid;           
+
+    li {
+        padding: 10px;
+        border-bottom: #ECECEC thin solid;
+        @extend %relative;
+
+        & > div {
+            @extend %inline-block;
+            @extend %align-middle;
+        }   
+
+        .item-controls {
+            @extend %absolute;
+            top:0;
+            right: 0;
+
+            & > div {
+                padding: 10px 15px;
+                @extend %inline-block;                      
+                @extend %align-middle;
+                @extend %pointer;
+
+                &:hover{
+                    .fa {                               
+                        color:#fff;
+                    }                           
+                }
+
+                &.tp-details:hover {
+                    background:#71D7C9;                     
+                }
+
+                &.tp-edit:hover {
+                    background:#FDCC72;                     
+                }                   
+
+                &.tp-delete:hover {
+                    background:#FF8C78;                     
+                }
+
+                &:active{
+                    box-shadow: inset  0 7px 10px -4px rgba(0,0,0,0.2);
+                }
+                .fa {
+                    padding:0px;
+                    color:#000;
+                }
+            }                   
+        }
+
+        .fa {
+            padding-right: 10px;
+            color:#71D7C9;
+        }
+    }
+}
+}
 }
 .confrim-admin-email-template,.generic-template {
     width: 100%;

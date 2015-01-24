@@ -6,7 +6,7 @@
 }
 
 <div class="app-generic-template detail-template">
-    <div class="modular-layout ng-cloak" ng-controller="DepartmentController as dCtrl">
+    <div class="modular-layout" ng-controller="DepartmentController as dCtrl">
 
         <div class="modular-form generic-template generic-form css-fade detail-template" ng-show="dCtrl.proto.formEdit()">
             <form>
@@ -24,7 +24,7 @@
                     <button type="button" ng-click="dCtrl.proto.add()" class="btn btn-sm btn-primary app-btn"><span class="fa fa-plus"></span> Create</button>
                 </div>
                 <div class="pull-right">
-                    <label><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" aria-controls="DataTables_Table_0"></label>
+                    <label><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" aria-controls="DataTables_Table_0" ng-model="search.Name"></label>
                 </div>
             </div>
             <div>
@@ -34,7 +34,7 @@
                         <div><h3>Loading..</h3></div>
                     </div>
                     <ul class="material-list-view css-fade" ng-show="dCtrl.proto.isLoaded()">
-                        <li ng-animate="'animate'" ng-repeat="item in dCtrl.departmentList track by item.ID">
+                        <li ng-animate="'animate'" ng-repeat="item in dCtrl.departmentList | filter:search track by item.ID ">
                             <div>
                                 <span class="fa fa-chevron-right "></span><span ng-bind="item.Name"></span>
                             </div>
@@ -75,28 +75,28 @@
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
     </script>
-<script type="text/ng-template" id="edit.html">
-    <h1>Edit department</h1>
-    <p>Editing a department will not affect other entities</p>
-    <div class="admin-form-layout">
-        <div class="form-group">
-            <div>
+    <script type="text/ng-template" id="edit.html">
+        <h1>Edit department</h1>
+        <p>Editing a department will not affect other entities</p>
+        <div class="admin-form-layout">
+            <div class="form-group">
                 <div>
-                    <input type="text" ng-model="dCtrl.department.Name" placeholder="Department Name" class="form-control" />
+                    <div>
+                        <input type="text" ng-model="dCtrl.department.Name" placeholder="Department Name" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <div>
+                        <input type="button" value="Edit" disable-when="dCtrl.isLoading" ng-click="dCtrl.proto.update()" class="btn btn-default btn-warning" />
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <div>
-                <div>
-                    <input type="button" value="Edit" disable-when="dCtrl.isLoading" ng-click="dCtrl.proto.update()" class="btn btn-default btn-warning" />
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
+    </script>
     <script type="text/ng-template" id="delete.html">
         <h1>Delete department</h1>
         <h3 class="delete-detail">
@@ -110,8 +110,8 @@
                     <td><div class="ui-bold" ng-bind="dCtrl.department.Name"></div></td>
                 </tr>
             </tbody>
-        </table>   
-        <div class="admin-form-layout">           
+        </table>
+        <div class="admin-form-layout">
             <div class="form-group">
                 <div>
                     <div>
@@ -119,6 +119,6 @@
                     </div>
                 </div>
             </div>
-        </div>             
+        </div>
     </script>
 }

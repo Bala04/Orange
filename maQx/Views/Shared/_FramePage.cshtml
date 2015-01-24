@@ -30,9 +30,9 @@
 <body>
     <div class="frame-layout">
         <div ng-controller="AlertController as aCtrl">
-            <div class="alert" ng-show="aCtrl.isShow()" ng-class="aCtrl.alertType()" role="alert">
+            <div class="alert display-none" ng-show="aCtrl.isShow()" ng-class="aCtrl.alertType()" role="alert">
                 <button type="button" class="close" ng-click="aCtrl.close()"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <strong><span ng-bind="aCtrl.type"></span></strong> <span ng-bind="aCtrl.message"></span>
+                <strong><i class="fa" ng-class="aCtrl.getIcon()"></i><span ng-bind="aCtrl.type"></span>!</strong> <span ng-bind="aCtrl.message"></span>
             </div>
         </div>
         <div class="init-alert-panel">

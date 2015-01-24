@@ -1,6 +1,6 @@
 ﻿angular.module("sectionApp")
     .controller("DepartmentController", ['Departments', '$rootScope', function (Departments, $rootScope) {
-        var self = this;
+        var self = this;        
         var pages = { add: "create.html", del: "delete.html", edit: "edit.html" };
 
         self.proto = {

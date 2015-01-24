@@ -44,7 +44,7 @@ _app = {
 angular.module("base", ['angular-loading-bar', 'ngResource', 'ngAnimate']);
 angular.module("orangeApp", ['base']);
 angular.module("tabularApp", ['base', 'datatables']);
-angular.module("sectionApp", ['jquery-typing', 'tabularApp']);
+angular.module("sectionApp", ['jquery-typing', 'tabularApp', 'ngAnimate', 'ui.bootstrap']);
 
 angular.module("tabularApp").factory('DTLoadingTemplate', function () {
     return {

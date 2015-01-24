@@ -21,7 +21,7 @@
         restrict: 'A',
         link: function (scope, element, attrs) {
             $(element).load(function () {
-                scope.frameLoaded(element[0].contentWindow.location.pathname.split('/')[1]);
+                scope.frameLoaded(element[0].contentWindow.location.pathname);
             });
         }
     }

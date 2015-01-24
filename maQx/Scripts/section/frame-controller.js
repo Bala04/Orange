@@ -3,17 +3,17 @@
         var self = this;
         self.page = "";
 
-        function init(page) {
+        function init(url) {
             $timeout(function () {
-                $("#app-frame").attr("src", page);
+                $("#app-frame").attr("src", url);
             }, 300);
         }
 
-        $scope.frameLoaded = function (frame) {
-            $rootScope.$broadcast("AppFrameLoaded", frame);
+        $scope.frameLoaded = function (url) {
+            $rootScope.$broadcast("AppFrameLoaded", { url: url, menuID: url.split('/')[1] });
         };
 
-        $rootScope.$on("FrameLoading", function (event, menu) {
-            init("/" + menu.ID);
+        $rootScope.$on("FrameLoading", function (event, url) {
+            init(url);
         });
     }]);
