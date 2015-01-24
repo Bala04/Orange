@@ -16,18 +16,32 @@
 
     self.alertType = function () {
         if (self.type == "Warning")
-            return "alert-warning";
+            return "display-override alert-warning";
         else if (self.type == "Success")
-            return "alert-success";
+            return "display-override alert-success";
         else if (self.type == "Error")
-            return "alert-danger";
+            return "display-override alert-danger";
         else if (self.type == "Note")
-            return "alert-info";
+            return "display-override alert-info";
+    };
+
+    self.getIcon = function () {
+        if (self.type == "Warning")
+            return "fa-exclamation-triangle";
+        else if (self.type == "Success")
+            return "fa-check";
+        else if (self.type == "Error")
+            return "fa-ban";
+        else if (self.type == "Note")
+            return "fa-exclamation";
     };
 
     $rootScope.$on("alert", function (e, data) {
         self.type = data.type;
-        self.message = data.message;
+        if (data.message.status !== undefined) {
+            console.log("oka")
+            self.message = data.message.statusText;
+        }
         self.show = true;
     });
 }]);

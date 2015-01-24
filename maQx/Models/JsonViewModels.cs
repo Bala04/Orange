@@ -64,7 +64,7 @@ namespace maQx.Models
 
         }
 
-        public List<IMenu> Menus { get; set; }
+        public List<JMenus> Menus { get; set; }
     }
 
     public class JsonListViewModel<T> : JsonItemViewModel where T : class
@@ -124,6 +124,18 @@ namespace maQx.Models
         {
             if (Response != null)
                 Response.StatusCode = 400;
+
+            return new JsonErrorViewModel()
+            {
+                Message = "Requested resource is not found.",
+                Status = "CRITICAL"
+            };
+        }
+
+        public static JsonErrorViewModel GetDataNotFoundError(HttpResponseBase Response = null)
+        {
+            if (Response != null)
+                Response.StatusCode = 404;
 
             return new JsonErrorViewModel()
             {

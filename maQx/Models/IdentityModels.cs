@@ -199,7 +199,8 @@ namespace maQx.Models
                 new Menus { ID = "Plants", Name = "Plants", Access = Roles.SysAdmin, Order = 4, IsMappable = false },
                 new Menus { ID = "Divisions", Name = "Divisions", Access = Roles.SysAdmin, Order = 5, IsMappable = false },
                 new Menus { ID = "Departments", Name = "Departments", Access = Roles.SysAdmin, Order = 6, IsMappable = false },
-                new Menus { ID = "AppAccess", Name = "Access Levels", Access = Roles.SysAdmin, Order = 7, IsMappable = false },
+                new Menus { ID = "DepartmentMenus", Name = "Department Menus", Access = Roles.SysAdmin, Order = 7, IsMappable = false },
+                new Menus { ID = "AppAccess", Name = "Access Levels", Access = Roles.SysAdmin, Order = 8, IsMappable = false },
             }).ForEach(x => { context.Menus.Add(x); });
 
             (new List<Department> {                

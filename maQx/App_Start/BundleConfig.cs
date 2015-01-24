@@ -27,6 +27,7 @@ namespace maQx
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                     "~/Scripts/angular.js",
+                    "~/Scripts/ui-bootstrap-0.12.0.min.js",
                     "~/Scripts/angular-resource.js",
                     "~/Scripts/angular-animate.js",
                     "~/Scripts/angular-datatables.js",
@@ -58,6 +59,9 @@ namespace maQx
             bundles.Add(new ScriptBundle("~/bundles/department-controller").Include(
                 "~/Scripts/components/services/department-service.js",
                 "~/Scripts/section/department-controller.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/department-menu-controller").Include(              
+               "~/Scripts/section/department-menu-controller.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/section-shared-controller").Include(
           "~/Scripts/section/shared-controller.js"));

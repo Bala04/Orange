@@ -3,7 +3,9 @@ using maQx.Models;
 using Postal;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,6 +22,10 @@ using System.Web.Mvc;
 
 namespace maQx.Utilities
 {
+    public class HelperType<T>
+    {
+       public T Data { get; set; }
+    }
 
     public static class TableTools
     {
@@ -488,6 +494,8 @@ namespace maQx.Utilities
 
     public class ViewHelper
     {
+       
+
         private static async Task<JsonResult> List<T1, T2>(string Controller, Func<List<T2>, T1> operation, List<T2> data)
             where T1 : maQx.Models.JsonViewModel
             where T2 : class
@@ -521,20 +529,25 @@ namespace maQx.Utilities
             {
                 return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
             }
-        }       
+        }
 
         public static async Task<JsonResult> Format<T1, T2, T3>(HttpRequestBase Request, HttpResponseBase Response, string Controller, string Role, IPrincipal User, DbSet<T1> value, Expression<Func<T1, bool>> exp, Expression<Func<T1, object>>[] Includes, Func<List<T3>, T2> operation = null)
-            where T1 : class, T3
+            where T1 : class
             where T2 : maQx.Models.JsonViewModel
-            where T3 : class, IAppBase
+            where T3 : class, IJsonBase<T1, T3>
         {
             try
             {
                 if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
-                {                    
-                    var data = (await value.IncludeMultiple(Includes).Where(exp).ToListAsync()).Select(x => { return (T3)x; }).ToList();
+                {
+                    var format = Activator.CreateInstance<T3>();
+                    var data = await value.IncludeMultiple(Includes).Where(exp).ToListAsync();
+                    var d = data.Select(x =>
+                    {
+                        return format.To(x);
+                    }).ToList();
 
-                    return await List<T2, T3>(Controller, operation, data);
+                    return await List<T2, T3>(Controller, operation, d);
                 }
                 else
                 {
@@ -588,5 +601,5 @@ namespace maQx.Utilities
         }
     }
 
-   
+
 }

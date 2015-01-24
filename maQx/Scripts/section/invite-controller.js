@@ -51,11 +51,10 @@
                 function (result) {
                     if (result.data.Type == "SUCCESS") {
                         self.usernameLoaded = !result.data.Value;
-                    }
                     self.usernameLoading = false;
                 },
                 function (error) {
-                    console.error(error);
+                    $rootScope.$broadcast("alert", { type: "Error", message: error });                    
                     self.usernameLoaded = false;
                     self.usernameLoading = false;
                 });

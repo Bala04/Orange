@@ -87,10 +87,10 @@ namespace maQx.Models
         public string Name { get; set; }
 
         [Required]
-        public string Access { get; set; }
+        public string Access { get; set; }       
     }
 
-    public class Menus : IMenu
+    public class Menus
     {
         [Key]
         [Required]
@@ -108,7 +108,7 @@ namespace maQx.Models
         public int Order { get; set; }
 
         [Required]
-        public bool IsMappable { get; set; }
+        public bool IsMappable { get; set; }        
     }
 
     #region RegistrationClasses
@@ -157,7 +157,7 @@ namespace maQx.Models
 
     #endregion
 
-    public class Organization : AppBaseStamp, IOrganization
+    public class Organization : AppBaseStamp
     {
         [Index("IX_OrganizationCode", 1, IsUnique = true)]
         [Required]
@@ -177,7 +177,7 @@ namespace maQx.Models
         public ICollection<Plant> Plants { get; set; }
     }
 
-    public class Invite : AppBaseStamp, IInvite
+    public class Invite : AppBaseStamp
     {
         [Index("IX_Username", IsUnique = true)]
         [Required]
@@ -196,15 +196,7 @@ namespace maQx.Models
         public virtual Organization Organization { get; set; }
 
         [Required]
-        public string Role { get; set; }
-
-        IOrganization IInvite.Organization
-        {
-            get
-            {
-                return Organization;
-            }
-        }
+        public string Role { get; set; }       
     }
 
     public class Administrator : AppBaseStamp
@@ -221,7 +213,7 @@ namespace maQx.Models
         public string Role { get; set; }
     }
 
-    public class Plant : AppBaseStamp, IPlant
+    public class Plant : AppBaseStamp
     {
         [Required]
         [MaxLength(50)]
@@ -235,20 +227,12 @@ namespace maQx.Models
         [MaxLength(50)]
         public string Location { get; set; }
 
-        [Required]
+        [Required]       
         public virtual Organization Organization { get; set; }
         public ICollection<Division> Divisions { get; set; }
-
-        IOrganization IPlant.Organization
-        {
-            get
-            {
-                return Organization;
-            }
-        }
     }
 
-    public class Division : AppBaseStamp, IDivision
+    public class Division : AppBaseStamp
     {
         [Required]
         [MaxLength(50)]
@@ -261,27 +245,23 @@ namespace maQx.Models
         [Required]
         public virtual Plant Plant { get; set; }
 
-        IPlant IDivision.Plant
-        {
-            get
-            {
-                return Plant;
-            }
-        }
+        ICollection<Department> Departments { get; set; }        
     }
 
     public class DepartmentMenu : AppBaseStamp
     {
         [Required]
-        [Index("IX_DepartmentMenu", 1, IsUnique = true)]        
+        [Index("IX_DepartmentMenu", 1, IsUnique = true)]
+        [Index("IX_DivisionMenu", 1, IsUnique = true)]
         public virtual Division Division { get; set; }
 
         [Required]
-        [Index("IX_DepartmentMenu", 2, IsUnique = true)]        
+        [Index("IX_DepartmentMenu", 2, IsUnique = true)]
         public virtual Department Department { get; set; }
 
         [Required]
         [Index("IX_DepartmentMenu", 3, IsUnique = true)]
+        [Index("IX_DivisionMenu", 2, IsUnique = true)]
         public virtual Menus Menu { get; set; }
     }
 
