@@ -8,6 +8,9 @@ _app = {
         this.enableTooltip();
         return this;
     },
+    clone: function (value) {
+        return JSON.parse(JSON.stringify(value));
+    },
     logOff: function () {
         document.getElementById('logoutForm').submit();
     },

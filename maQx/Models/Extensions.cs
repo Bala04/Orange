@@ -22,11 +22,6 @@ using System.Web.Mvc;
 
 namespace maQx.Utilities
 {
-    public class HelperType<T>
-    {
-       public T Data { get; set; }
-    }
-
     public static class TableTools
     {
         private static bool Get(Type T, string name)

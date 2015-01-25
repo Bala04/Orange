@@ -57,14 +57,17 @@ namespace maQx.Models
         public string Name { get; set; }
         public int Order { get; set; }
 
+         public JMenus() { }
+         public JMenus(Menus input)            
+        {
+            ID = input.ID;
+            Name = input.Name;
+            Order = input.Order;
+        }
+
         public JMenus To(Menus input)
         {
-            return new JMenus
-            {
-                ID = input.ID,
-                Name = input.Name,
-                Order = input.Order
-            };
+            return new JMenus(input);           
         }
     }
 
@@ -130,6 +133,27 @@ namespace maQx.Models
         public JDivision To(Division input)
         {
             return new JDivision(input);
+        }
+    }
+
+    public class JDepartmentMenu : JsonBase, IJsonBase<DepartmentMenu, JDepartmentMenu>
+    {
+        public JDivision Division { get; set; }
+        public JMenus Menu { get; set; }
+        public Department Department { get; set; }
+
+        public JDepartmentMenu() { }
+        public JDepartmentMenu(DepartmentMenu input)
+            : base(input)
+        {
+            Division = new JDivision(input.Division);
+            Menu = new JMenus(input.Menu);
+            Department = input.Department;
+        }
+
+        public JDepartmentMenu To(DepartmentMenu input)
+        {
+            return new JDepartmentMenu(input);
         }
     }
 }

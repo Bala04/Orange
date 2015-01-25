@@ -319,11 +319,11 @@ $header-height : 54;
     }
 
     .modal-search {
-       @extend %absolute;
-       right: 20px;
-       top: 15px;
+     @extend %absolute;
+     right: 20px;
+     top: 15px;
 
-       .addon-icon{
+     .addon-icon{
         padding-left: 17px;
         padding-top: 5px;
     }
@@ -331,12 +331,12 @@ $header-height : 54;
 }
 
 .modal-body{
-   max-height: 500px;
-   overflow: auto;
-   list-style: none;
-   padding: 5px  18px 10px 18px;
+ max-height: 500px;
+ overflow: auto;
+ list-style: none;
+ padding: 5px  18px 10px 18px;
 
-   .modal-content-title{
+ .modal-content-title{
     @include font-size(14px);
 }
 
@@ -353,6 +353,10 @@ ul.menu-selector-list {
         span{
             white-space: nowrap;
         }
+
+        input[type=checkbox]:disabled ~ label {
+            color:#ccc;
+        }
     }
 }
 }
@@ -362,6 +366,13 @@ ul.menu-selector-list {
 }
 .modal-footer{
     border-top: none;
+    @extend %relative;
+
+    .statusText {
+        font-size: 15px;
+        padding: 5px 10px;
+        color: #1EB4AC;           
+    }
 }
 
 @include keyframes(rotate) {
@@ -472,7 +483,7 @@ ul.DTTT_dropdown.dropdown-menu li:hover a {
 }
 
 .display-override{
-   display: block !important;
+ display: block !important;
 }
 
 input, select{
@@ -551,11 +562,14 @@ input[type=checkbox]{
 
 input[type=checkbox] ~ label {
     @extend %relative;
-    @include font-size(13px);
-    @extend %pointer;
+    @include font-size(13px);    
     color:#666;
     font-weight: normal;
     margin-left: 12px;                  
+}
+
+input[type=checkbox]:not(:disabled) ~ label{
+    @extend %pointer;
 }
 
 input[type=checkbox] ~ label:before{
@@ -582,7 +596,7 @@ input[type=checkbox]:checked ~ label:before {
     background: #66cccc;
 }
 
-input[type=checkbox]:hover, input[type=checkbox] ~ label:hover:before {
+input[type=checkbox]:not(:disabled):hover, input[type=checkbox]:not(:disabled) ~ label:hover:before {
     color:#fff;
 }
 
@@ -988,11 +1002,11 @@ a.btn + a.btn{
         @extend %relative;
 
         .menu-loader{
-           width: 100%;
-           @extend %absolute;           
-           @extend %text-center;
+         width: 100%;
+         @extend %absolute;           
+         @extend %text-center;
 
-           .loader-animate{
+         .loader-animate{
             border: 2px solid transparent;
             border-left-color: #ddd;
             border-bottom-color: #ddd;
@@ -1418,9 +1432,19 @@ header {
 
         padding-top: 10px;
 
-        .department-menu-layer {
-            padding: 10px 0;
+        .department-menu-layer {           
             @extend %relative;
+
+            .menu-info-text {
+                padding-bottom:15px;
+                @include font-size(15px);
+                
+
+                .fa {
+                    padding-right:10px;
+                    color: #FDCF7C;
+                }
+            }
 
             .menu-content {                             
                 @extend %inline-block;
@@ -1434,6 +1458,7 @@ header {
                     background: #50C0B7;                    
                     color:#fff;
                     border: #52C1B8 thin solid;
+                    @include font-size(15px);
 
                     span {
                         padding: 4px 10px;
@@ -1498,9 +1523,9 @@ header {
         }
         .modular-controls {
 
-           margin-bottom: 20px;
+         margin-bottom: 20px;
 
-           & > div {
+         & > div {
             @extend %inline-block;
             @extend %align-middle;
             white-space: nowrap;
@@ -1510,11 +1535,11 @@ header {
             }
 
             & > div:last-child {
-             width: 205px;
-             padding-left: 5px;
-         }
+               width: 205px;
+               padding-left: 5px;
+           }
 
-         &.select-control {
+           &.select-control {
             width: 300px;
 
             & > div {
