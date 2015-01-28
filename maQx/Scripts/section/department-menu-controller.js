@@ -185,7 +185,7 @@
         },
         loadMenus: function (List) {
             var newMenus = _app.clone(self.menus);
-            if (List.length > 0) {
+           
                 var c = linq(List);
                 for (var i = 0; i < self.departmentList.length; i++) {
                     var b = c.where("$.Department.ID=='" + self.departmentList[i].department.ID + "'").select("$.Menu").toArray();
@@ -200,7 +200,7 @@
                             }
                         }
                     }
-                }
+                
             }
             for (var k = 0; k < self.divisionMenus.length; k++) {
                 if (self.divisionMenus[k].division == self.division) {

@@ -137,7 +137,7 @@ namespace maQx.Models
         public System.Web.Mvc.SelectList Organizations { get; set; }
     }
 
-    public class DepartmentMenuViewModel
+    public class DepartmentDivisionViewModel
     {
         public string Division { get; set; }
 

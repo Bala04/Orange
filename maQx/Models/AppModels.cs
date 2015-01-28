@@ -250,19 +250,29 @@ namespace maQx.Models
 
     public class DepartmentMenu : AppBaseStamp
     {
-        [Required]
-        [Index("IX_DepartmentMenu", 1, IsUnique = true)]
+        [Required]       
         [Index("IX_DivisionMenu", 1, IsUnique = true)]
         public virtual Division Division { get; set; }
 
+        [Required]       
+        public virtual Department Department { get; set; }
+
+        [Required]       
+        [Index("IX_DivisionMenu", 2, IsUnique = true)]
+        public virtual Menus Menu { get; set; }
+    }
+
+    public class DepartmentUser : AppBaseStamp
+    {
+        [Required]        
+        public virtual Division Division { get; set; }
+
         [Required]
-        [Index("IX_DepartmentMenu", 2, IsUnique = true)]
         public virtual Department Department { get; set; }
 
         [Required]
-        [Index("IX_DepartmentMenu", 3, IsUnique = true)]
-        [Index("IX_DivisionMenu", 2, IsUnique = true)]
-        public virtual Menus Menu { get; set; }
+        [Index("IX_DivisionUser", IsUnique = true)]
+        public virtual ApplicationUser User { get; set; }
     }
 
     public class AppUser : AppBaseStamp

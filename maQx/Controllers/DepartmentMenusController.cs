@@ -19,21 +19,9 @@ namespace maQx.Controllers
         {
             try
             {
-                var Divisions = await db.Divisions.Include(x => x.Plant).Where(x => x.ActiveFlag).OrderBy(x => x.Name).ToListAsync();
-                var a = Divisions.Select(x => x.Name).ToList();
-
-                Divisions = Divisions.Select(x =>
-                   {
-                       if (a.Where(y => y == x.Name).Count() > 1)
-                       {
-                           x.Name += " - " + x.Plant.Name;
-                       }
-                       return x;
-                   }).ToList();
-
-                return View(new DepartmentMenuViewModel
+                return View(new DepartmentDivisionViewModel
                 {
-                    Divisions = Divisions.ToSelectList("Name")
+                    Divisions = (await Shared.GetSelectableDivisions()).ToSelectList("Name")
                 });
             }
             catch (Exception ex)

@@ -252,6 +252,7 @@
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\DepartmentMenusController.cs" />
     <Compile Include="Controllers\DepartmentsController.cs" />
+    <Compile Include="Controllers\DepartmentUsersController.cs" />
     <Compile Include="Controllers\DivisionsController.cs" />
     <Compile Include="Controllers\GetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -267,6 +268,7 @@
     <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JsonViewModels.cs" />
+    <Compile Include="Models\Shared.cs" />
     <Compile Include="Models\ViewModels.cs" />
     <Compile Include="Models\WebApiModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1102,6 +1104,7 @@
     <Content Include="Scripts\section\app-controller.js" />
     <Content Include="Scripts\section\department-controller.js" />
     <Content Include="Scripts\section\department-menu-controller.js" />
+    <Content Include="Scripts\section\department-user-controller.js" />
     <Content Include="Scripts\section\frame-controller.js" />
     <Content Include="Scripts\section\invite-controller.js" />
     <Content Include="Scripts\section\login-controller.js" />
@@ -1184,6 +1187,7 @@
     <Content Include="Views\Divisions\_View.cshtml" />
     <Content Include="Views\Departments\Index.cshtml" />
     <Content Include="Views\DepartmentMenus\Index.cshtml" />
+    <Content Include="Views\DepartmentUsers\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

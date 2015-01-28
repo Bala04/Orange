@@ -40,3 +40,4 @@
 /// <reference path="components/services/department-service.js" />
 /// <reference path="components/services/department-menu-service.js" />
 /// <reference path="ui-bootstrap-0.12.0.min.js" />
+/// <reference path="section/department-user-controller.js" />

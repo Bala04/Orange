@@ -126,7 +126,38 @@ namespace maQx.Controllers
                 }
             }
             catch (Exception ex)
-            {               
+            {
+                return Json(JsonExceptionViewModel.Get(ex), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [AjaxOnly]
+        public async Task<JsonResult> MappableUsers()
+        {
+            try
+            {
+                if (Request.IsAuthenticated)
+                {
+                    if (User.IsInRole(Roles.SysAdmin))
+                    {
+                        var list = db.Users.Where(new Func<ApplicationUser, bool>(x =>
+                         {
+                             return UserManager.IsInRole(x.Id, Roles.SysAdmin);
+
+                         })).Select(x => new JApplicationUser(x)).ToList();
+
+                        return await new JsonListViewModel<JApplicationUser>
+                        {
+                            List = list
+                        }.toJson();
+                    }
+                }
+
+                return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
+            }
+            catch (Exception ex)
+            {
                 return Json(JsonExceptionViewModel.Get(ex), JsonRequestBehavior.AllowGet);
             }
         }

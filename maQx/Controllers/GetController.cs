@@ -15,8 +15,6 @@ namespace maQx.Controllers
     [AuthorizeGetView]
     public class GetController : Controller
     {
-
-
         private AppContext db = new AppContext();
 
         [HttpGet]
@@ -113,6 +111,23 @@ namespace maQx.Controllers
                     List = value
                 };
             }, x => x.Department, x => x.Menu);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> DepartmentUser(string id)
+        {
+            return await _DepartmentUser(id);
+        }
+
+        private async Task<JsonResult> _DepartmentUser(string id)
+        {
+            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, x => x.Division.Key == id, (value) =>
+            {
+                return new JsonListViewModel<JDepartmentUser>()
+                {
+                    List = value
+                };
+            }, x => x.Department, x => x.User);
         }
 
         [HttpGet]
@@ -228,6 +243,67 @@ namespace maQx.Controllers
                                         await db.SaveChangesAsync();
 
                                         return await _DepartmentMenu(Division.Key);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+                                    }
+                                }
+                            }
+                        }
+
+                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                    }
+                case "add-department-user":
+                    {
+                        var data = Request.QueryString["ref"] != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<AddDepartmentMenuHelper>(Request.QueryString["ref"]) : null;
+
+                        if (data != null)
+                        {
+                            var Division = await db.Divisions.Include(x => x.Plant).Include(x => x.Plant.Organization).Where(x => x.Key == id).FirstOrDefaultAsync();
+
+                            if (Division != null)
+                            {
+                                var Department = await db.Departments.FindAsync(data.Department);
+
+                                if (Department != null)
+                                {
+                                    var DepartmentUser = db.DepartmentUsers;
+
+                                    foreach (var item in data.Add)
+                                    {
+                                        var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
+
+                                        if (User == null)
+                                        {
+                                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                                        }
+
+                                        DepartmentUser.Add(new DepartmentUser
+                                        {
+                                            Division = Division,
+                                            Department = Department,
+                                            User = User
+                                        });
+                                    }
+
+                                    foreach (var item in data.Remove)
+                                    {
+                                        var User = await db.DepartmentUsers.FindAsync(item);
+
+                                        if (User == null)
+                                        {
+                                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                                        }
+
+                                        DepartmentUser.Remove(User);
+                                    }
+
+                                    try
+                                    {
+                                        await db.SaveChangesAsync();
+
+                                        return await _DepartmentUser(Division.Key);
                                     }
                                     catch (Exception ex)
                                     {

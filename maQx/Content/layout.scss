@@ -357,6 +357,11 @@ ul.menu-selector-list {
         input[type=checkbox]:disabled ~ label {
             color:#ccc;
         }
+
+        input[type=checkbox]:not(:disabled) ~ label {
+            color:#333;
+            @extend %font-semibold;
+        }
     }
 }
 }
@@ -1450,7 +1455,8 @@ header {
                 @extend %inline-block;
                 @extend %align-top;
                 @extend %relative;
-                margin-right: 10px;  
+                margin: 0 15px 15px 0;
+                min-width: 180px;
 
                 & > div:first-child {
                     border-top-left-radius: 5px;
