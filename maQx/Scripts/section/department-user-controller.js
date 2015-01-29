@@ -1,11 +1,11 @@
 ﻿angular.module("sectionApp").controller("DepartmentUserController", ['$http', '$rootScope', '$scope', '$modal', function ($http, $rootScope, $scope, $modal) {
     var self = this;
-    self.division = "-1";
-    self.departmentList = [];
+    self.division = "-1";  
     self.isLoading = false;
     self.isLoaded = false;
-    self.divisionUsers = [];
     self.users = [];
+    self.divisionUsers = [];    
+    self.departmentList = [];
     $scope.department = {};
     self.openMenus = function (size, department) {
         $scope.department = department;
@@ -174,9 +174,10 @@
             return item.divisionUser.length > 0;
         },
         getMappedMenuCount: function () {
-            var a = linq(self.divisionUser).where("$.division=='" + self.division + "'").firstOrDefault();
+            var a = linq(self.divisionUsers).where("$.division=='" + self.division + "'").firstOrDefault();         
+
             if (a != null) {
-                return linq(a.users).where("$.selected").count();
+                return linq(a.menus).where("$.selected").count();
             }
             return 0;
         },
