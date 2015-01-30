@@ -105,7 +105,7 @@ namespace maQx.Models
             return new AppContext();
         }
 
-        private void UpdateDateTime()
+        private void BeforeSave()
         {
             var entities = ChangeTracker.Entries();
 
@@ -113,19 +113,29 @@ namespace maQx.Models
             {
                 if (entity.Entity is AppBaseStamp)
                 {
-                    var entityItem = ((AppBaseStamp)entity.Entity);
-
-                    var Id = HttpContext.Current != null && HttpContext.Current.User != null ? HttpContext.Current.User.Identity.GetUserId() : "Anonymous";
-
-                    if (entity.State == EntityState.Added)
+                    if (entity.State == EntityState.Added || entity.State == EntityState.Modified)
                     {
-                        entityItem.Key = String.IsNullOrWhiteSpace(entityItem.Key) ? Guid.NewGuid().ToString() : entityItem.Key;
-                        entityItem.UserCreated = Id;
-                        entityItem.UserModified = Id;
-                    }
-                    else if (entity.State == EntityState.Modified)
-                    {
-                        entityItem.UserModified = Id;
+                        if (HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated)
+                        {
+                            var entityItem = ((AppBaseStamp)entity.Entity);
+
+                            var Id = HttpContext.Current != null && HttpContext.Current.User != null ? HttpContext.Current.User.Identity.GetUserId() : "Anonymous";
+
+                            if (entity.State == EntityState.Added)
+                            {
+                                entityItem.Key = String.IsNullOrWhiteSpace(entityItem.Key) ? Guid.NewGuid().ToString() : entityItem.Key;
+                                entityItem.UserCreated = Id;
+                                entityItem.UserModified = Id;
+                            }
+                            else if (entity.State == EntityState.Modified)
+                            {
+                                entityItem.UserModified = Id;
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Unauthorized Request. Authentication credentials were expired or incorrect.");
+                        }
                     }
                 }
 
@@ -151,7 +161,7 @@ namespace maQx.Models
         {
             try
             {
-                UpdateDateTime();
+                BeforeSave();
                 return await base.SaveChangesAsync();
             }
             catch (Exception)
@@ -162,7 +172,7 @@ namespace maQx.Models
         }
         public override int SaveChanges()
         {
-            UpdateDateTime();
+            BeforeSave();
             return base.SaveChanges();
         }
 
@@ -177,6 +187,7 @@ namespace maQx.Models
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Division> Divisions { get; set; }
         public DbSet<DepartmentUser> DepartmentUsers { get; set; }
+        public DbSet<AccessLevel> AccessLevels { get; set; }
     }
 
     public class AppContextInitializer : DropCreateDatabaseIfModelChanges<AppContext>

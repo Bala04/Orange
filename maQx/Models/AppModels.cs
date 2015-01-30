@@ -20,22 +20,16 @@ namespace maQx.Models
 
     public class DateTimeStamp
     {
-        [Required]
-        [DataType(DataType.Date)]
-        [ScaffoldColumn(false)]
+        [Required, DataType(DataType.Date), ScaffoldColumn(false)]
         public DateTime CreatedAt { get; set; }
 
-        [Required]
-        [DataType(DataType.Date)]
-        [ScaffoldColumn(false)]
+        [Required, DataType(DataType.Date), ScaffoldColumn(false)]
         public DateTime UpdatedAt { get; set; }
 
-        [Timestamp]
-        [ScaffoldColumn(false)]
+        [Timestamp, ScaffoldColumn(false)]
         public Byte[] TimeStamp { get; set; }
 
-        [Required]
-        [ScaffoldColumn(false)]
+        [Required, ScaffoldColumn(false)]
         public bool ActiveFlag { get; set; }
 
         public string Modified
@@ -57,19 +51,13 @@ namespace maQx.Models
 
     public class AppBaseStamp : DateTimeStamp
     {
-        [Key]
-        [Column(Order = 1)]
-        [Required]
-        [MaxLength(40)]
-        [ScaffoldColumn(false)]
+        [Key, Column(Order = 1), Required, MaxLength(40), ScaffoldColumn(false)]
         public string Key { get; set; }
 
-        [Required]
-        [ScaffoldColumn(false)]
+        [Required, ScaffoldColumn(false)]
         public string UserCreated { get; set; }
 
-        [Required]
-        [ScaffoldColumn(false)]
+        [Required, ScaffoldColumn(false)]
         public string UserModified { get; set; }
     }
 
@@ -77,28 +65,22 @@ namespace maQx.Models
 
     public class Department
     {
-        [Key]
-        [Required]
+        [Key, Required]
         public string ID { get; set; }
 
-        [Index("IX_Name", IsUnique = true)]
-        [Required]
-        [MaxLength(50)]
+        [Required, Index("IX_Name", IsUnique = true), MaxLength(50)]
         public string Name { get; set; }
 
         [Required]
-        public string Access { get; set; }       
+        public string Access { get; set; }
     }
 
     public class Menus
     {
-        [Key]
-        [Required]
+        [Key, Required]
         public string ID { get; set; }
 
-        [Index("IX_Name", IsUnique = true)]
-        [Required]
-        [MaxLength(50), MinLength(2)]
+        [Required, Index("IX_Name", IsUnique = true), MaxLength(50), MinLength(2)]
         public string Name { get; set; }
 
         [Required]
@@ -108,16 +90,14 @@ namespace maQx.Models
         public int Order { get; set; }
 
         [Required]
-        public bool IsMappable { get; set; }        
+        public bool IsMappable { get; set; }
     }
 
     #region RegistrationClasses
 
     public class IntilizationStep : DateTimeStamp
     {
-        [Key]
-        [Required]
-        [MinLength(16), MaxLength(32)]
+        [Key, Required, MinLength(16), MaxLength(32)]
         public string Code { get; set; }
 
         [Required]
@@ -135,14 +115,12 @@ namespace maQx.Models
             ConfirmationCode = String.Empty;
         }
 
-        [Required]
-        [Key, ForeignKey("Step")]
+        [Required, Key, ForeignKey("Step")]
         public string StepCode { get; set; }
 
         public virtual IntilizationStep Step { get; set; }
 
-        [Required]
-        [MinLength(5), MaxLength(100)]
+        [Required, MinLength(5), MaxLength(100)]       
         public string Email { get; set; }
 
         [Required]
@@ -159,18 +137,13 @@ namespace maQx.Models
 
     public class Organization : AppBaseStamp
     {
-        [Index("IX_OrganizationCode", 1, IsUnique = true)]
-        [Required]
-        [MaxLength(50), MinLength(2)]
+        [Required, Index("IX_OrganizationCode", 1, IsUnique = true), MaxLength(50), MinLength(2)]      
         public string Code { get; set; }
 
-        [Required]
-        [MaxLength(50)]
+        [Required, MaxLength(50)]       
         public string Name { get; set; }
 
-        [Required]
-        [Index("IX_Domain", 1, IsUnique = true)]
-        [MinLength(5), MaxLength(50)]
+        [Required, Index("IX_Domain", 1, IsUnique = true), MinLength(5), MaxLength(50)]     
         public string Domain { get; set; }
 
         public ICollection<Administrator> Administrators { get; set; }
@@ -179,34 +152,34 @@ namespace maQx.Models
 
     public class Invite : AppBaseStamp
     {
-        [Index("IX_Username", IsUnique = true)]
-        [Required]
-        [MaxLength(100)]
+        [Index("IX_Username", IsUnique = true), Required, MaxLength(100)]        
         public string Username { get; set; }
 
-        [Required]
-        [MinLength(6)]
+        [Required, MinLength(6)]        
         public string Password { get; set; }
 
-        [Required]
-        [MinLength(5), MaxLength(100)]
+        [Required, MinLength(5), MaxLength(100)]        
         public string Email { get; set; }
 
         [Required]
         public virtual Organization Organization { get; set; }
 
         [Required]
-        public string Role { get; set; }       
+        public string Role { get; set; }
     }
 
-    public class Administrator : AppBaseStamp
+    public class Administrator : DateTimeStamp
     {
-        [Required]
-        [Index("IX_OrganizationAdministrator", 1, IsUnique = true)]
-        public virtual ApplicationUser User { get; set; }
+        [Key, Index("IX_OrganizationAdministrator", 1, IsUnique = true), ForeignKey("User")]
+        public string UserId { get; set; }
 
         [Required]
-        [Index("IX_OrganizationAdministrator", 2, IsUnique = true)]
+        public virtual ApplicationUser User { get; set; }
+
+        [Index("IX_OrganizationAdministrator", 2, IsUnique = true), ForeignKey("Organization")]
+        public string OrganizationKey { get; set; }
+
+        [Required]
         public virtual Organization Organization { get; set; }
 
         [Required]
@@ -215,76 +188,80 @@ namespace maQx.Models
 
     public class Plant : AppBaseStamp
     {
-        [Required]
-        [MaxLength(50)]
+        [Required, MaxLength(50)]       
         public string Code { get; set; }
 
-        [Required]
-        [MaxLength(50)]
+        [Required, MaxLength(50)]       
         public string Name { get; set; }
 
-        [Required]
-        [MaxLength(50)]
+        [Required, MaxLength(50)]        
         public string Location { get; set; }
 
-        [Required]       
+        [Required]
         public virtual Organization Organization { get; set; }
+
         public ICollection<Division> Divisions { get; set; }
     }
 
     public class Division : AppBaseStamp
     {
-        [Required]
-        [MaxLength(50)]
+        [Required, MaxLength(50)]        
         public string Code { get; set; }
 
-        [Required]
-        [MaxLength(50)]
+        [Required, MaxLength(50)]        
         public string Name { get; set; }
 
         [Required]
         public virtual Plant Plant { get; set; }
 
-        ICollection<Department> Departments { get; set; }        
+        ICollection<Department> Departments { get; set; }
     }
 
     public class DepartmentMenu : AppBaseStamp
     {
-        [Required]       
-        [Index("IX_DivisionMenu", 1, IsUnique = true)]
+        [Index("IX_DivisionMenu", 1, IsUnique = true), ForeignKey("Division")]
+        public string DivisionKey { get; set; }
+
+        [Required]
         public virtual Division Division { get; set; }
 
-        [Required]       
+        [Required]
         public virtual Department Department { get; set; }
 
-        [Required]       
-        [Index("IX_DivisionMenu", 2, IsUnique = true)]
+        [Index("IX_DivisionMenu", 2, IsUnique = true), ForeignKey("Menu")]
+        public string MenuID { get; set; }
+
+        [Required]
         public virtual Menus Menu { get; set; }
     }
 
     public class DepartmentUser : AppBaseStamp
     {
-        [Required]        
+        [Required]
         public virtual Division Division { get; set; }
 
         [Required]
         public virtual Department Department { get; set; }
 
+        [Index("IX_DivisionUser", IsUnique = true), ForeignKey("User")]
+        public string UserId { get; set; }
+
         [Required]
-        [Index("IX_DivisionUser", IsUnique = true)]
         public virtual ApplicationUser User { get; set; }
     }
 
-    public class AppUser : AppBaseStamp
+    public class AccessLevel : AppBaseStamp
     {
+        [Index("IX_AccessLevel", 1, IsUnique = true), ForeignKey("User")]
+        public string UserId { get; set; }
+
         [Required]
-        [Index("IX_AppUser", IsUnique = true)]
         public virtual ApplicationUser User { get; set; }
+
+        [Index("IX_AccessLevel", 2, IsUnique = true), ForeignKey("Division")]
+        public string DivisionKey { get; set; }
 
         [Required]
         public virtual Division Division { get; set; }
-
-        [Required]
-        public virtual Department Department { get; set; }
     }
 }
