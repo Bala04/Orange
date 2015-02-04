@@ -151,16 +151,24 @@ namespace maQx.Models
             : base("EXCEPTION")
         {
 
-        }
+        }       
 
-        public Exception Exception { get; set; }
-        public static JsonErrorViewModel Get(Exception Exception)
+        public static JsonErrorViewModel Get(Exception Input)
         {
-            return new JsonExceptionViewModel()
+            while (Input.InnerException != null)
+            {
+                Input = Input.InnerException;
+            }
+
+            return Input != null ? new JsonExceptionViewModel()
+            {
+                Message = Input.Message,
+                Title = "Unhandled Exception",                
+                Status = "HANDLED"
+            } : new JsonExceptionViewModel()
             {
                 Message = "An error occured while process your request.",
-                Title = "Unhandled Exception",
-                Exception = Exception,
+                Title = "Unhandled Exception",               
                 Status = "HANDLED"
             };
         }

@@ -44,7 +44,9 @@ namespace maQx.Models
         {
             get
             {
-                return UpdatedAt.toDateString();
+                //BUG: return UpdatedAt.toDateString();
+                //FIX: Created should return CreatedAt 31/01/2015
+                return CreatedAt.toDateString();
             }
         }
     }
@@ -61,19 +63,7 @@ namespace maQx.Models
         public string UserModified { get; set; }
     }
 
-    #endregion
-
-    public class Department
-    {
-        [Key, Required]
-        public string ID { get; set; }
-
-        [Required, Index("IX_Name", IsUnique = true), MaxLength(50)]
-        public string Name { get; set; }
-
-        [Required]
-        public string Access { get; set; }
-    }
+    #endregion   
 
     public class Menus
     {
@@ -215,6 +205,17 @@ namespace maQx.Models
         public virtual Plant Plant { get; set; }
 
         ICollection<Department> Departments { get; set; }
+    }
+
+    public class Department : AppBaseStamp
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Access { get; set; }
+
+        public virtual Division Division { get; set; }
     }
 
     public class DepartmentMenu : AppBaseStamp

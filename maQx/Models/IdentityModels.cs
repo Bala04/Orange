@@ -113,6 +113,9 @@ namespace maQx.Models
             {
                 if (entity.Entity is AppBaseStamp)
                 {
+                    // BUG: var Id = HttpContext.Current != null && HttpContext.Current.User != null ? HttpContext.Current.User.Identity.GetUserId() : "Anonymous";
+                    // FIX #9: The should be authenicated to Insert Or Modify the Model with AppBaseStamp as base. 29/01/2015
+                    // #9: Validation error while registering new user. Module App/Register
                     if (entity.State == EntityState.Added || entity.State == EntityState.Modified)
                     {
                         if (HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated)
@@ -203,7 +206,8 @@ namespace maQx.Models
                     Manager.Create(new IdentityRole { Name = x });
                 }
             });
-
+            
+            // Default and Fixed Menus for the Application
             (new List<Menus> {
                 new Menus { ID = "Organizations", Name = "Organizations", Access = Roles.AppAdmin, Order = 1, IsMappable = false },
                 new Menus { ID = "Invites", Name = "Invites", Access = Roles.Inviter, Order = 2, IsMappable = false },
@@ -215,14 +219,7 @@ namespace maQx.Models
                 new Menus { ID = "DepartmentUsers", Name = "Department - User", Access = Roles.SysAdmin, Order = 8, IsMappable = false },
                 new Menus { ID = "AppAccess", Name = "Access Levels", Access = Roles.SysAdmin, Order = 9, IsMappable = false },
             }).ForEach(x => { context.Menus.Add(x); });
-
-            (new List<Department> {                
-                new Department { ID = "Production", Name = "Production", Access = Roles.SysAdmin },
-                new Department { ID = "Engineering", Name = "Engineering", Access = Roles.SysAdmin },
-                new Department { ID = "Maintenance", Name = "Maintenance", Access = Roles.SysAdmin },
-                new Department { ID = "Quality", Name = "Quality", Access = Roles.SysAdmin },
-            }).ForEach(x => { context.Departments.Add(x); });
-
+          
             base.Seed(context);
         }
     }

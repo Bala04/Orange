@@ -15,7 +15,6 @@ namespace maQx
                         "~/Scripts/linq.jquery.js",
                         "~/Scripts/jquery.dataTables.js"));
 
-
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -47,38 +46,32 @@ namespace maQx
                     "~/Scripts/components/services/menu-service.js",
                     "~/Scripts/components/directives/app-directive.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/angular-login-controller").Include(
-                 "~/Scripts/section/login-controller.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/angular-table-controller").Include(
-               "~/Scripts/section/table-controller.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/section-invite-controller").Include(
-            "~/Scripts/section/invite-controller.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular-login-controller").Include("~/Scripts/section/login-controller.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular-table-controller").Include("~/Scripts/section/table-controller.js"));
+            bundles.Add(new ScriptBundle("~/bundles/section-invite-controller").Include("~/Scripts/section/invite-controller.js"));
+            bundles.Add(new ScriptBundle("~/bundles/section-shared-controller").Include("~/Scripts/section/shared-controller.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/department-controller").Include(
                 "~/Scripts/components/services/department-service.js",
                 "~/Scripts/section/department-controller.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/department-menu-controller").Include(              
-               "~/Scripts/section/department-menu-controller.js"));
+            bundles.Add(new ScriptBundle("~/bundles/department-menu-controller").Include(
+                "~/Scripts/section/department-mapping-controller.js",
+                "~/Scripts/section/department-menu-controller.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/department-user-controller").Include(
-             "~/Scripts/section/department-user-controller.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/section-shared-controller").Include(
-          "~/Scripts/section/shared-controller.js"));
+                "~/Scripts/section/department-mapping-controller.js",
+                "~/Scripts/section/department-user-controller.js"));           
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/font-awesome.min.css",
-                      "~/Content/layout.css", "~/Content/loading-bar.css"));
+                "~/Content/bootstrap.css",
+                "~/Content/font-awesome.min.css",
+                "~/Content/layout.css", "~/Content/loading-bar.css"));
 
             bundles.Add(new StyleBundle("~/Content/datatables").Include(
-                     "~/Content/jquery.dataTables.min.css",
-                     "~/Content/datatables.bootstrap.min.css",
-                     "~/Content/dataTables.tableTools.css"));
-
+                "~/Content/jquery.dataTables.min.css",
+                "~/Content/datatables.bootstrap.min.css",
+                "~/Content/dataTables.tableTools.css"));
 
             // BundleTable.EnableOptimizations = true;
         }

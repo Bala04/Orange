@@ -20,7 +20,7 @@ namespace maQx.Controllers
             {
                 return View(new DepartmentDivisionViewModel
                 {
-                    Divisions = (await Shared.GetSelectableDivisions()).ToSelectList("Name")
+                    Divisions = (await Shared.GetSelectableDivisions(User.GetOrganization())).ToSelectList("Name")
                 });
             }
             catch (Exception ex)

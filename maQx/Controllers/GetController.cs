@@ -48,7 +48,7 @@ namespace maQx.Controllers
         public async Task<JsonResult> Divisions()
         {
             var Organization = User.GetOrganization();
-            return await Format<Division, JDivision>(Roles.SysAdmin, db.Divisions, "DivisionsController", x => x.ActiveFlag && x.Plant.Organization.Key == Organization, x => x.Plant, x => x.Plant.Organization);
+            return await Format<Division, JDivision>(Roles.SysAdmin, db.Divisions, "DivisionsController", x => x.ActiveFlag && x.Plant.Organization.Key == Organization, x => x.Plant.Organization);
         }
 
         [HttpGet]
@@ -110,13 +110,25 @@ namespace maQx.Controllers
                 {
                     List = value
                 };
-            }, x => x.Department, x => x.Menu);
+            }, x => x.Department.Division.Plant.Organization, x => x.Menu);
         }
 
         [HttpGet]
         public async Task<JsonResult> DepartmentUser(string id)
         {
             return await _DepartmentUser(id);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> MappedUsers()
+        {
+            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, x => true, (value) =>
+           {
+               return new JsonListViewModel<JDepartmentUser>()
+               {
+                   List = value
+               };
+           }, x => x.Department.Division.Plant.Organization, x => x.User);
         }
 
         private async Task<JsonResult> _DepartmentUser(string id)
@@ -127,7 +139,7 @@ namespace maQx.Controllers
                 {
                     List = value
                 };
-            }, x => x.Department, x => x.User);
+            }, x => x.Department.Division.Plant.Organization, x => x.User);
         }
 
         [HttpGet]
@@ -164,17 +176,17 @@ namespace maQx.Controllers
                     }
                 case "department":
                     {
-                        return await List(Roles.SysAdmin, db.Departments, null, x => x.Access == Roles.SysAdmin, (value) =>
+                        return await Format<Department, JsonListViewModel<JDepartment>, JDepartment>(Roles.SysAdmin, db.Departments, null, x => x.Division.Key == id && x.Access == Roles.SysAdmin, (value) =>
                         {
-                            return new JsonListViewModel<Department>()
+                            return new JsonListViewModel<JDepartment>()
                             {
-                                List = value.OrderBy(x => x.Name).ToList()
+                                List = value
                             };
-                        });
+                        }, x => x.Division);
                     }
                 case "menus":
                     {
-                        return await List(Roles.SysAdmin, db.Menus, null, x => true, (value) =>
+                        return await List(Roles.SysAdmin, db.Menus, null, x => x.Access == Roles.SysAdmin, (value) =>
                         {
                             return new JsonListViewModel<Menus>()
                             {
@@ -238,16 +250,19 @@ namespace maQx.Controllers
                                         DepartmentMenu.Remove(Menu);
                                     }
 
+                                    Exception Exception = null;
+
                                     try
                                     {
                                         await db.SaveChangesAsync();
-
                                         return await _DepartmentMenu(Division.Key);
                                     }
                                     catch (Exception ex)
                                     {
-                                        return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+                                        Exception = ex;
                                     }
+
+                                    return await JsonExceptionViewModel.Get(Exception).toJson();
                                 }
                             }
                         }
@@ -299,16 +314,19 @@ namespace maQx.Controllers
                                         DepartmentUser.Remove(User);
                                     }
 
+                                    Exception Exception = null;
+
                                     try
                                     {
                                         await db.SaveChangesAsync();
-
                                         return await _DepartmentUser(Division.Key);
                                     }
                                     catch (Exception ex)
                                     {
-                                        return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+                                        Exception = ex;
                                     }
+
+                                    return await JsonExceptionViewModel.Get(Exception).toJson();
                                 }
                             }
                         }

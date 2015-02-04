@@ -101,7 +101,7 @@ namespace maQx.Controllers
             }
 
             var Plants = await db.Plants.ToListAsync();
-            return View(new DivisionEditViewModel(division, Plants.ToSelectList("Name", selectedField: division.Plant.Key)));
+            return View(new DivisionEditViewModel(division, Plants.ToSelectList("Name", SelectedField: division.Plant.Key)));
         }
 
         // POST: Divisions/Edit/5
@@ -140,7 +140,7 @@ namespace maQx.Controllers
             }
 
             var Plants = await db.Plants.ToListAsync();
-            return View(new DivisionEditViewModel(div, Plants.ToSelectList("Name", selectedField: division.Plant)));
+            return View(new DivisionEditViewModel(div, Plants.ToSelectList("Name", SelectedField: division.Plant)));
         }
 
         // GET: Divisions/Delete/5

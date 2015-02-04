@@ -37,10 +37,14 @@
     };
 
     $rootScope.$on("alert", function (e, data) {
+
+        console.log(data);
+
         self.type = data.type;
-        if (data.message.status !== undefined) {
-            console.log("oka")
-            self.message = data.message.statusText;
+        if (data.message.status !== undefined) {  
+            self.message = data.message.statusText != "" ? data.message.statusText : "Opps! something went wrong."
+        } else {
+            self.message = data.message;
         }
         self.show = true;
     });

@@ -329,7 +329,7 @@ namespace maQx.Utilities
         {
             return await new JsonHelper().Json(JsonViewModel);
         }
-        public static JsonResult toJsonUnAsync(this JsonViewModel JsonViewModel)
+        private static JsonResult toJsonUnAsync(this JsonViewModel JsonViewModel)
         {
             return new JsonHelper().Json(JsonViewModel).Result;
         }
@@ -337,22 +337,22 @@ namespace maQx.Utilities
         {
             return value.GetType().GetProperties().Single(x => x.Name == propertyName).GetValue(value, null);
         }
-        public static SelectListItem DefaultListValue(string DisplayName = "-Select-", bool Selected = true)
+        public static SelectListItem DefaultListValue(string DisplayName, bool Selected, string DefaultValue)
         {
-            return new SelectListItem() { Disabled = true, Selected = Selected, Text = DisplayName, Value = "-1" };
+            return new SelectListItem() { Selected = Selected, Text = DisplayName, Value = DefaultValue };
         }
-        public static SelectList ToSelectList<T>(this IEnumerable<T> list, string valueField, string DisplayName = "-Select-", string keyField = "Key", object selectedField = null)
+        public static SelectList ToSelectList<T>(this IEnumerable<T> List, string ValueField, string DisplayName = "-Select-", string KeyField = "Key", object SelectedField = null, string DefaultValue = "-1")
         {
             var SelectList = new List<SelectListItem>();
-            var defaultValue = DefaultListValue(DisplayName, selectedField == null);
+            var defaultValue = DefaultListValue(DisplayName, SelectedField == null, DefaultValue);
             SelectList.Add(defaultValue);
 
-            list.ForEach(x =>
+            List.ForEach(x =>
             {
-                SelectList.Add(new SelectListItem() { Text = (string)x.GetPropertyValue(valueField), Value = (string)x.GetPropertyValue(keyField) });
+                SelectList.Add(new SelectListItem() { Text = (string)x.GetPropertyValue(ValueField), Value = (string)x.GetPropertyValue(KeyField) });
             });
 
-            return new SelectList(SelectList, "Value", "Text", (selectedField == null ? "-1" : selectedField), new List<string>() { "-1" });
+            return new SelectList(SelectList, "Value", "Text", (SelectedField == null ? "-1" : SelectedField), new List<string>() { "-1" });
         }
         public static maQx.Models.ClientInfo Info(string Message, maQx.Models.ClientInfoType Type = maQx.Models.ClientInfoType.Success)
         {
@@ -489,7 +489,7 @@ namespace maQx.Utilities
 
     public class ViewHelper
     {
-       
+
 
         private static async Task<JsonResult> List<T1, T2>(string Controller, Func<List<T2>, T1> operation, List<T2> data)
             where T1 : maQx.Models.JsonViewModel
@@ -507,6 +507,8 @@ namespace maQx.Utilities
             where T1 : class
             where T2 : maQx.Models.JsonViewModel
         {
+            Exception Exception = null;
+
             try
             {
                 if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
@@ -522,8 +524,10 @@ namespace maQx.Utilities
             }
             catch (Exception ex)
             {
-                return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+                Exception = ex;
             }
+
+            return await JsonExceptionViewModel.Get(Exception).toJson();
         }
 
         public static async Task<JsonResult> Format<T1, T2, T3>(HttpRequestBase Request, HttpResponseBase Response, string Controller, string Role, IPrincipal User, DbSet<T1> value, Expression<Func<T1, bool>> exp, Expression<Func<T1, object>>[] Includes, Func<List<T3>, T2> operation = null)
@@ -531,6 +535,8 @@ namespace maQx.Utilities
             where T2 : maQx.Models.JsonViewModel
             where T3 : class, IJsonBase<T1, T3>
         {
+            Exception Exception = null;
+
             try
             {
                 if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
@@ -551,8 +557,10 @@ namespace maQx.Utilities
             }
             catch (Exception ex)
             {
-                return JsonExceptionViewModel.Get(ex).toJsonUnAsync();
+                Exception = ex;
             }
+
+            return await JsonExceptionViewModel.Get(Exception).toJson();
         }
     }
 

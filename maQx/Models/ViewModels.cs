@@ -142,6 +142,7 @@ namespace maQx.Models
         public string Division { get; set; }
 
         public System.Web.Mvc.SelectList Divisions { get; set; }
+        public string JController { get; set; }
     }
 
     public class PlantBaseViewModel
@@ -261,6 +262,25 @@ namespace maQx.Models
         public string Email { get; set; }
         public string Organization { get; set; }
         public bool ShowOrganization { get; set; }
+    }
+
+    public class DepartmentViewModel : DepartmentDivisionViewModel
+    {
+        [Required]
+        public string Name { get; set; }
+    }
+
+    public class DepartmentEditViewModel : DepartmentViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+    }
+
+    public class AccessLevelViewModel
+    {
+        public string User { get; set; }
+
+        public System.Web.Mvc.SelectList Users { get; set; }
     }
 
 }

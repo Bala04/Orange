@@ -9,7 +9,7 @@ namespace maQx.Models
 {
     public class Shared
     {
-        public static async Task<List<Division>> GetSelectableDivisions()
+        public static async Task<List<Division>> GetSelectableDivisions(string Organization)
         {
             using (AppContext db = new AppContext())
             {

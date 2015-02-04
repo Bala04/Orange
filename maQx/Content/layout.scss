@@ -758,6 +758,10 @@ a.btn + a.btn{
         color:#fff;
     }
 
+    &.fa-clear{
+        padding-right: 0 !important;
+    }
+
     &.app-btn {
         background: $base-color;        
         border-color: shade($base-color, 10%);      
@@ -1250,8 +1254,13 @@ header {
 
 }
 .frame-layout {
-    padding:10px;
-    @include font-size(13px);   
+    padding:10px;    
+    @include font-size(13px);
+
+    .frame-alert{
+        @extend %relative;
+        z-index: 10000;
+    }   
 
     .row{
         margin-right: -15px;
@@ -1395,7 +1404,7 @@ header {
             }
         }
 
-        tr:first-child > td{
+        tr:first-child > td {
             border-top: none;
         }
     }   
@@ -1537,12 +1546,12 @@ header {
             white-space: nowrap;
 
             & > div:first-child{
-                width: 90px;
+                width: auto;
             }
 
             & > div:last-child {
                width: 205px;
-               padding-left: 5px;
+               padding-left: 10px;
            }
 
            &.select-control {
@@ -1566,12 +1575,49 @@ ul.material-list-view   {
     border-radius: 5px;
     background: #fff;           
     list-style: none;
-    border:#ECECEC thin solid;           
+    border:#ECECEC thin solid;   
 
-    li {
+    &.pull-control { 
+       & > li {
+             padding: 13px;
+             @extend %relative;
+
+            .pull-right{
+                position: relative;
+                top: -4px;                
+
+                .fa {
+                    padding-right: 10px;
+                    color:#fff;
+                }
+            }
+        }
+    }        
+
+    & > li {
         padding: 10px;
         border-bottom: #ECECEC thin solid;
         @extend %relative;
+
+        & > ul{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li:first-child {
+                margin-top: 15px;
+            }
+
+            & > li{
+                padding: 8px 10px;
+                @extend %relative;
+
+                .fa{
+                    color: #00A8A3;
+                }
+            }
+            
+        }
 
         & > div {
             @extend %inline-block;
@@ -1616,10 +1662,10 @@ ul.material-list-view   {
                 }
             }                   
         }
-
+        
         .fa {
-            padding-right: 10px;
-            color:#71D7C9;
+            padding-right: 13px;
+            color:#75D7CA;
         }
     }
 }

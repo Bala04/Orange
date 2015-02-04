@@ -18,35 +18,59 @@ namespace maQx.Controllers
         private AppContext db = new AppContext();
 
         // GET: Departments
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            try
+            {
+                return View(new DepartmentViewModel
+                {
+                    Divisions = (await Shared.GetSelectableDivisions(User.GetOrganization())).ToSelectList("Name", "All", DefaultValue: "0")
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData.SetError(ex.Message, SetInfo);
+            }
+
             return View();
         }
 
         [HttpGet, Route("Context/Departments")]
-        public async Task<JsonResult> ContextList()
+        public async Task<JsonResult> ContextList(string Division)
         {
-            return Json(await db.Departments.ToListAsync(), JsonRequestBehavior.AllowGet);
+            return Json((await db.Departments.Include(x => x.Division.Plant.Organization).Where(x => x.Division.Key == Division).ToListAsync()).Select(x => new JDepartment(x)), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet, Route("Context/Departments/{ID}")]
-        public async Task<JsonResult> ContextList(string ID)
+        public async Task<JsonResult> ContextList(string ID, string Division)
         {
-            return Json(await db.Departments.FindAsync(ID), JsonRequestBehavior.AllowGet);
+            return Json(new JDepartment((await db.Departments.Include(x => x.Division.Plant.Organization).Where(x => x.Key == ID && x.Division.Key == Division).SingleOrDefaultAsync())), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost, Route("Context/Departments")]
-        public async Task<JsonResult> ContextCreate([Bind(Include = "Name")] Department Department)
+        public async Task<JsonResult> ContextCreate([Bind(Include = "Name,Division")] DepartmentViewModel Department)
         {
             try
             {
-                Department.ID = Guid.NewGuid().ToString();               
-                Department.Access = Roles.SysAdmin;
-                db.Departments.Add(Department);
+                var Division = await db.Divisions.Include(x => x.Plant.Organization).Where(x => x.Key == Department.Division).SingleOrDefaultAsync();
+
+                if (Division == null)
+                {
+                    return await JsonErrorViewModel.GetDataNotFoundError(Response).toJson();
+                }
+
+                var Dep = new Department
+                {
+                    Name = Department.Name,
+                    Division = Division,
+                    Access = Roles.SysAdmin
+                };
+
+                db.Departments.Add(Dep);
 
                 await db.SaveChangesAsync();
 
-                return Json(Department, JsonRequestBehavior.AllowGet);
+                return Json(new JDepartment(Dep), JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -55,11 +79,11 @@ namespace maQx.Controllers
         }
 
         [HttpPut, Route("Context/Departments/{ID}")]
-        public async Task<JsonResult> ContextUpdate([Bind(Include = "ID, Name")] Department Department)
+        public async Task<JsonResult> ContextUpdate([Bind(Include = "Key, Name")] DepartmentEditViewModel Department)
         {
             try
             {
-                var Dep = await db.Departments.FindAsync(Department.ID);
+                var Dep = await db.Departments.Include(x => x.Division.Plant.Organization).Where(x => x.Key == Department.Key).SingleOrDefaultAsync();
                 Dep.Name = Department.Name;
 
                 if (Dep == null)
@@ -70,7 +94,7 @@ namespace maQx.Controllers
                 db.Entry(Dep).State = EntityState.Modified;
                 await db.SaveChangesAsync();
 
-                return Json(Dep, JsonRequestBehavior.AllowGet);
+                return Json(new JDepartment(Dep), JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -83,7 +107,8 @@ namespace maQx.Controllers
         {
             try
             {
-                var Dep = await db.Departments.FindAsync(ID);
+                var Dep = await db.Departments.Include(x => x.Division.Plant.Organization).Where(x => x.Key == ID).SingleOrDefaultAsync();
+                var Del = new JDepartment(Dep);
 
                 if (Dep == null)
                 {
@@ -93,13 +118,19 @@ namespace maQx.Controllers
                 db.Departments.Remove(Dep);
                 await db.SaveChangesAsync();
 
-                return Json(Dep, JsonRequestBehavior.AllowGet);
+                return Json(Del, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 return Json(new JsonErrorViewModel { Message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
-        }      
+        }
+
+        private void SetInfo()
+        {
+            ViewBag.Info = TempData["Info"] as ClientInfo;
+        }
+
 
         protected override void Dispose(bool disposing)
         {

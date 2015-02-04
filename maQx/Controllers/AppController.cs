@@ -139,21 +139,22 @@ namespace maQx.Controllers
             {
                 if (Request.IsAuthenticated)
                 {
+                    // User should belongs to the Role SysAdmin to access MappableUsers
                     if (User.IsInRole(Roles.SysAdmin))
-                    {
-                        var list = db.Users.Where(new Func<ApplicationUser, bool>(x =>
-                         {
-                             return UserManager.IsInRole(x.Id, Roles.SysAdmin);
-
-                         })).Select(x => new JApplicationUser(x)).ToList();
+                    {   
+                        // Returns users with the Role with AppUser
+                        // BUG: var list = db.Administrators.Where(new Func<ApplicationUser, bool>(x => { return UserManager.IsInRole(x.Id, Roles.AppUser) })).ToList();
+                        // FIX: AppUser should belongs to the Organization of the SysAdmin 31/1/2015
+                        var Organization = User.GetOrganization();
+                        var List = await db.Administrators.Include(x => x.User).Include(x => x.Organization).Where(x => x.Organization.Key == Organization && x.Role == Roles.SysAdmin).ToListAsync();
 
                         return await new JsonListViewModel<JApplicationUser>
                         {
-                            List = list
+                            List = List.Select(x => new JApplicationUser(x.User)).ToList()
                         }.toJson();
                     }
                 }
-
+                // If user is not authenticated return UserUnauhorizedError to client.
                 return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
             }
             catch (Exception ex)

@@ -191,7 +191,7 @@ namespace maQx.Controllers
                 }
             }
 
-            invite.Organizations = Organizations.ToSelectList("Name", "- Organizations -", selectedField: invite.Organization);
+            invite.Organizations = Organizations.ToSelectList("Name", "- Organizations -", SelectedField: invite.Organization);
 
             SetInfo();
             return View(invite);

@@ -23,6 +23,7 @@ namespace maQx.Models
         {
             this.Key = input.Key;
             this.Modified = input.Modified;
+            this.Created = input.Created;
         }
 
         public string Key { get; set; }
@@ -136,11 +137,30 @@ namespace maQx.Models
         }
     }
 
+    public class JDepartment : JsonBase, IJsonBase<Department, JDepartment>
+    {
+        public string Name { get; set; }
+        public JDivision Division { get; set; }
+
+        public JDepartment() { }
+        public JDepartment(Department input)
+            :base(input)
+        {
+            Name = input.Name;
+            Division = new JDivision(input.Division);
+        }
+
+        public JDepartment To(Department input)
+        {
+            return new JDepartment(input);
+        }
+    }
+
     public class JDepartmentMenu : JsonBase, IJsonBase<DepartmentMenu, JDepartmentMenu>
     {
         public JDivision Division { get; set; }
         public JMenus Menu { get; set; }
-        public Department Department { get; set; }
+        public JDepartment Department { get; set; }
 
         public JDepartmentMenu() { }
         public JDepartmentMenu(DepartmentMenu input)
@@ -148,7 +168,7 @@ namespace maQx.Models
         {
             Division = new JDivision(input.Division);
             Menu = new JMenus(input.Menu);
-            Department = input.Department;
+            Department = new JDepartment(input.Department);
         }
 
         public JDepartmentMenu To(DepartmentMenu input)
@@ -183,7 +203,7 @@ namespace maQx.Models
     public class JDepartmentUser : JsonBase, IJsonBase<DepartmentUser, JDepartmentUser>
     {
         public JDivision Division { get; set; }
-        public Department Department { get; set; }
+        public JDepartment Department { get; set; }
         public JApplicationUser User { get; set; }
 
         public JDepartmentUser() { }
@@ -191,7 +211,7 @@ namespace maQx.Models
             : base(input)
         {
             Division = new JDivision(input.Division);
-            Department = input.Department;
+            Department = new JDepartment(input.Department);
             User = new JApplicationUser(input.User);
         }
 
