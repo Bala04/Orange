@@ -119,18 +119,6 @@ namespace maQx.Controllers
             return await _DepartmentUser(id);
         }
 
-        [HttpGet]
-        public async Task<JsonResult> MappedUsers()
-        {
-            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, x => true, (value) =>
-           {
-               return new JsonListViewModel<JDepartmentUser>()
-               {
-                   List = value
-               };
-           }, x => x.Department.Division.Plant.Organization, x => x.User);
-        }
-
         private async Task<JsonResult> _DepartmentUser(string id)
         {
             return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, x => x.Division.Key == id, (value) =>
@@ -141,6 +129,35 @@ namespace maQx.Controllers
                 };
             }, x => x.Department.Division.Plant.Organization, x => x.User);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> DivisionAccess(string id)
+        {
+            return await _DivisionAccess(id);
+        }
+
+        private async Task<JsonResult> _DivisionAccess(string id)
+        {
+            return await Format<AccessLevel, JsonListViewModel<JAccessLevel>, JAccessLevel>(Roles.SysAdmin, db.AccessLevels, null, x => x.User.Id == id, (value) =>
+            {
+                return new JsonListViewModel<JAccessLevel>()
+                {
+                    List = value
+                };
+            }, x => x.Division.Plant.Organization, x => x.User);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> MappedUsers()
+        {
+            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, x => true, (value) =>
+           {
+               return new JsonListViewModel<JDepartmentUser>()
+               {
+                   List = value
+               };
+           }, x => x.Department.Division.Plant.Organization, x => x.User);
+        }       
 
         [HttpGet]
         public async Task<JsonResult> Exists(string id, string type)
@@ -207,7 +224,7 @@ namespace maQx.Controllers
                     }
                 case "add-department-menu":
                     {
-                        var data = Request.QueryString["ref"] != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<AddDepartmentMenuHelper>(Request.QueryString["ref"]) : null;
+                        var data = Request.QueryString["ref"] != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<EntityManupulateHelper>(Request.QueryString["ref"]) : null;
 
                         if (data != null)
                         {
@@ -215,7 +232,7 @@ namespace maQx.Controllers
 
                             if (Division != null)
                             {
-                                var Department = await db.Departments.FindAsync(data.Department);
+                                var Department = await db.Departments.FindAsync(data.Entity);
 
                                 if (Department != null)
                                 {
@@ -271,7 +288,7 @@ namespace maQx.Controllers
                     }
                 case "add-department-user":
                     {
-                        var data = Request.QueryString["ref"] != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<AddDepartmentMenuHelper>(Request.QueryString["ref"]) : null;
+                        var data = Request.QueryString["ref"] != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<EntityManupulateHelper>(Request.QueryString["ref"]) : null;
 
                         if (data != null)
                         {
@@ -279,7 +296,7 @@ namespace maQx.Controllers
 
                             if (Division != null)
                             {
-                                var Department = await db.Departments.FindAsync(data.Department);
+                                var Department = await db.Departments.FindAsync(data.Entity);
 
                                 if (Department != null)
                                 {
@@ -328,6 +345,65 @@ namespace maQx.Controllers
 
                                     return await JsonExceptionViewModel.Get(Exception).toJson();
                                 }
+                            }
+                        }
+
+                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                    }
+
+                case "access-division":
+                    {
+                        var data = Request.QueryString["ref"] != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<EntityManupulateHelper>(Request.QueryString["ref"]) : null;
+
+                        if (data != null)
+                        {
+                            var User = db.Users.Find(data.Entity);
+
+                            if (User != null)
+                            {
+                                var AccessLevel = db.AccessLevels;
+
+                                foreach (var item in data.Add)
+                                {
+                                    var Division = await db.Divisions.Where(x => x.Key == item).FirstOrDefaultAsync();
+
+                                    if (Division == null)
+                                    {
+                                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                                    }
+
+                                    AccessLevel.Add(new AccessLevel
+                                    {
+                                        Division = Division,                                        
+                                        User = User
+                                    });
+                                }
+
+                                foreach (var item in data.Remove)
+                                {
+                                    var Access = await db.AccessLevels.FindAsync(item);
+
+                                    if (Access == null)
+                                    {
+                                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                                    }
+
+                                    AccessLevel.Remove(Access);
+                                }
+
+                                Exception Exception = null;
+
+                                try
+                                {
+                                    await db.SaveChangesAsync();
+                                    return await _DivisionAccess(data.Entity);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Exception = ex;
+                                }
+
+                                return await JsonExceptionViewModel.Get(Exception).toJson();
                             }
                         }
 
@@ -386,9 +462,9 @@ namespace maQx.Controllers
             return await ViewHelper.Format<T1, T2, T3>(Request, Response, Controller, Role, User, value, exp, Includes, operation);
         }
 
-        public class AddDepartmentMenuHelper
+        public class EntityManupulateHelper
         {
-            public string Department { get; set; }
+            public string Entity { get; set; }
             public string[] Add { get; set; }
             public string[] Remove { get; set; }
         }

@@ -11,8 +11,6 @@ namespace maQx.Controllers
 {
     public class DepartmentUsersController : Controller
     {
-        private AppContext db = new AppContext();
-
         // GET: DepartmentUsers
         public async Task<ActionResult> Index()
         {
@@ -37,16 +35,7 @@ namespace maQx.Controllers
         {
             ViewBag.Info = TempData["Info"] as ClientInfo;
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+       
         #endregion
     }
 }

@@ -47,15 +47,14 @@
         if (value.trim() !== "") {
             self.usernameLoading = true;
 
-            $http.get("/get/Exists/" + _app.escapeHtml(value) + "?type=username&ref=" + _app.escapeHtml(self.organization)).then(
+            $http.get("/get/Exists/" + _app.escapeHtml(value.trim()) + "?type=username&ref=" + _app.escapeHtml(self.organization)).then(
                 function (result) {
                     if (result.data.Type == "SUCCESS") {
                         self.usernameLoaded = !result.data.Value;
                         self.usernameLoading = false;
                     }
                 },
-                function (error) {
-                    $rootScope.$broadcast("alert", { type: "Error", message: error });                    
+                function (error) {                         
                     self.usernameLoaded = false;
                     self.usernameLoading = false;
                 });

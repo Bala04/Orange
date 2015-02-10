@@ -41,15 +41,15 @@
                             <div><h3>Loading..</h3></div>
                         </div>
                         <ul class="material-list-view css-fade pull-control" ng-show="dCtrl.proto.isLoaded()">
-                            <li ng-repeat="division in dCtrl.divisionList | select:dCtrl.division:'division.Key':'0' | filter:search track by division.division.Key">
+                            <li ng-repeat="division in dCtrl.divisionList | select:dCtrl.division:'division.Key':'0' | filter:search | orderBy:division.Name track by division.division.Key">
                                 <div>
-                                    <span class="fa fa-chevron-right "></span><span class="ui-bold" ng-bind="division.division.Name"></span>
+                                    <span class="fa fa-angle-double-right fa-lg"></span><span class="ui-bold" ng-bind="division.division.Name"></span>
                                 </div>
                                 <div class="pull-right">
                                     <button type="button" ng-click="dCtrl.proto.add(division.division)" class="btn btn-sm app-btn fa-clear"><span class="fa fa-plus"></span></button>
                                 </div>
                                 <ul>
-                                    <li ng-animate="'animate'" ng-repeat="item in division.departmentList track by item.Key">
+                                    <li ng-animate="'animate'" ng-repeat="item in division.departmentList | filter:search | orderBy:Name track by item.Key">
                                         <div>
                                             <span class="fa fa-chevron-right "></span><span ng-bind="item.Name"></span>
                                         </div>

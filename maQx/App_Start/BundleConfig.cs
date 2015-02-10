@@ -61,7 +61,10 @@ namespace maQx
 
             bundles.Add(new ScriptBundle("~/bundles/department-user-controller").Include(
                 "~/Scripts/section/department-mapping-controller.js",
-                "~/Scripts/section/department-user-controller.js"));           
+                "~/Scripts/section/department-user-controller.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/access-level-controller").Include(
+             "~/Scripts/section/access-level-controller.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap.css",

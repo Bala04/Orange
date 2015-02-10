@@ -12,17 +12,14 @@ namespace maQx.Controllers
 {
     public class AccessLevelController : Controller
     {
-        private AppContext db = new AppContext();
-
         // GET: AccessLevel
         public async Task<ActionResult> Index()
         {
             var Organization = User.GetOrganization();
-            var List = await db.Administrators.Include(x => x.User).Include(x => x.Organization).Where(x => x.Organization.Key == Organization && x.Role == Roles.SysAdmin).ToListAsync();
 
             return View(new AccessLevelViewModel
             {
-                Users = List.Select(x => new JApplicationUser(x.User)).ToSelectList("Firstname", KeyField: "Id")
+                Users = (await Shared.GetSelectableUsers(Organization, Roles.SysAdmin)).ToSelectList("Firstname", KeyField: "Id")
             });
         }
 
@@ -32,16 +29,6 @@ namespace maQx.Controllers
         {
             ViewBag.Info = TempData["Info"] as ClientInfo;
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
 
         #endregion
     }

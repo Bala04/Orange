@@ -9,7 +9,7 @@ namespace maQx.Models
 {
     public class Shared
     {
-        public static async Task<List<Division>> GetSelectableDivisions(string Organization)
+        public static async Task<IEnumerable<Division>> GetSelectableDivisions(string Organization)
         {
             using (AppContext db = new AppContext())
             {
@@ -23,7 +23,21 @@ namespace maQx.Models
                          x.Name += " - " + x.Plant.Name;
                      }
                      return x;
-                 }).ToList();
+                 });
+            }
+        }
+
+        public static async Task<IEnumerable<ApplicationUser>> GetSelectableUsers(string Organization, string Role)
+        {
+            using (AppContext db = new AppContext())
+            {               
+                var List = await db.Administrators.Include(x => x.User).Include(x => x.Organization).Where(x => x.Organization.Key == Organization && x.Role == Role).Select(x => x.User).ToListAsync();
+
+                return List.Select(x =>
+                {
+                    x.Firstname = x.Code + " - " + x.Firstname;
+                    return x;
+                });
             }
         }
     }

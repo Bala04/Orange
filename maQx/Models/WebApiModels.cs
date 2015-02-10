@@ -144,7 +144,7 @@ namespace maQx.Models
 
         public JDepartment() { }
         public JDepartment(Department input)
-            :base(input)
+            : base(input)
         {
             Name = input.Name;
             Division = new JDivision(input.Division);
@@ -218,6 +218,25 @@ namespace maQx.Models
         public JDepartmentUser To(DepartmentUser input)
         {
             return new JDepartmentUser(input);
+        }
+    }
+
+    public class JAccessLevel : JsonBase, IJsonBase<AccessLevel, JAccessLevel>
+    {
+        public JApplicationUser User { get; set; }
+        public JDivision Division { get; set; }
+
+        public JAccessLevel() { }
+        public JAccessLevel(AccessLevel input)
+            : base(input)
+        {
+            User = new JApplicationUser(input.User);
+            Division = new JDivision(input.Division);
+        }
+
+        public JAccessLevel To(AccessLevel input)
+        {
+            return new JAccessLevel(input);
         }
     }
 }

@@ -12,8 +12,6 @@ namespace maQx.Controllers
 {
     public class DepartmentMenusController : Controller
     {
-        private AppContext db = new AppContext();
-
         // GET: DepartmentMenus
         public async Task<ActionResult> Index()
         {
@@ -37,17 +35,7 @@ namespace maQx.Controllers
         private void SetInfo()
         {
             ViewBag.Info = TempData["Info"] as ClientInfo;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        }       
 
         #endregion
     }

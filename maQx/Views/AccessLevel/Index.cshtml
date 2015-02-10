@@ -1,6 +1,124 @@
-﻿@model maQx.Models.DepartmentDivisionViewModel
+﻿@model maQx.Models.AccessLevelViewModel
 @{
     Layout = "~/Views/Shared/_FramePage.cshtml";
 }
 
 
+<div class="app-generic-template detail-template">
+    <div class="modular-layout" ng-controller="AccessLevelsController as dCtrl">
+        <div class="css-fade">
+            <div class="modular-controls">
+                @if (Model != null && Model.Users.Count() > 1)
+                {
+                    <div class="select-control">
+                        <div>
+                            Select User
+                        </div>
+                        <div>
+                            @Html.DropDownListFor(model => model.User, Model.Users, htmlAttributes: new { ng_model = "dCtrl.user", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()" })
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <label><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" aria-controls="DataTables_Table_0" ng-model="search"></label>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+        <div>
+            @if (Model != null && Model.Users.Count() > 1)
+            {
+                <div ng-show="dCtrl.proto.showWarning()" class="alert alert-warning" role="alert"><i class="fa fa-exclamation-triangle"></i> Please select a user from the list</div>
+                <div class="department-menu-layer">
+
+                    <div class="circle-loader" ng-show="dCtrl.proto.isLoading()">
+                        <div class="loader-animate"></div>
+                        <div><h3>Loading..</h3></div>
+                    </div>
+
+                    <div class="css-fade" ng-show="dCtrl.proto.showContent()">
+                        <tabset class="tab-animation">
+                            <tab>
+                                <tab-heading>
+                                    <span class="fa fa-pie-chart"></span> Dashboard Access
+                                </tab-heading>
+
+                                <div class="access-layout">
+                                    <div class="transparent-loader" ng-show="dCtrl.proto.isTransparentLoading()"></div>
+
+                                    <div ng-repeat="item in dCtrl.userList | select:dCtrl.user:'Id':'0' track by item.Id">
+                                        <accordion close-others="false">
+                                            <accordion-group ng-repeat="plant in item.plantList | filter:search | orderBy:Name track by plant.Key" is-open="plant.open">
+                                                <accordion-heading>
+                                                    <div class="panel-heading-state">
+                                                        <input ng-model="plant.selected" indeterminate-checkbox="plant.indeterminate" ng-click="dCtrl.proto.openTab(plant)" id="{{plant.Key}}" type="checkbox" />
+                                                        <label for="{{plant.Key}}" ng-bind="plant.Name"></label>
+                                                    </div>
+                                                    <div class="panel-heading-wrapper" ng-click="dCtrl.proto.toggleOpen(plant)">
+                                                        <span class="pull-right fa fa-chevron-right" ng-class="dCtrl.proto.getIcon(plant)"></span>
+                                                    </div>
+                                                </accordion-heading>
+                                                <div class="panel-body-wrapper">
+                                                    <ul>
+                                                        <li ng-repeat="division in plant.divisionList | filter:search | orderBy:Name track by division.Key">
+                                                            <input ng-model="division.selected" ng-click="dCtrl.proto.selectTab(plant)" id="{{division.Key}}" type="checkbox" />
+                                                            <label for="{{division.Key}}" ng-bind="division.Name"></label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </accordion-group>
+                                        </accordion>
+                                    </div>
+                                </div>
+                            </tab>
+                            <tab>
+                                <tab-heading>
+                                    <span class="fa fa-bars"></span> Menu Access
+                                </tab-heading>
+                                <div class="access-layout">
+                                    <div> Menu Access</div>
+                                </div>
+                            </tab>
+                        </tabset>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="active-warning-info">
+                    <h3 class="info-title">
+                        <span class="fa-stack title-icon yellow">
+                            <i class="fa fa-square-o fa-stack-2x"></i>
+                            <i class="fa fa-info fa-stack-1x"></i>
+                        </span> No registered users avaiable.
+                    </h3>
+                    <p>
+                        Only registered users allowed to access dashboards. @Html.ActionLink("Invite new users", "Create", "Invites") to proceed further.
+                    </p>
+                </div>
+            }
+        </div>
+
+        <script type="text/ng-template" id="template/accordion/accordion-group.html">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <div class="accordion-toggle" accordion-transclude="heading">
+                            <span ng-class="{'text-muted': isDisabled}">{{heading}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-collapse" collapse="!isOpen">
+                    <div class="panel-body" ng-transclude></div>
+                </div>
+            </div>
+        </script>
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/access-level-controller")
+        }
+
+    </div>
+</div>

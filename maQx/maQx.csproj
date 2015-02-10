@@ -1097,6 +1097,7 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\section\access-level-controller.js" />
     <Content Include="Scripts\section\app-controller.js" />
     <Content Include="Scripts\section\department-controller.js" />
     <Content Include="Scripts\section\department-mapping-controller.js" />

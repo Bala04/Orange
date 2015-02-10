@@ -31,6 +31,24 @@
     };
 }]);
 
+angular.module("sectionApp").directive('indeterminateCheckbox', [function () {
+    return {
+        restrict : "A",
+        scope: {
+            indeterminate: "=indeterminateCheckbox"
+        },
+        link: function (scope, element, attrs) {
+            scope.$watch("indeterminate", function (newValue) {              
+                if (newValue) {                  
+                    element.prop('indeterminate', true);                   
+                } else {                    
+                    element.prop('indeterminate', false);                    
+                }
+            }, true);
+        }
+    };
+}]);
+
 angular.module("base").directive('showWhen', [function () {
     return {
         restrict: 'A',

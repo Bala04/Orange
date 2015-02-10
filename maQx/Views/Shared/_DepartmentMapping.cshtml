@@ -50,7 +50,7 @@
                         </div>
 
                         <div ng-repeat="item in dCtrl.divisionDepartment | select:dCtrl.division:'division':'0' track by item.division">
-                            <div class="menu-content" ng-repeat="node in item.departmentList | filter:search track by node.department.Key">
+                            <div class="menu-content" ng-repeat="node in item.departmentList | filter:search | orderBy : 'department.Name' track by node.department.Key">
                                 <div><span ng-bind="node.department.Name"></span> <span class="fa fa-edit pull-right" data-toggle="tooltip" title="Manage Menus" ng-click="dCtrl.openMenus('lg', node.department)"></span></div>
                                 <div>
                                     <ul ng-hide="dCtrl.proto.showMenus(node)">
@@ -59,7 +59,7 @@
                                         </li>
                                     </ul>
                                     <ul ng-show="dCtrl.proto.showMenus(node)">
-                                        <li ng-repeat="selected in node.entites | filter:search track by selected.@Key">
+                                        <li ng-repeat="selected in node.entites | filter:search | orderBy:Name track by selected.@Key">
                                             <span ng-bind="selected.@Name"></span>
                                         </li>
                                     </ul>
@@ -82,7 +82,7 @@
                         </span> No divisions were created yet.
                     </h3>
                     <p>
-                        Departments and its menus are subsets of a division. @Html.ActionLink("Create a division", "Create", "Divisions") to process further.
+                        Departments and its menus are subsets of a division. @Html.ActionLink("Create a division", "Create", "Divisions") to proceed further.
                     </p>
                 </div>
             }
@@ -92,7 +92,7 @@
             <div class="modal-header">
                 <h3 class="modal-title">Menu Collection</h3>
                 <div class="pull-right">
-                    <label class="modal-search"><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" ng-model="entitySearch.menu.Name"></label>
+                    <label class="modal-search"><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" ng-model="entitySearch"></label>
                 </div>
             </div>
             <div class="modal-body">

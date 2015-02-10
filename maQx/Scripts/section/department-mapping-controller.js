@@ -9,7 +9,7 @@
         var request = {
             Add: [],
             Remove: [],
-            Department: $scope.items.department.Key
+            Entity: $scope.items.department.Key
         };
         angular.forEach($scope.entityList, function (entity) {
             var isAvailable = linq(self.selectedEntites).any("$." + Key + "=='" + entity.entity[Key] + "'");
@@ -59,7 +59,7 @@
         $modalInstance.dismiss('cancel');
     };
 }]).factory("DepartmentMappingFactory", ['$http', function ($http) {
-    return {
+    var factory = {
         init: function (self, type, show_error, entityType) {
             self.isLoading = true;
             $http.get(type).then(function (result) {
@@ -134,6 +134,18 @@
                 keyboard: false
             });
         },
+
+        remove: function (entityItem, divisionKey, departmentKey) {
+            if (entityItem.division == divisionKey && entityItem.department == departmentItem.department.Key) {
+                entityItem.mapper = null;
+                entityItem.selected = false;
+                entityItem.division = null;
+                entityItem.department = null;
+
+                console.log("Removed", entityItem.entity.Firstname, entityItem)
+            }
+        },
+
         load: function (entites, List, entityType, Key, division) {
             var newEntity = entityType == "Menu" ? _app.clone(entites) : entites;
             angular.forEach(division.departmentList, function (departmentItem) {
@@ -147,16 +159,17 @@
                             entityItem.mapper = entity.Key;
                             entityItem.selected = true;
                             entityItem.division = division.division;
-                            entityItem.department = departmentItem.department.Key
+                            entityItem.department = departmentItem.department.Key;
+                        } else {
+                            if (entityItem.division == division.division && entityItem.department == departmentItem.department.Key) {
+                                factory.remove(entityItem);                                
+                            }
                         }
                     });
                 } else {
                     angular.forEach(newEntity, function (entityItem) {
                         if (entityItem.division == division.division && entityItem.department == departmentItem.department.Key) {
-                            entityItem.mapper = null;
-                            entityItem.selected = false;
-                            entityItem.division = null;
-                            entityItem.department = null;
+                            factory.remove(entityItem);
                         }
                     });
                 }
@@ -233,4 +246,6 @@
             return self.entites.length;
         },
     };
+
+    return factory;
 }]);
