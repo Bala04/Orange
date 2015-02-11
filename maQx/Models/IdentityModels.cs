@@ -179,16 +179,16 @@ namespace maQx.Models
             return base.SaveChanges();
         }
 
-        public DbSet<IntilizationStep> InitStep { get; set; }
-        public DbSet<AdminRegistrationBase> AdminBase { get; set; }
         public DbSet<Menus> Menus { get; set; }
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<DepartmentMenu> DepartmentMenus { get; set; }
-        public DbSet<Organization> Organizations { get; set; }
-        public DbSet<Administrator> Administrators { get; set; }
+        public DbSet<IntilizationStep> InitStep { get; set; }
+        public DbSet<AdminRegistrationBase> AdminBase { get; set; }      
         public DbSet<Invite> Invites { get; set; }
+        public DbSet<Administrator> Administrators { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Division> Divisions { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<DepartmentMenu> DepartmentMenus { get; set; }
         public DbSet<DepartmentUser> DepartmentUsers { get; set; }
         public DbSet<AccessLevel> AccessLevels { get; set; }
     }
@@ -217,7 +217,7 @@ namespace maQx.Models
                 new Menus { ID = "Departments", Name = "Departments", Access = Roles.SysAdmin, Order = 6, IsMappable = false },
                 new Menus { ID = "DepartmentMenus", Name = "Department - Menu", Access = Roles.SysAdmin, Order = 7, IsMappable = false },
                 new Menus { ID = "DepartmentUsers", Name = "Department - User", Access = Roles.SysAdmin, Order = 8, IsMappable = false },
-                new Menus { ID = "AppAccess", Name = "Access Levels", Access = Roles.SysAdmin, Order = 9, IsMappable = false },
+                new Menus { ID = "AccessLevel", Name = "Access Levels", Access = Roles.SysAdmin, Order = 9, IsMappable = false },
             }).ForEach(x => { context.Menus.Add(x); });
           
             base.Seed(context);

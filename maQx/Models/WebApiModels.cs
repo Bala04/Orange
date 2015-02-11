@@ -157,16 +157,14 @@ namespace maQx.Models
     }
 
     public class JDepartmentMenu : JsonBase, IJsonBase<DepartmentMenu, JDepartmentMenu>
-    {
-        public JDivision Division { get; set; }
+    {       
         public JMenus Menu { get; set; }
         public JDepartment Department { get; set; }
 
         public JDepartmentMenu() { }
         public JDepartmentMenu(DepartmentMenu input)
             : base(input)
-        {
-            Division = new JDivision(input.Division);
+        {          
             Menu = new JMenus(input.Menu);
             Department = new JDepartment(input.Department);
         }
@@ -201,16 +199,14 @@ namespace maQx.Models
     }
 
     public class JDepartmentUser : JsonBase, IJsonBase<DepartmentUser, JDepartmentUser>
-    {
-        public JDivision Division { get; set; }
+    {       
         public JDepartment Department { get; set; }
         public JApplicationUser User { get; set; }
 
         public JDepartmentUser() { }
         public JDepartmentUser(DepartmentUser input)
             : base(input)
-        {
-            Division = new JDivision(input.Division);
+        {          
             Department = new JDepartment(input.Department);
             User = new JApplicationUser(input.User);
         }

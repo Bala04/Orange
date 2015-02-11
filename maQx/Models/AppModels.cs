@@ -66,7 +66,7 @@ namespace maQx.Models
     {
         [Required]
         public virtual Division Division { get; set; }
-    }
+    }   
 
     public class EntityDivisionBase : DivisionBase
     {
@@ -74,7 +74,8 @@ namespace maQx.Models
         public string Code { get; set; }
         [Required]
         public string Description { get; set; }
-    }
+    }   
+
     #endregion
 
     #region Default
@@ -150,8 +151,6 @@ namespace maQx.Models
         public string Name { get; set; }
         [Required, Index("IX_Domain", 1, IsUnique = true), MinLength(5), MaxLength(50)]
         public string Domain { get; set; }
-        public virtual ICollection<Administrator> Administrators { get; set; }
-        public virtual ICollection<Plant> Plants { get; set; }
     }
 
     public class Invite : AppBaseStamp
@@ -192,7 +191,7 @@ namespace maQx.Models
         public string Location { get; set; }
         [Required]
         public virtual Organization Organization { get; set; }
-        public virtual ICollection<Division> Divisions { get; set; }
+
     }
 
     public class Division : AppBaseStamp
@@ -203,30 +202,36 @@ namespace maQx.Models
         public string Name { get; set; }
         [Required]
         public virtual Plant Plant { get; set; }
-        public virtual ICollection<Department> Departments { get; set; }
     }
 
-    public class Department : DivisionBase
+    public class Department : AppBaseStamp
     {
         [Required]
         public string Name { get; set; }
+
         [Required]
         public string Access { get; set; }
+
+        [Required]
+        public virtual Division Division { get; set; }
     }
 
-    public class DepartmentMenu : DivisionBase
+    public class DepartmentMenu : AppBaseStamp
     {
-        [Index("IX_DivisionMenu", 1, IsUnique = true), ForeignKey("Division")]
-        public string DivisionKey { get; set; }
+        [Index("IX_DivisionMenu", 1, IsUnique = true), ForeignKey("Department")]
+        public string DepartmentKey { get; set; }
+
         [Required]
         public virtual Department Department { get; set; }
+
         [Index("IX_DivisionMenu", 2, IsUnique = true), ForeignKey("Menu")]
         public string MenuID { get; set; }
+
         [Required]
         public virtual Menus Menu { get; set; }
     }
 
-    public class DepartmentUser : DivisionBase
+    public class DepartmentUser : AppBaseStamp
     {
         [Required]
         public virtual Department Department { get; set; }
@@ -242,6 +247,7 @@ namespace maQx.Models
         public string UserId { get; set; }
         [Required]
         public virtual ApplicationUser User { get; set; }
+
         [Index("IX_AccessLevel", 2, IsUnique = true), ForeignKey("Division")]
         public string DivisionKey { get; set; }
     }
@@ -277,11 +283,9 @@ namespace maQx.Models
     {
         [Required]
         public bool ValidateRawMaterial { get; set; }
-
-        public ICollection<WorkInstruction> WorkInstructions { get; set; }
     }
 
-    public class ProductProcess : DivisionBase
+    public class ProductProcess : AppBaseStamp
     {
         [Index("IX_ProductProcess", 1, IsUnique = true), ForeignKey("Product")]
         public string ProductKey { get; set; }
@@ -304,7 +308,7 @@ namespace maQx.Models
         public int Tolerance { get; set; }
     }
 
-    public class ToolDieImportBase : DivisionBase
+    public class ToolDieImportBase : AppBaseStamp
     {
         [Required]
         public int Count { get; set; }
@@ -319,7 +323,7 @@ namespace maQx.Models
 
     }
 
-    public class ProductProcessTool : DivisionBase
+    public class ProductProcessTool : AppBaseStamp
     {
         [Index("IX_ProductProcessTool", 1, IsUnique = true), ForeignKey("ProductProcess")]
         public string ProductProcessKey { get; set; }
@@ -368,7 +372,7 @@ namespace maQx.Models
 
     }
 
-    public class ProductProcessScrap : DivisionBase
+    public class ProductProcessScrap : AppBaseStamp
     {
         [Index("IX_ProductProcessScrap", 1, IsUnique = true), ForeignKey("ProductProcess")]
         public string ProductProcessKey { get; set; }
@@ -385,7 +389,7 @@ namespace maQx.Models
 
     }
 
-    public class ProductProcessRework : DivisionBase
+    public class ProductProcessRework : AppBaseStamp
     {
         [Index("IX_ProductProcessRework", 1, IsUnique = true), ForeignKey("ProductProcess")]
         public string ProductProcessKey { get; set; }
@@ -427,7 +431,7 @@ namespace maQx.Models
         public double MaxLoad { get; set; }
     }
 
-    public class MachineProcess : DivisionBase
+    public class MachineProcess : AppBaseStamp
     {
         [Index("IX_MachineProcess", 1, IsUnique = true), ForeignKey("Machine")]
         public string MachineKey { get; set; }
@@ -439,7 +443,7 @@ namespace maQx.Models
         public virtual Process Process { get; set; }
     }
 
-    public class Cycletime : DivisionBase
+    public class Cycletime : AppBaseStamp
     {
         [Required]
         public int Seconds { get; set; }
@@ -469,7 +473,7 @@ namespace maQx.Models
         public virtual ICollection<SafetyQuestionOption> Options { get; set; }
     }
 
-    public class SafetyQuestionOption : DivisionBase
+    public class SafetyQuestionOption : AppBaseStamp
     {
         [Required]
         public string Description { get; set; }
@@ -483,7 +487,7 @@ namespace maQx.Models
         public string Description { get; set; }
     }
 
-    public class MachineInspectionChecklist : DivisionBase
+    public class MachineInspectionChecklist : AppBaseStamp
     {
         [Required]
         public virtual InspectionChecklist InspectionChecklist { get; set; }
@@ -493,7 +497,7 @@ namespace maQx.Models
         public int Period { get; set; }
     }
 
-    public class DoneOnDueOn : DivisionBase
+    public class DoneOnDueOn : AppBaseStamp
     {
         [Required]
         public virtual MachineInspectionChecklist MachineInspectionChecklist { get; set; }
@@ -519,7 +523,7 @@ namespace maQx.Models
         public DateTime DateOfBirth { get; set; }
     }
 
-    public class MachineOperator : DivisionBase
+    public class MachineOperator : AppBaseStamp
     {
         [Index("IX_MachineOperator", 1, IsUnique = true), ForeignKey("Machine")]
         public string MachineKey { get; set; }
@@ -539,7 +543,7 @@ namespace maQx.Models
         public string Color { get; set; }
     }
 
-    public class MachineSkill : DivisionBase
+    public class MachineSkill : AppBaseStamp
     {
         [Index("IX_MachineSkill", 1, IsUnique = true), ForeignKey("Machine")]
         public string MachineKey { get; set; }
@@ -551,7 +555,7 @@ namespace maQx.Models
         public virtual Skill Skill { get; set; }
     }
 
-    public class SkillMatrix : DivisionBase
+    public class SkillMatrix : AppBaseStamp
     {
         [Index("IX_SkillMatrix", 1, IsUnique = true), ForeignKey("MachineSkill")]
         public string MachineSkillKey { get; set; }
@@ -601,7 +605,7 @@ namespace maQx.Models
         }
     }
 
-    public class ShiftPlan : DivisionBase
+    public class ShiftPlan : AppBaseStamp
     {
         [Required]
         public virtual ProductProcess ProductProcess { get; set; }
@@ -633,7 +637,7 @@ namespace maQx.Models
     }
 
     public class Break : DivisionBase
-    {  
+    {
         [Required]
         public string Name { get; set; }
         [Required]
@@ -647,7 +651,7 @@ namespace maQx.Models
     public class Production : DateTimeStamp
     {
         [Key]
-        public string Key { get; set; }  
+        public string Key { get; set; }
         [Required]
         public virtual Operator Operator { get; set; }
         [Required]
@@ -681,15 +685,15 @@ namespace maQx.Models
         [Required]
         public int Rejected { get; set; }
         [Required]
-        public int Accepted { get; set; }        
+        public int Accepted { get; set; }
     }
 
     public class Summary : Production
-    {   
+    {
         [Index("IX_Production", 1, IsUnique = true), ForeignKey("ShiftPlan")]
         public string ShiftPlanKey { get; set; }
         [Required]
-        public virtual ShiftPlan ShiftPlan { get; set; }      
+        public virtual ShiftPlan ShiftPlan { get; set; }
         [Required, Range(1, int.MaxValue)]
         public int Runtime { get; set; }
         [Required]
@@ -712,7 +716,7 @@ namespace maQx.Models
         public int Cycletime { get; set; }
         [Required]
         public int ShiftSeconds { get; set; }
-        [Required]      
+        [Required]
         public string Reason { get; set; }
     }
 

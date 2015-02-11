@@ -104,7 +104,7 @@ namespace maQx.Controllers
 
         private async Task<JsonResult> _DepartmentMenu(string id)
         {
-            return await Format<DepartmentMenu, JsonListViewModel<JDepartmentMenu>, JDepartmentMenu>(Roles.SysAdmin, db.DepartmentMenus, null, x => x.Division.Key == id, (value) =>
+            return await Format<DepartmentMenu, JsonListViewModel<JDepartmentMenu>, JDepartmentMenu>(Roles.SysAdmin, db.DepartmentMenus, null, x => x.Department.Division.Key == id, (value) =>
             {
                 return new JsonListViewModel<JDepartmentMenu>()
                 {
@@ -121,7 +121,7 @@ namespace maQx.Controllers
 
         private async Task<JsonResult> _DepartmentUser(string id)
         {
-            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, x => x.Division.Key == id, (value) =>
+            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, x => x.Department.Division.Key == id, (value) =>
             {
                 return new JsonListViewModel<JDepartmentUser>()
                 {
@@ -157,7 +157,7 @@ namespace maQx.Controllers
                    List = value
                };
            }, x => x.Department.Division.Plant.Organization, x => x.User);
-        }       
+        }
 
         [HttpGet]
         public async Task<JsonResult> Exists(string id, string type)
@@ -213,7 +213,7 @@ namespace maQx.Controllers
                     }
                 case "department-menu":
                     {
-                        return await List(Roles.SysAdmin, db.DepartmentMenus, null, x => x.Division.Key == id, (value) =>
+                        return await List(Roles.SysAdmin, db.DepartmentMenus, null, x => x.Department.Division.Key == id, (value) =>
                         {
                             return new JsonListViewModel<DepartmentMenu>()
                             {
@@ -228,60 +228,55 @@ namespace maQx.Controllers
 
                         if (data != null)
                         {
-                            var Division = await db.Divisions.Include(x => x.Plant).Include(x => x.Plant.Organization).Where(x => x.Key == id).FirstOrDefaultAsync();
+                            var Department = await db.Departments.FindAsync(data.Entity);
 
-                            if (Division != null)
+                            if (Department != null)
                             {
-                                var Department = await db.Departments.FindAsync(data.Entity);
+                                var DepartmentMenu = db.DepartmentMenus;
 
-                                if (Department != null)
+                                foreach (var item in data.Add)
                                 {
-                                    var DepartmentMenu = db.DepartmentMenus;
+                                    var Menu = await db.Menus.FindAsync(item);
 
-                                    foreach (var item in data.Add)
+                                    if (Menu == null)
                                     {
-                                        var Menu = await db.Menus.FindAsync(item);
-
-                                        if (Menu == null)
-                                        {
-                                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
-                                        }
-
-                                        DepartmentMenu.Add(new DepartmentMenu
-                                        {
-                                            Division = Division,
-                                            Department = Department,
-                                            Menu = Menu
-                                        });
+                                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                                     }
 
-                                    foreach (var item in data.Remove)
+                                    DepartmentMenu.Add(new DepartmentMenu
                                     {
-                                        var Menu = await db.DepartmentMenus.FindAsync(item);
-
-                                        if (Menu == null)
-                                        {
-                                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
-                                        }
-
-                                        DepartmentMenu.Remove(Menu);
-                                    }
-
-                                    Exception Exception = null;
-
-                                    try
-                                    {
-                                        await db.SaveChangesAsync();
-                                        return await _DepartmentMenu(Division.Key);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Exception = ex;
-                                    }
-
-                                    return await JsonExceptionViewModel.Get(Exception).toJson();
+                                        Department = Department,
+                                        Menu = Menu
+                                    });
                                 }
+
+                                foreach (var item in data.Remove)
+                                {
+                                    var Menu = await db.DepartmentMenus.FindAsync(item);
+
+                                    if (Menu == null)
+                                    {
+                                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                                    }
+
+                                    DepartmentMenu.Remove(Menu);
+                                }
+
+                                Exception Exception = null;
+
+                                try
+                                {
+                                    await db.SaveChangesAsync();
+                                    return await _DepartmentMenu(id);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Exception = ex;
+                                }
+
+                                return await JsonExceptionViewModel.Get(Exception).toJson();
                             }
+
                         }
 
                         return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
@@ -292,60 +287,56 @@ namespace maQx.Controllers
 
                         if (data != null)
                         {
-                            var Division = await db.Divisions.Include(x => x.Plant).Include(x => x.Plant.Organization).Where(x => x.Key == id).FirstOrDefaultAsync();
 
-                            if (Division != null)
+                            var Department = await db.Departments.FindAsync(data.Entity);
+
+                            if (Department != null)
                             {
-                                var Department = await db.Departments.FindAsync(data.Entity);
+                                var DepartmentUser = db.DepartmentUsers;
 
-                                if (Department != null)
+                                foreach (var item in data.Add)
                                 {
-                                    var DepartmentUser = db.DepartmentUsers;
+                                    var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
 
-                                    foreach (var item in data.Add)
+                                    if (User == null)
                                     {
-                                        var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
-
-                                        if (User == null)
-                                        {
-                                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
-                                        }
-
-                                        DepartmentUser.Add(new DepartmentUser
-                                        {
-                                            Division = Division,
-                                            Department = Department,
-                                            User = User
-                                        });
+                                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                                     }
 
-                                    foreach (var item in data.Remove)
+                                    DepartmentUser.Add(new DepartmentUser
                                     {
-                                        var User = await db.DepartmentUsers.FindAsync(item);
-
-                                        if (User == null)
-                                        {
-                                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
-                                        }
-
-                                        DepartmentUser.Remove(User);
-                                    }
-
-                                    Exception Exception = null;
-
-                                    try
-                                    {
-                                        await db.SaveChangesAsync();
-                                        return await _DepartmentUser(Division.Key);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Exception = ex;
-                                    }
-
-                                    return await JsonExceptionViewModel.Get(Exception).toJson();
+                                        Department = Department,
+                                        User = User
+                                    });
                                 }
+
+                                foreach (var item in data.Remove)
+                                {
+                                    var User = await db.DepartmentUsers.FindAsync(item);
+
+                                    if (User == null)
+                                    {
+                                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                                    }
+
+                                    DepartmentUser.Remove(User);
+                                }
+
+                                Exception Exception = null;
+
+                                try
+                                {
+                                    await db.SaveChangesAsync();
+                                    return await _DepartmentUser(id);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Exception = ex;
+                                }
+
+                                return await JsonExceptionViewModel.Get(Exception).toJson();
                             }
+
                         }
 
                         return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
@@ -374,7 +365,7 @@ namespace maQx.Controllers
 
                                     AccessLevel.Add(new AccessLevel
                                     {
-                                        Division = Division,                                        
+                                        Division = Division,
                                         User = User
                                     });
                                 }
