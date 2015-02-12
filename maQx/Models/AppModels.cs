@@ -66,7 +66,7 @@ namespace maQx.Models
     {
         [Required]
         public virtual Division Division { get; set; }
-    }   
+    }
 
     public class EntityDivisionBase : DivisionBase
     {
@@ -74,7 +74,7 @@ namespace maQx.Models
         public string Code { get; set; }
         [Required]
         public string Description { get; set; }
-    }   
+    }
 
     #endregion
 
@@ -252,6 +252,19 @@ namespace maQx.Models
         public string DivisionKey { get; set; }
     }
 
+    public class MenuAccess : AppBaseStamp
+    {
+        [Index("IX_MenuAccess", 1, IsUnique = true), ForeignKey("User")]
+        public string UserId { get; set; }
+        [Required]
+        public virtual ApplicationUser User { get; set; }
+
+        [Index("IX_MenuAccess", 2, IsUnique = true), ForeignKey("DepartmentMenu")]
+        public string DepartmentMenuKey { get; set; }
+        [Required]
+        public DepartmentMenu DepartmentMenu { get; set; }
+    }
+
     public class RawMaterial : EntityDivisionBase
     {
         [Required, Range(1, 4)]
@@ -271,10 +284,12 @@ namespace maQx.Models
         public string RawMaterialKey { get; set; }
         [Required]
         public virtual RawMaterial RawMaterial { get; set; }
+
         [Index("IX_ProductRawMaterial", 2, IsUnique = true), ForeignKey("Product")]
         public string ProductKey { get; set; }
         [Required]
         public virtual Product Product { get; set; }
+
         [Required]
         public double Quantity { get; set; }
     }

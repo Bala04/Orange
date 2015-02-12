@@ -1396,6 +1396,31 @@ header {
             @extend %relative;
             .access-layout {
                 @extend %relative;
+                .menu-access {
+                    ul {
+                        margin: 20px  0 10px  0;
+                        padding: 0;
+                        list-style: none;
+                        li {
+                            padding: 5px;
+                            @include font-size(13px);
+                            span {
+                                white-space: nowrap;
+                            }
+                            input[type=checkbox]:disabled ~ label {
+                                color: #ccc;
+                            }
+                            input[type=checkbox]:not(:disabled) ~ label {
+                                color: #333;
+                                @extend %font-semibold;
+                            }
+                        }
+                    }
+                    h3 {
+                        margin-top: 10px;
+                        @include font-size(20px);
+                    }
+                }
                 .transparent-loader {
                     @extend %absolute;
                     @extend %full-width;

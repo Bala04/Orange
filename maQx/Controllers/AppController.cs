@@ -146,7 +146,7 @@ namespace maQx.Controllers
                         // BUG: var list = db.Administrators.Where(new Func<ApplicationUser, bool>(x => { return UserManager.IsInRole(x.Id, Roles.AppUser) })).ToList();
                         // FIX: AppUser should belongs to the Organization of the SysAdmin 31/1/2015
                         var Organization = User.GetOrganization();
-                        var List = await db.Administrators.Include(x => x.User).Include(x => x.Organization).Where(x => x.Organization.Key == Organization && x.Role == Roles.SysAdmin).ToListAsync();
+                        var List = await db.Administrators.Include(x => x.User).Include(x => x.Organization).Where(x => x.Organization.Key == Organization && x.Role == Roles.AppUser).ToListAsync();
 
                         return await new JsonListViewModel<JApplicationUser>
                         {

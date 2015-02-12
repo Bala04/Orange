@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Linq;
 using maQx.Utilities;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 
 namespace maQx.Models
@@ -100,6 +101,12 @@ namespace maQx.Models
             Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();            
+        }
+
         public static AppContext Create()
         {
             return new AppContext();
@@ -181,7 +188,7 @@ namespace maQx.Models
 
         public DbSet<Menus> Menus { get; set; }
         public DbSet<IntilizationStep> InitStep { get; set; }
-        public DbSet<AdminRegistrationBase> AdminBase { get; set; }      
+        public DbSet<AdminRegistrationBase> AdminBase { get; set; }
         public DbSet<Invite> Invites { get; set; }
         public DbSet<Administrator> Administrators { get; set; }
         public DbSet<Organization> Organizations { get; set; }
@@ -191,6 +198,13 @@ namespace maQx.Models
         public DbSet<DepartmentMenu> DepartmentMenus { get; set; }
         public DbSet<DepartmentUser> DepartmentUsers { get; set; }
         public DbSet<AccessLevel> AccessLevels { get; set; }
+        public DbSet<MenuAccess> MenuAccess { get; set; }
+        public DbSet<RawMaterial> RawMaterials { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductRawMaterial> ProductRawMaterials { get; set; }
+        public DbSet<Process> Process { get; set; }
+        public DbSet<Tool> Tools { get; set; }
+        public DbSet<Die> Dies { get; set; }
     }
 
     public class AppContextInitializer : DropCreateDatabaseIfModelChanges<AppContext>
@@ -206,7 +220,7 @@ namespace maQx.Models
                     Manager.Create(new IdentityRole { Name = x });
                 }
             });
-            
+
             // Default and Fixed Menus for the Application
             (new List<Menus> {
                 new Menus { ID = "Organizations", Name = "Organizations", Access = Roles.AppAdmin, Order = 1, IsMappable = false },
@@ -217,9 +231,14 @@ namespace maQx.Models
                 new Menus { ID = "Departments", Name = "Departments", Access = Roles.SysAdmin, Order = 6, IsMappable = false },
                 new Menus { ID = "DepartmentMenus", Name = "Department - Menu", Access = Roles.SysAdmin, Order = 7, IsMappable = false },
                 new Menus { ID = "DepartmentUsers", Name = "Department - User", Access = Roles.SysAdmin, Order = 8, IsMappable = false },
-                new Menus { ID = "AccessLevel", Name = "Access Levels", Access = Roles.SysAdmin, Order = 9, IsMappable = false },
+                new Menus { ID = "AccessLevel", Name = "Access Levels", Access = Roles.SysAdmin, Order = 9, IsMappable = false },               
+                new Menus { ID = "RawMaterials", Name = "Raw Materials", Access = Roles.AppUser, Order = 10, IsMappable = false },
+                new Menus { ID = "Products", Name = "Products", Access = Roles.AppUser, Order = 11, IsMappable = false },
+                new Menus { ID = "Process", Name = "Process", Access = Roles.AppUser, Order = 12, IsMappable = false },
+                new Menus { ID = "Tools", Name = "Tools", Access = Roles.AppUser, Order = 13, IsMappable = false },
+                new Menus { ID = "Dies", Name = "Dies", Access = Roles.AppUser, Order = 14, IsMappable = false },
             }).ForEach(x => { context.Menus.Add(x); });
-          
+
             base.Seed(context);
         }
     }

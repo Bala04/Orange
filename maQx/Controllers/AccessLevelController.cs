@@ -19,7 +19,7 @@ namespace maQx.Controllers
 
             return View(new AccessLevelViewModel
             {
-                Users = (await Shared.GetSelectableUsers(Organization, Roles.SysAdmin)).ToSelectList("Firstname", KeyField: "Id")
+                Users = (await Shared.GetSelectableUsers(Organization)).ToSelectList("Firstname", KeyField: "Id")
             });
         }
 

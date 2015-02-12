@@ -68,7 +68,7 @@ angular.module("tabularApp").config(['$httpProvider', 'cfpLoadingBarProvider', f
 }]);
 angular.module("sectionApp").factory('Injector', ['$rootScope', '$q', function ($rootScope, $q) {
     var Injector = {
-        request: function (config) {          
+        request: function (config) {
             return config || $q.when(config);
         },
         requestError: function (rejection) {           

@@ -157,14 +157,14 @@ namespace maQx.Models
     }
 
     public class JDepartmentMenu : JsonBase, IJsonBase<DepartmentMenu, JDepartmentMenu>
-    {       
+    {
         public JMenus Menu { get; set; }
         public JDepartment Department { get; set; }
 
         public JDepartmentMenu() { }
         public JDepartmentMenu(DepartmentMenu input)
             : base(input)
-        {          
+        {
             Menu = new JMenus(input.Menu);
             Department = new JDepartment(input.Department);
         }
@@ -199,14 +199,14 @@ namespace maQx.Models
     }
 
     public class JDepartmentUser : JsonBase, IJsonBase<DepartmentUser, JDepartmentUser>
-    {       
+    {
         public JDepartment Department { get; set; }
         public JApplicationUser User { get; set; }
 
         public JDepartmentUser() { }
         public JDepartmentUser(DepartmentUser input)
             : base(input)
-        {          
+        {
             Department = new JDepartment(input.Department);
             User = new JApplicationUser(input.User);
         }
@@ -233,6 +233,25 @@ namespace maQx.Models
         public JAccessLevel To(AccessLevel input)
         {
             return new JAccessLevel(input);
+        }
+    }
+
+    public class JMenuAccess : JsonBase, IJsonBase<MenuAccess, JMenuAccess>
+    {
+        public JApplicationUser User { get; set; }
+        public JDepartmentMenu DepartmentMenu { get; set; }
+
+        public JMenuAccess() { }
+        public JMenuAccess(MenuAccess input)
+            : base(input)
+        {
+            User = new JApplicationUser(input.User);
+            DepartmentMenu = new JDepartmentMenu(input.DepartmentMenu);
+        }
+
+        public JMenuAccess To(MenuAccess input)
+        {
+            return new JMenuAccess(input);
         }
     }
 }
