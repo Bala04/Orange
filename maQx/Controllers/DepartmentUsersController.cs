@@ -35,7 +35,7 @@ namespace maQx.Controllers
         {
             ViewBag.Info = TempData["Info"] as ClientInfo;
         }
-       
+
         #endregion
     }
 }

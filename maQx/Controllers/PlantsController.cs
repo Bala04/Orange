@@ -45,7 +45,7 @@ namespace maQx.Controllers
         }
 
         // POST: Plants/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from over posting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -67,7 +67,7 @@ namespace maQx.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Organization", "Unable to retrive your oganization information. Please try again.");
+                    ModelState.AddModelError("Organization", "Unable to retrieve your organization information. Please try again.");
                 }
 
                 await db.SaveChangesAsync();
@@ -99,7 +99,7 @@ namespace maQx.Controllers
         }
 
         // POST: Plants/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from over posting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -113,7 +113,7 @@ namespace maQx.Controllers
             }
 
             if (ModelState.IsValid)
-            {                
+            {
                 pln.Name = plant.Name;
                 pln.Code = plant.Code;
                 pln.Location = plant.Location;

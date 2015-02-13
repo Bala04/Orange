@@ -104,7 +104,7 @@ namespace maQx.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();            
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
         }
 
         public static AppContext Create()
@@ -121,7 +121,7 @@ namespace maQx.Models
                 if (entity.Entity is AppBaseStamp)
                 {
                     // BUG: var Id = HttpContext.Current != null && HttpContext.Current.User != null ? HttpContext.Current.User.Identity.GetUserId() : "Anonymous";
-                    // FIX #9: The should be authenicated to Insert Or Modify the Model with AppBaseStamp as base. 29/01/2015
+                    // FIX #9: The should be authenticated to Insert Or Modify the Model with AppBaseStamp as base. 29/01/2015
                     // #9: Validation error while registering new user. Module App/Register
                     if (entity.State == EntityState.Added || entity.State == EntityState.Modified)
                     {
@@ -231,7 +231,7 @@ namespace maQx.Models
                 new Menus { ID = "Departments", Name = "Departments", Access = Roles.SysAdmin, Order = 6, IsMappable = false },
                 new Menus { ID = "DepartmentMenus", Name = "Department - Menu", Access = Roles.SysAdmin, Order = 7, IsMappable = false },
                 new Menus { ID = "DepartmentUsers", Name = "Department - User", Access = Roles.SysAdmin, Order = 8, IsMappable = false },
-                new Menus { ID = "AccessLevel", Name = "Access Levels", Access = Roles.SysAdmin, Order = 9, IsMappable = false },               
+                new Menus { ID = "AccessLevel", Name = "Access Levels", Access = Roles.SysAdmin, Order = 9, IsMappable = false },
                 new Menus { ID = "RawMaterials", Name = "Raw Materials", Access = Roles.AppUser, Order = 10, IsMappable = false },
                 new Menus { ID = "Products", Name = "Products", Access = Roles.AppUser, Order = 11, IsMappable = false },
                 new Menus { ID = "Process", Name = "Process", Access = Roles.AppUser, Order = 12, IsMappable = false },

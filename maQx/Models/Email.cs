@@ -15,7 +15,7 @@ namespace maQx.Models
     }
 
     public class AdminConfirmationEmail : GenericEmail
-    {       
+    {
         public string ConfirmationCode { get; set; }
     }
 

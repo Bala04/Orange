@@ -14,7 +14,7 @@ namespace maQx
         {
             // Web API configuration and services
 
-            // Web API routes           
+            // Web API routes
 
             config.MapHttpAttributeRoutes();
 
@@ -23,15 +23,6 @@ namespace maQx
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-
-            // Added OData Routing Support
-
-            //ODataModelBuilder builder = new ODataConventionModelBuilder();
-            //builder.EntitySet<JPlant>("Plants");
-            //config.MapODataServiceRoute(
-            //    routeName: "ODataRoute",
-            //    routePrefix: null,
-            //    model: builder.GetEdmModel());
         }
     }
 }

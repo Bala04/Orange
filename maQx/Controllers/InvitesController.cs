@@ -182,7 +182,7 @@ namespace maQx.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("Username", "Specified username is already taken.");
+                        ModelState.AddModelError("Username", "Specified user name is already taken.");
                     }
                 }
                 else

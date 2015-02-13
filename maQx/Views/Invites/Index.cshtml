@@ -8,7 +8,7 @@
         angular.module("tabularApp").service("DataService", ['$resource', function ($resource) {
             return {
                 query: function () {
-                    return $resource('get/invites').get();   
+                    return $resource('get/invites').get();
                 },
                 init: function () {
                     return [{ a: 'Username', b: 'Username' }, { a: 'Email', b: 'Email' }, { a: 'Modified', b: 'Modified' }];

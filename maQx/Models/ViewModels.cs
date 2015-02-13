@@ -68,7 +68,7 @@ namespace maQx.Models
     {
         [Required]
         [Display(Name = "Username")]
-        [RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid username.")]
+        [RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid user name.")]
         [MaxLength(100)]
         public string UserName { get; set; }
 
@@ -108,7 +108,7 @@ namespace maQx.Models
     }
 
     public class PlantEditViewModel : PlantViewModel
-    {       
+    {
         [Required]
         public string Key { get; set; }
     }
@@ -151,13 +151,13 @@ namespace maQx.Models
         public string Plant { get; set; }
 
         public System.Web.Mvc.SelectList Plants { get; set; }
-    }   
+    }
 
     public class InviteViewModel : OrganizationBaseViewModel
     {
         [Required]
         [Display(Name = "Username")]
-        [RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid username.")]
+        [RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid user name.")]
         [MaxLength(100)]
         public string Username { get; set; }
 
@@ -169,7 +169,7 @@ namespace maQx.Models
         public string Email { get; set; }
     }
 
-    public class PlantViewModel 
+    public class PlantViewModel
     {
         [Required]
         [MaxLength(50)]
@@ -243,7 +243,7 @@ namespace maQx.Models
 
     public class SetEmailConfirmViewModel : GetEmailConfirmViewModel
     {
-        [Required(ErrorMessage = "Please enter a vaild confirmation code.")]
+        [Required(ErrorMessage = "Please enter a valid confirmation code.")]
         public string ConfirmationCode { get; set; }
     }
 

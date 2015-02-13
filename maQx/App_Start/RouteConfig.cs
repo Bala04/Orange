@@ -32,24 +32,6 @@ namespace maQx
                defaults: new { controller = "App", action = "CurrentUser" }
             );
 
-          //  routes.MapRoute(
-          //    name: "Menus",
-          //    url: "get/menus",
-          //    defaults: new { controller = "App", action = "Menus" }
-          // );
-
-          //  routes.MapRoute(
-          //    name: "OrganizationList",
-          //    url: "get/organizations",
-          //    defaults: new { controller = "Organizations", action = "List" }
-          // );
-
-          //  routes.MapRoute(
-          //   name: "InviteList",
-          //   url: "get/invites",
-          //   defaults: new { controller = "Invites", action = "List" }
-          //);
-
             routes.MapRoute(
                 name: "Application",
                 url: "{controller}/{action}/{id}",

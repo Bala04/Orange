@@ -30,7 +30,7 @@ namespace maQx.Models
         public static async Task<IEnumerable<ApplicationUser>> GetSelectableUsers(string Organization)
         {
             using (AppContext db = new AppContext())
-            {               
+            {
                 var List = await db.DepartmentUsers.Include(x => x.User).Where(x => x.Department.Division.Plant.Organization.Key == Organization).Select(x => x.User).ToListAsync();
 
                 return List.Select(x =>

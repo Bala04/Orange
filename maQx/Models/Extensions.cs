@@ -468,7 +468,7 @@ namespace maQx.Utilities
                 From = "ms@iprings.com",
                 To = MailTo,
                 Name = "Administrator",
-                Subject = "maQx Management - Confrimation Email",
+                Subject = "maQx Management - Confirmation Email",
                 ConfirmationCode = ConfirmationCode
             });
         }

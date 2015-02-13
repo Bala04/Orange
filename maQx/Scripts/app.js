@@ -20,7 +20,7 @@ _app = {
         });
     },
     tableCopied: function (rows) {
-        $(".copyInfo").text(rows == 0 ? "No rows to copy" : ((rows > 0 ? rows == 1 ? "One row" : rows + " rows " : "") + "copied to clipboard."));
+        $(".copyInfo").text(rows === 0 ? "No rows to copy" : ((rows > 0 ? rows === 1 ? "One row" : rows + " rows " : "") + "copied to clipboard."));
         setTimeout(function () {
             $(".copyInfo").text("");
         }, 3000);
@@ -52,8 +52,8 @@ angular.module("tabularApp", ['base', 'datatables']);
 angular.module("sectionApp", ['jquery-typing', 'tabularApp', 'ngAnimate', 'ui.bootstrap']);
 angular.module("sectionApp").filter('select', function () {
     return function (items, selectedID, track, value) {
-        return (selectedID == value) ? items : linq(items).where("$." + track + "=='" + selectedID + "'").toArray();
-    }
+        return (selectedID === value) ? items : linq(items).where("$." + track + "=='" + selectedID + "'").toArray();
+    };
 });
 angular.module("tabularApp").factory('DTLoadingTemplate', function () {
     return {
@@ -71,7 +71,7 @@ angular.module("sectionApp").factory('Injector', ['$rootScope', '$q', function (
         request: function (config) {
             return config || $q.when(config);
         },
-        requestError: function (rejection) {           
+        requestError: function (rejection) {
             return $q.reject(rejection);
         },
         response: function (response) {
@@ -82,7 +82,7 @@ angular.module("sectionApp").factory('Injector', ['$rootScope', '$q', function (
                 type: "Error",
                 message: error
             });
-            return $q.reject(error);;
+            return $q.reject(error);
         }
     };
     return Injector;
@@ -99,7 +99,7 @@ function linq(object) {
 // Website: http://narf.pl/jquery-typing/
 // License: public domain <http://unlicense.org/>
 // Author:  Maciej Konieczny <hello@narf.pl>
-(function (e) { function t(t, n) { function r(e) { if (!u) { u = true; s.start && s.start(e, o) } } function i(e, t) { if (u) { clearTimeout(a); a = setTimeout(function () { u = false; s.stop && s.stop(e, o) }, t >= 0 ? t : s.delay) } } var s = e.extend({ start: null, stop: null, delay: 400 }, n), o = e(t), u = false, a; o.keypress(r); o.keydown(function (e) { if (e.keyCode === 8 || e.keyCode === 46) r(e) }); o.keyup(i); o.blur(function (e) { i(e, 0) }) } e.fn.typing = function (e) { return this.each(function (n, r) { t(r, e) }) } })(jQuery);
+!function (n) { function t(t, e) { function o(n) { r || (r = !0, c.start && c.start(n, f)) } function u(n, t) { r && (clearTimeout(i), i = setTimeout(function () { r = !1, c.stop && c.stop(n, f) }, t >= 0 ? t : c.delay)) } var i, c = n.extend({ start: null, stop: null, delay: 400 }, e), f = n(t), r = !1; f.keypress(o), f.keydown(function (n) { (8 === n.keyCode || 46 === n.keyCode) && o(n) }), f.keyup(u), f.blur(function (n) { u(n, 0) }) } n.fn.typing = function (n) { return this.each(function (e, o) { t(o, n) }) } }(jQuery);
 // AngularTyping
 //
 // Version: 0.1.0
@@ -125,5 +125,5 @@ angular.module("jquery-typing", []).directive("typing", ['$parse', function ($pa
                 delay: attr.typing ? parseInt(attr.typing) : 400
             });
         }
-    }
+    };
 }]);

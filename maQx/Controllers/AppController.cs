@@ -1,5 +1,5 @@
 ﻿// Copyright (c) IP Rings Ltd. All rights reserved.
-// Version 2.0.1. Author: Prasanth <@prashanth702> 
+// Version 2.0.1. Author: Prasanth <@prashanth702>
 
 using Hangfire;
 using maQx.Models;
@@ -118,7 +118,7 @@ namespace maQx.Controllers
                             Role = "TempSession",
                         }.toJson();
                     }
-                    // Otherwisw return UserUnauhorizedError to client.
+                    // Otherwise return UserUnauhorizedError to client.
                     else
                     {
                         return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
@@ -141,7 +141,7 @@ namespace maQx.Controllers
                 {
                     // User should belongs to the Role SysAdmin to access MappableUsers
                     if (User.IsInRole(Roles.SysAdmin))
-                    {   
+                    {
                         // Returns users with the Role with AppUser
                         // BUG: var list = db.Administrators.Where(new Func<ApplicationUser, bool>(x => { return UserManager.IsInRole(x.Id, Roles.AppUser) })).ToList();
                         // FIX: AppUser should belongs to the Organization of the SysAdmin 31/1/2015
@@ -171,13 +171,13 @@ namespace maQx.Controllers
             if (ModelState.IsValid)
             {
                 // Allow default user to access the application for creating Administrator account.
-                // Check for provided values are DefaultUsername & DefaultPassword to allow them access the appilication until the Administrator account is created.
+                // Check for provided values are DefaultUsername & DefaultPassword to allow them access the application until the Administrator account is created.
                 if (model.UserName.ToLower() == AdminUsername.ToLower() && model.Password == AdminPassword.ToLower())
                 {
                     // If 'true' check whether a Administrator account is exists in the database or not.
                     var User = await db.Users.Where(x => x.UserName.ToLower() == model.UserName.ToLower()).FirstOrDefaultAsync();
 
-                    // If the account dosen't exists allow them to continue the user creation process. Otherwise skip the user creation process.
+                    // If the account doesn't exists allow them to continue the user creation process. Otherwise skip the user creation process.
                     if (User == null)
                     {
                         // Find the current step of the process
@@ -199,9 +199,9 @@ namespace maQx.Controllers
                     }
                 }
 
-                // If the account is not default account then authenicate the user
+                // If the account is not default account then authenticate the user
                 // BUG: if (await AuthenticateUser(model.UserName, model.Password, model.RememberMe))
-                // FIX: Username should be in lowercase. 12/12/2014.
+                // FIX: User name should be in lowercase. 12/12/2014.
                 if (await AuthenticateUser(model.UserName.ToLower(), model.Password, model.RememberMe))
                 {
                     // If authenticated redirect to Index or ReturnUrl
@@ -209,7 +209,7 @@ namespace maQx.Controllers
                 }
             }
 
-            TempData.SetError("Invalid username or password.", SetInfo);
+            TempData.SetError("Invalid user name or password.", SetInfo);
             return View(model);
         }
 
@@ -313,7 +313,7 @@ namespace maQx.Controllers
 
                         return RedirectToAction("Init");
                     }
-                    else throw "Step Initilization failed in sequence. Contact your vendor for more information.".asException();
+                    else throw "Step Initialization failed in sequence. Contact your vendor for more information.".asException();
 
                 }
                 else throw "Submitted form is not valid. Please try again.".asException();
@@ -356,11 +356,11 @@ namespace maQx.Controllers
 
                             await db.SaveChangesAsync();
                         }
-                        else throw "Specified confirmation code is invaild or expired.".asException();
+                        else throw "Specified confirmation code is invalid or expired.".asException();
                     }
                     else throw "Step confirmation failed in sequence. Contact your vendor for more information.".asException();
                 }
-                else throw "Specified confirmation code is invaild or expired.".asException();
+                else throw "Specified confirmation code is invalid or expired.".asException();
             }
             catch (Exception ex)
             {
@@ -443,10 +443,10 @@ namespace maQx.Controllers
                             }
                         }
                         else
-                            throw "An error occured while creating user. Contact your vendor for more information.".asException();
+                            throw "An error occurred while creating user. Contact your vendor for more information.".asException();
                     }
                     else
-                        throw "Step finilization failed in sequence. Contact your vendor for more information.".asException();
+                        throw "Step finalization failed in sequence. Contact your vendor for more information.".asException();
                 }
 
             }
@@ -489,19 +489,19 @@ namespace maQx.Controllers
             // Default Count 
             var Count = -1;
 
-            // Allows user to specify only the username without the domain if only one organization exists in the application scope.
-            // Check whether the user have entered the fully qualified username ie) username@organization.com. If 'true' skip the control.
+            // Allows user to specify only the user name without the domain if only one organization exists in the application scope.
+            // Check whether the user have entered the fully qualified user name ie) username@organization.com. If 'true' skip the control.
             // BUG: if (Username.IndexOf('@') == -1)
             // FIX: The user should not be a administrator. 11/12/2014
             if (Username != AdminUsername.ToLower() && Username.IndexOf('@') == -1)
             {
-                // if the username dosen't have '@', retrive the organization collection to find the number of enitites.                
+                // if the user name doesn't have '@', retrieve the organization collection to find the number of entities.
                 var List = await db.Organizations.ToListAsync();
                 Count = List.Count();
 
                 // if the collection is empty return to false, because user can't exists without an organization.
                 if (Count == 0) return false;
-                // if the collection has only one organization append the domain name with the specified username.
+                // if the collection has only one organization append the domain name with the specified user name.
                 else if (Count == 1) Username = Username + "@" + List.First().Domain;
                 // else nothing to do here.
             }
@@ -542,12 +542,12 @@ namespace maQx.Controllers
 
                 if (Invite == null)
                 {
-                    throw "Unable to retive the information of the specified invite. Please try again.".asException();
+                    throw "Unable to retrieve the information of the specified invite. Please try again.".asException();
                 }
 
                 if (Invite.Organization == null)
                 {
-                    throw "Unable to retive the information of the specified organization. Please try again.".asException();
+                    throw "Unable to retrieve the information of the specified organization. Please try again.".asException();
                 }
 
                 db.Administrators.Add(new Administrator

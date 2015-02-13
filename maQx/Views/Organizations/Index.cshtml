@@ -9,14 +9,14 @@
     <script>
         angular.module("tabularApp").service("DataService", ['$resource', function ($resource) {
             return {
-                query: function () {                   
-                    return $resource('get/organizations').get();                   
+                query: function () {
+                    return $resource('get/organizations').get();
                 },
                 init: function () {
                     return [{ a: 'Code', b: 'Code' }, { a: 'Name', b: 'Name' }, { a: 'Domain', b: 'Domain' }, { a: 'Modified', b: 'Modified' }];
                 }
             }
-        }]);        
+        }]);
     </script>
 }
 

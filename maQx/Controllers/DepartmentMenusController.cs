@@ -16,7 +16,7 @@ namespace maQx.Controllers
         public async Task<ActionResult> Index()
         {
             try
-            {  
+            {
                 return View(new DepartmentDivisionViewModel
                 {
                     Divisions = (await Shared.GetSelectableDivisions(User.GetOrganization())).ToSelectList("Name")
@@ -35,7 +35,7 @@ namespace maQx.Controllers
         private void SetInfo()
         {
             ViewBag.Info = TempData["Info"] as ClientInfo;
-        }       
+        }
 
         #endregion
     }

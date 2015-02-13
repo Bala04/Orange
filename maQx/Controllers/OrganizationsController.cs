@@ -16,7 +16,7 @@ namespace maQx.Controllers
         {
             // return View(await db.Organizations.Where(x => x.ActiveFlag).ToListAsync());
             return View();
-        }      
+        }
 
         // GET: Organizations/Details/5
         public async Task<ActionResult> Details(string id)
@@ -40,7 +40,7 @@ namespace maQx.Controllers
         }
 
         // POST: Organizations/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from over posting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -83,7 +83,7 @@ namespace maQx.Controllers
         }
 
         // POST: Organizations/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from over posting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
