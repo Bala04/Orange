@@ -18,9 +18,15 @@ using System.Web.UI;
 
 namespace maQx.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [OutputCache(NoStore = true, Location = OutputCacheLocation.None, Duration = 0)]
     public class AppController : Controller
     {
+        /// <summary>
+        /// The _user manager
+        /// </summary>
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
         {
@@ -33,6 +39,9 @@ namespace maQx.Controllers
                 _userManager = value;
             }
         }
+        /// <summary>
+        /// The _sign in manager
+        /// </summary>
         private ApplicationSignInManager _signInManager;
         public ApplicationSignInManager SignInManager
         {
@@ -42,21 +51,51 @@ namespace maQx.Controllers
             }
             private set { _signInManager = value; }
         }
+        /// <summary>
+        /// The database
+        /// </summary>
         private AppContext db = new AppContext();
 
+        /// <summary>
+        /// The admin username
+        /// </summary>
         private const string AdminUsername = "Administrator";
+        /// <summary>
+        /// Gets the admin password.
+        /// </summary>
+        /// <value>
+        /// The admin password.
+        /// </value>
         private string AdminPassword { get { return AppSettings.GetValue("DefaultAdministratorPassword"); } }
+        /// <summary>
+        /// Gets the name of the _ session.
+        /// </summary>
+        /// <value>
+        /// The name of the _ session.
+        /// </value>
         private string _SessionName { get { return AppSettings.GetValue("_SessionName"); } }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppController"/> class.
+        /// </summary>
         public AppController()
         {
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppController"/> class.
+        /// </summary>
+        /// <param name="userManager">The user manager.</param>
+        /// <param name="signInManager">The sign in manager.</param>
         public AppController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
         }
 
+        /// <summary>
+        /// Indexes this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult Index()
         {
@@ -66,6 +105,11 @@ namespace maQx.Controllers
             return Request.IsAuthenticated ? View() : View("Login");
         }
 
+        /// <summary>
+        /// Logins the specified return URL.
+        /// </summary>
+        /// <param name="ReturnUrl">The return URL.</param>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult Login(string ReturnUrl = "")
         {
@@ -88,6 +132,10 @@ namespace maQx.Controllers
             });
         }
 
+        /// <summary>
+        /// Returns the current the user.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [AjaxOnly]
         public async Task<JsonResult> CurrentUser()
@@ -131,6 +179,10 @@ namespace maQx.Controllers
             }
         }
 
+        /// <summary>
+        /// Map able the users.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [AjaxOnly]
         public async Task<JsonResult> MappableUsers()
@@ -163,56 +215,78 @@ namespace maQx.Controllers
             }
         }
 
+        /// <summary>
+        /// Logins the specified model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login([Bind(Include = "UserName, Password, RememberMe, _ReturnUrl")]LoginViewModel model)
         {
-            // The submitted data should be valid.
-            if (ModelState.IsValid)
+            try
             {
-                // Allow default user to access the application for creating Administrator account.
-                // Check for provided values are DefaultUsername & DefaultPassword to allow them access the application until the Administrator account is created.
-                if (model.UserName.ToLower() == AdminUsername.ToLower() && model.Password == AdminPassword.ToLower())
+                // The submitted data should be valid.
+                if (ModelState.IsValid)
                 {
-                    // If 'true' check whether a Administrator account is exists in the database or not.
-                    var User = await db.Users.Where(x => x.UserName.ToLower() == model.UserName.ToLower()).FirstOrDefaultAsync();
-
-                    // If the account doesn't exists allow them to continue the user creation process. Otherwise skip the user creation process.
-                    if (User == null)
+                    // Allow default user to access the application for creating Administrator account.
+                    // Check for provided values are DefaultUsername & DefaultPassword to allow them access the application until the Administrator account is created.
+                    if (model.UserName.ToLower() == AdminUsername.ToLower() && model.Password == AdminPassword.ToLower())
                     {
-                        // Find the current step of the process
-                        var InitStep = await db.InitStep.Where(x => x.Mode == model.UserName).FirstOrDefaultAsync();
+                        // If 'true' check whether a Administrator account is exists in the database or not.
+                        var User = await db.Users.Where(x => x.UserName.ToLower() == model.UserName.ToLower()).FirstOrDefaultAsync();
 
-                        // If no step where found Call ProcessStep to continue the process
-                        if (InitStep == null)
+                        // If the account doesn't exists allow them to continue the user creation process. Otherwise skip the user creation process.
+                        if (User == null)
                         {
-                            await ProcessStep(model);
-                            return RedirectToAction("Init");
+                            // Find the current step of the process
+                            var InitStep = await db.InitStep.Where(x => x.Mode == model.UserName).FirstOrDefaultAsync();
+
+                            // If no step where found Call ProcessStep to continue the process
+                            if (InitStep == null)
+                            {
+                                await ProcessStep(model);
+                                return RedirectToAction("Init");
+                            }
+                            // Otherwise check whether the steps are completed or not.
+                            else if (InitStep.Auth <= 4)
+                            {
+                                // If not secure the Code and set as cookie and let them proceed.
+                                HttpContext.SetSecuredSessionCookie(_SessionName, InitStep.Code);
+                                return RedirectToAction("Init");
+                            }
                         }
-                        // Otherwise check whether the steps are completed or not.
-                        else if (InitStep.Auth <= 4)
-                        {
-                            // If not secure the Code and set as cookie and let them proceed.
-                            HttpContext.SetSecuredSessionCookie(_SessionName, InitStep.Code);
-                            return RedirectToAction("Init");
-                        }
+                    }
+
+                    // If the account is not default account then authenticate the user
+                    // BUG: if (await AuthenticateUser(model.UserName, model.Password, model.RememberMe))
+                    // FIX: User name should be in lowercase. 12/12/2014.
+                    if (await AuthenticateUser(model.UserName.ToLower(), model.Password, model.RememberMe))
+                    {
+                        // If authenticated redirect to Index or ReturnUrl
+                        return RedirectToLocal(HttpUtility.UrlDecode(model._ReturnUrl));
                     }
                 }
 
-                // If the account is not default account then authenticate the user
-                // BUG: if (await AuthenticateUser(model.UserName, model.Password, model.RememberMe))
-                // FIX: User name should be in lowercase. 12/12/2014.
-                if (await AuthenticateUser(model.UserName.ToLower(), model.Password, model.RememberMe))
-                {
-                    // If authenticated redirect to Index or ReturnUrl
-                    return RedirectToLocal(HttpUtility.UrlDecode(model._ReturnUrl));
-                }
+                TempData.SetError("Invalid user name or password.", SetInfo);
             }
-
-            TempData.SetError("Invalid user name or password.", SetInfo);
+            catch (AccessDeniedException Ex)
+            {
+                ViewBag.ErrorTitle = "Access Denied.";
+                ViewBag.ErrorMessage = Ex.Message;
+            }
+            catch
+            {
+                ViewBag.ErrorTitle = "Oops! Something went wrong.";
+                ViewBag.ErrorMessage = "Please contact your System Administrator for further assistance.";
+            }
             return View(model);
         }
 
+        /// <summary>
+        /// Logouts this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Logout()
@@ -221,6 +295,10 @@ namespace maQx.Controllers
             return RedirectToAction("Index", "App");
         }
 
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult> Init()
         {
@@ -267,6 +345,11 @@ namespace maQx.Controllers
             return HttpNotFound();
         }
 
+        /// <summary>
+        /// Initializes the specified get email.
+        /// </summary>
+        /// <param name="GetEmail">The get email.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Init([Bind(Include = "StepCode, ResendActivity, Email")] GetEmailConfirmViewModel GetEmail)
@@ -330,6 +413,11 @@ namespace maQx.Controllers
             });
         }
 
+        /// <summary>
+        /// Confirms the specified set email.
+        /// </summary>
+        /// <param name="SetEmail">The set email.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Confirm([Bind(Include = "ConfirmationCode, StepCode")] SetEmailConfirmViewModel SetEmail)
@@ -370,6 +458,11 @@ namespace maQx.Controllers
             return RedirectToAction("Init");
         }
 
+        /// <summary>
+        /// Registers the specified admin.
+        /// </summary>
+        /// <param name="Admin">The admin.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register([Bind(Include = "Code,Name,Phone,Password,ConfirmPassword,StepCode")] AdminRegisterViewModel Admin)
@@ -458,6 +551,10 @@ namespace maQx.Controllers
             return View("Init", new InitViewModel() { AdminModel = Admin });
         }
 
+        /// <summary>
+        /// Releases unmanaged resources and optionally releases managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && UserManager != null)
@@ -471,6 +568,12 @@ namespace maQx.Controllers
 
         #region Locals
 
+        /// <summary>
+        /// Gets the authentication manager.
+        /// </summary>
+        /// <value>
+        /// The authentication manager.
+        /// </value>
         private IAuthenticationManager AuthenticationManager
         {
             get
@@ -478,11 +581,25 @@ namespace maQx.Controllers
                 return HttpContext.GetOwinContext().Authentication;
             }
         }
+        /// <summary>
+        /// Signs the in asynchronous.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="isPersistent">if set to <c>true</c> [is persistent].</param>
+        /// <returns></returns>
         private async Task SignInAsync(ApplicationUser user, bool isPersistent)
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, await SignInManager.CreateUserIdentityAsync(user));
         }
+        /// <summary>
+        /// Authenticates the user.
+        /// </summary>
+        /// <param name="Username">The username.</param>
+        /// <param name="Password">The password.</param>
+        /// <param name="RememberMe">if set to <c>true</c> [remember me].</param>
+        /// <returns></returns>
+        /// <exception cref="AccessDeniedException">Your account doesn't have any scope to access this application. Please contact your System Administrator for further assistance.</exception>
         private async Task<bool> AuthenticateUser(string Username, string Password, bool RememberMe)
         {
             // Authenticate non-admin users
@@ -507,17 +624,28 @@ namespace maQx.Controllers
             }
 
             // Check for whether the user is exists
-            var user = await UserManager.FindAsync(Username, Password);
+            var User = await UserManager.FindAsync(Username, Password);
 
             // If 'true' SignIn user to the application, otherwise return 'false' to login action.
-            if (user != null)
+            if (User != null)
             {
-                await SignInAsync(user, RememberMe);
+                // AppUsers should belongs to a division and should have access to at least one Menu
+                if (await UserManager.IsInRoleAsync(User.Id, Roles.AppUser) && (await db.MenuAccess.Where(x => x.User.Id == User.Id).CountAsync()) < 1)
+                {
+                    throw new AccessDeniedException("Your account doesn't have any scope to access this application. Please contact your System Administrator for further assistance.");
+                }
+
+                await SignInAsync(User, RememberMe);
                 return true;
             }
 
             return false;
         }
+        /// <summary>
+        /// Processes the step.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
         private async Task<bool> ProcessStep(LoginViewModel model)
         {
             var InitStep = new IntilizationStep()
@@ -534,6 +662,12 @@ namespace maQx.Controllers
 
             return true;
         }
+        /// <summary>
+        /// Registers the user.
+        /// </summary>
+        /// <param name="User">The user.</param>
+        /// <param name="AdminBase">The admin base.</param>
+        /// <returns></returns>
         private async Task<bool> RegisterUser(ApplicationUser User, AdminRegistrationBase AdminBase)
         {
             if (AdminBase.Role != Roles.AppAdmin)
@@ -562,6 +696,11 @@ namespace maQx.Controllers
 
             return true;
         }
+        /// <summary>
+        /// Redirects to local.
+        /// </summary>
+        /// <param name="returnUrl">The return URL.</param>
+        /// <returns></returns>
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (!String.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
@@ -571,6 +710,10 @@ namespace maQx.Controllers
 
             return RedirectToAction("Index", "App");
         }
+        /// <summary>
+        /// Adds the errors.
+        /// </summary>
+        /// <param name="result">The result.</param>
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -579,6 +722,9 @@ namespace maQx.Controllers
             }
         }
 
+        /// <summary>
+        /// Sets the information.
+        /// </summary>
         private void SetInfo()
         {
             ViewBag.Info = TempData["Info"] as ClientInfo;

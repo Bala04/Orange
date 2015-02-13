@@ -7,8 +7,16 @@ using System.Data.Entity;
 
 namespace maQx.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Shared
     {
+        /// <summary>
+        /// Gets the selectable divisions.
+        /// </summary>
+        /// <param name="Organization">The organization.</param>
+        /// <returns></returns>
         public static async Task<IEnumerable<Division>> GetSelectableDivisions(string Organization)
         {
             using (AppContext db = new AppContext())
@@ -27,6 +35,11 @@ namespace maQx.Models
             }
         }
 
+        /// <summary>
+        /// Gets the selectable users.
+        /// </summary>
+        /// <param name="Organization">The organization.</param>
+        /// <returns></returns>
         public static async Task<IEnumerable<ApplicationUser>> GetSelectableUsers(string Organization)
         {
             using (AppContext db = new AppContext())

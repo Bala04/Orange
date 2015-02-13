@@ -7,6 +7,16 @@
 @using InfoType = maQx.Models.ClientInfoType;
 
 <div class="login-index full-height">
+
+    @if (!String.IsNullOrWhiteSpace(ViewBag.ErrorTitle))
+    {
+        <div class="error-wrapper">
+            <div class="error-layout">
+                <div class="error-title">@ViewBag.ErrorTitle</div>
+                <p class="error-message">@ViewBag.ErrorMessage</p>
+            </div>
+        </div>
+    }
     <div class="login-layout" ng-controller="LoginController as lCtrl">
         <div class="login-form">
             <div class="logo-placeholder"></div>
@@ -26,7 +36,6 @@
                         @Html.CheckBoxFor(m => m.RememberMe, new { ng_model = "lCtrl.rememberMe" })
                         @Html.LabelFor(m => m.RememberMe, "stay signed in")
                     </div>
-
 
                     <div class="login-form-control">
                         @Html.HiddenFor(m => m._ReturnUrl, new { @readonly = "readonly" })
@@ -49,8 +58,6 @@
                 }
             </div>
         </div>
-
-
     </div>
 
     <footer>

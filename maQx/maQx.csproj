@@ -243,14 +243,12 @@
     <Compile Include="Controllers\DepartmentUsersController.cs" />
     <Compile Include="Controllers\DivisionsController.cs" />
     <Compile Include="Controllers\GetController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InvitesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PlantsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AppModels.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\Extensions.cs" />
@@ -1111,7 +1109,9 @@
     <Content Include="Scripts\section\user-controller.js" />
     <Content Include="Scripts\ui-bootstrap-0.12.0.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

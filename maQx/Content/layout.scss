@@ -871,6 +871,31 @@ a.btn + a.btn {
     background: #58C7B6 url(images/bg.jpg) center no-repeat;
     background-size: cover;
     padding: 10px 0px;
+    .error-wrapper {
+        @extend %absolute;
+        @extend %full-width;
+        padding: 0 20px;
+        .error-layout {
+            @extend %relative;
+            margin: 8vmin auto 0 auto;
+            max-width: 500px;
+            background: #FC7676;
+            padding: 15px 15px 5px  15px;
+            border-radius: 3px;
+            color: #fff;
+            border: #E86262 1px solid;
+            .error-title {
+                @include font-size(15px);
+                .fa {
+                    padding-right: 5px;
+                }
+            }
+            p.error-message {
+                margin-top: 5px;
+                @include font-size(13px);
+            }
+        }
+    }
     footer {
         position: absolute;
         bottom: 20px;
@@ -890,6 +915,7 @@ a.btn + a.btn {
         @extend %full-height;
         .login-form {
             @extend %relative;
+            z-index: 100;
             background-color: #eaf7f7;
             @include filter-gradient(#f2fbfa, #eaf7f7, vertical);
             @include background-image(linear-gradient(top, #f2fbfa 0%, #eaf7f7 100%));

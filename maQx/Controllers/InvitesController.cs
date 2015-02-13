@@ -12,18 +12,33 @@ using maQx.Utilities;
 
 namespace maQx.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Authorize(Roles = Roles.Inviter)]
     public class InvitesController : Controller
     {
+        /// <summary>
+        /// The database
+        /// </summary>
         private AppContext db = new AppContext();
 
         // GET: Invites
+        /// <summary>
+        /// Indexes this instance.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             SetInfo();
             return View();
         }
 
+        /// <summary>
+        /// Resends the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult> Resend(string id)
         {
@@ -50,6 +65,11 @@ namespace maQx.Controllers
 
 
         // GET: Invites/Details/5
+        /// <summary>
+        /// Detailed the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         public async Task<ActionResult> Details(string id)
         {
             if (id == null)
@@ -65,16 +85,25 @@ namespace maQx.Controllers
         }
 
         // GET: Invites/Create
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
+        /// <returns></returns>
         public async Task<ActionResult> Create()
         {
             var Organization = await db.Organizations.ToListAsync();
 
             return View(new InviteViewModel()
             {
-                Organizations = Organization.ToSelectList("Name", "- Organizations -")               
+                Organizations = Organization.ToSelectList("Name", "- Organizations -")
             });
         }
 
+        /// <summary>
+        /// Verifies the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult> Verify(string id)
@@ -143,8 +172,13 @@ namespace maQx.Controllers
         }
 
         // POST: Invites/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from over posting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Creates the specified invite.
+        /// </summary>
+        /// <param name="invite">The invite.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Username,Email,Organization")] InviteViewModel invite)
@@ -198,6 +232,11 @@ namespace maQx.Controllers
         }
 
         // GET: Invites/Delete/5
+        /// <summary>
+        /// Deletes the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         public async Task<ActionResult> Delete(string id)
         {
             if (id == null)
@@ -213,6 +252,11 @@ namespace maQx.Controllers
         }
 
         // POST: Invites/Delete/5
+        /// <summary>
+        /// Deletes the confirmed.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(string id)
@@ -225,11 +269,18 @@ namespace maQx.Controllers
 
         #region Locals
 
+        /// <summary>
+        /// Sets the information.
+        /// </summary>
         private void SetInfo()
         {
             ViewBag.Info = TempData["Info"] as ClientInfo;
         }
 
+        /// <summary>
+        /// Releases unmanaged resources and optionally releases managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -239,6 +290,11 @@ namespace maQx.Controllers
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Checks the username.
+        /// </summary>
+        /// <param name="Name">The name.</param>
+        /// <returns></returns>
         private async Task<bool> CheckUsername(string Name)
         {
             return await db.Invites.SingleOrDefaultAsync(x => x.Username == Name) == null && await db.Users.SingleOrDefaultAsync(x => x.UserName == Name) == null;

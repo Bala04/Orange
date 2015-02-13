@@ -19,23 +19,67 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace maQx.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Roles
     {
+        /// <summary>
+        /// The application admin
+        /// </summary>
         public const string AppAdmin = "AppAdmin";
+        /// <summary>
+        /// The system admin
+        /// </summary>
         public const string SysAdmin = "SysAdmin";
+        /// <summary>
+        /// The application user
+        /// </summary>
         public const string AppUser = "AppUser";
+        /// <summary>
+        /// The inviter
+        /// </summary>
         public const string Inviter = "Inviter";
+        /// <summary>
+        /// The organization
+        /// </summary>
         public const string Organization = "Organization";
+        /// <summary>
+        /// The plant
+        /// </summary>
         public const string Plant = "Plant";
+        /// <summary>
+        /// The division
+        /// </summary>
         public const string Division = "Division";
     }
 
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
+    /// <summary>
+    /// 
+    /// </summary>
     public class ApplicationUser : IdentityUser
     {
+        /// <summary>
+        /// Gets or sets the code.
+        /// </summary>
+        /// <value>
+        /// The code.
+        /// </value>
         public string Code { get; set; }
+        /// <summary>
+        /// Gets or sets the first name.
+        /// </summary>
+        /// <value>
+        /// The first name.
+        /// </value>
         public string Firstname { get; set; }
 
+        /// <summary>
+        /// Generates the user identity asynchronous.
+        /// </summary>
+        /// <param name="manager">The manager.</param>
+        /// <returns></returns>
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
@@ -55,13 +99,26 @@ namespace maQx.Models
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationUserManager"/> class.
+        /// </summary>
+        /// <param name="store">The store.</param>
         public ApplicationUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
         }
 
+        /// <summary>
+        /// Creates the specified options.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<AppContext>()));
@@ -76,42 +133,79 @@ namespace maQx.Models
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationSignInManager" /> class.
+        /// </summary>
+        /// <param name="userManager">The user manager.</param>
+        /// <param name="authenticationManager">The authentication manager.</param>
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
             : base(userManager, authenticationManager)
         {
         }
 
+        /// <summary>
+        /// Creates the user identity asynchronous.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
         public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user)
         {
             return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
         }
+        /// <summary>
+        /// Creates the specified options.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
         {
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class AppContext : IdentityDbContext<ApplicationUser>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppContext"/> class.
+        /// </summary>
         public AppContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
             Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
 
+        /// <summary>
+        /// Called when [model creating].
+        /// </summary>
+        /// <param name="modelBuilder">The model builder.</param>
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
         }
 
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
+        /// <returns></returns>
         public static AppContext Create()
         {
             return new AppContext();
         }
 
+        /// <summary>
+        /// Before the save.
+        /// </summary>
+        /// <exception cref="Exception">Unauthorized Request. Authentication credentials were expired or incorrect.</exception>
         private void BeforeSave()
         {
             var entities = ChangeTracker.Entries();
@@ -167,6 +261,20 @@ namespace maQx.Models
             }
         }
 
+        /// <summary>
+        /// Asynchronously saves all changes made in this context to the underlying database.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous save operation.
+        /// The task result contains the number of state entries written to the underlying database. This can include
+        /// state entries for entities and/or relationships. Relationship state entries are created for
+        /// many-to-many relationships and relationships where there is no foreign key property
+        /// included in the entity class (often referred to as independent associations).
+        /// </returns>
+        /// <remarks>
+        /// Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        /// that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
         public override async Task<int> SaveChangesAsync()
         {
             try
@@ -180,35 +288,165 @@ namespace maQx.Models
                 throw;
             }
         }
+        /// <summary>
+        /// Saves all changes made in this context to the underlying database.
+        /// </summary>
+        /// <returns>
+        /// The number of state entries written to the underlying database. This can include
+        /// state entries for entities and/or relationships. Relationship state entries are created for
+        /// many-to-many relationships and relationships where there is no foreign key property
+        /// included in the entity class (often referred to as independent associations).
+        /// </returns>
         public override int SaveChanges()
         {
             BeforeSave();
             return base.SaveChanges();
         }
 
+        /// <summary>
+        /// Gets or sets the menus.
+        /// </summary>
+        /// <value>
+        /// The menus.
+        /// </value>
         public DbSet<Menus> Menus { get; set; }
+        /// <summary>
+        /// Gets or sets the initialize step.
+        /// </summary>
+        /// <value>
+        /// The initialize step.
+        /// </value>
         public DbSet<IntilizationStep> InitStep { get; set; }
+        /// <summary>
+        /// Gets or sets the admin base.
+        /// </summary>
+        /// <value>
+        /// The admin base.
+        /// </value>
         public DbSet<AdminRegistrationBase> AdminBase { get; set; }
+        /// <summary>
+        /// Gets or sets the invites.
+        /// </summary>
+        /// <value>
+        /// The invites.
+        /// </value>
         public DbSet<Invite> Invites { get; set; }
+        /// <summary>
+        /// Gets or sets the administrators.
+        /// </summary>
+        /// <value>
+        /// The administrators.
+        /// </value>
         public DbSet<Administrator> Administrators { get; set; }
+        /// <summary>
+        /// Gets or sets the organizations.
+        /// </summary>
+        /// <value>
+        /// The organizations.
+        /// </value>
         public DbSet<Organization> Organizations { get; set; }
+        /// <summary>
+        /// Gets or sets the plants.
+        /// </summary>
+        /// <value>
+        /// The plants.
+        /// </value>
         public DbSet<Plant> Plants { get; set; }
+        /// <summary>
+        /// Gets or sets the divisions.
+        /// </summary>
+        /// <value>
+        /// The divisions.
+        /// </value>
         public DbSet<Division> Divisions { get; set; }
+        /// <summary>
+        /// Gets or sets the departments.
+        /// </summary>
+        /// <value>
+        /// The departments.
+        /// </value>
         public DbSet<Department> Departments { get; set; }
+        /// <summary>
+        /// Gets or sets the department menus.
+        /// </summary>
+        /// <value>
+        /// The department menus.
+        /// </value>
         public DbSet<DepartmentMenu> DepartmentMenus { get; set; }
+        /// <summary>
+        /// Gets or sets the department users.
+        /// </summary>
+        /// <value>
+        /// The department users.
+        /// </value>
         public DbSet<DepartmentUser> DepartmentUsers { get; set; }
+        /// <summary>
+        /// Gets or sets the access levels.
+        /// </summary>
+        /// <value>
+        /// The access levels.
+        /// </value>
         public DbSet<AccessLevel> AccessLevels { get; set; }
+        /// <summary>
+        /// Gets or sets the menu access.
+        /// </summary>
+        /// <value>
+        /// The menu access.
+        /// </value>
         public DbSet<MenuAccess> MenuAccess { get; set; }
+        /// <summary>
+        /// Gets or sets the raw materials.
+        /// </summary>
+        /// <value>
+        /// The raw materials.
+        /// </value>
         public DbSet<RawMaterial> RawMaterials { get; set; }
+        /// <summary>
+        /// Gets or sets the products.
+        /// </summary>
+        /// <value>
+        /// The products.
+        /// </value>
         public DbSet<Product> Products { get; set; }
+        /// <summary>
+        /// Gets or sets the product raw materials.
+        /// </summary>
+        /// <value>
+        /// The product raw materials.
+        /// </value>
         public DbSet<ProductRawMaterial> ProductRawMaterials { get; set; }
+        /// <summary>
+        /// Gets or sets the process.
+        /// </summary>
+        /// <value>
+        /// The process.
+        /// </value>
         public DbSet<Process> Process { get; set; }
+        /// <summary>
+        /// Gets or sets the tools.
+        /// </summary>
+        /// <value>
+        /// The tools.
+        /// </value>
         public DbSet<Tool> Tools { get; set; }
+        /// <summary>
+        /// Gets or sets the dies.
+        /// </summary>
+        /// <value>
+        /// The dies.
+        /// </value>
         public DbSet<Die> Dies { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class AppContextInitializer : DropCreateDatabaseIfModelChanges<AppContext>
     {
+        /// <summary>
+        /// Seeds the specified context.
+        /// </summary>
+        /// <param name="context">The context.</param>
         protected override void Seed(AppContext context)
         {
             var Manager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));

@@ -11,18 +11,32 @@ using System.Linq.Expressions;
 
 namespace maQx.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AjaxOnly]
     [AuthorizeGetView]
     public class GetController : Controller
     {
+        /// <summary>
+        /// The database
+        /// </summary>
         private AppContext db = new AppContext();
 
+        /// <summary>
+        /// Organizationses this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> Organizations()
         {
             return await Format<Organization, JOrganization>(Roles.AppAdmin, db.Organizations, "OrganizationsController", x => x.ActiveFlag);
         }
 
+        /// <summary>
+        /// Invites this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> Invites()
         {
@@ -37,6 +51,10 @@ namespace maQx.Controllers
             }
         }
 
+        /// <summary>
+        /// Plants this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> Plants()
         {
@@ -44,6 +62,10 @@ namespace maQx.Controllers
             return await Format<Plant, JPlant>(Roles.SysAdmin, db.Plants, "PlantsController", x => x.ActiveFlag && x.Organization.Key == Organization, x => x.Organization);
         }
 
+        /// <summary>
+        /// Divisions this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> Divisions()
         {
@@ -51,6 +73,10 @@ namespace maQx.Controllers
             return await Format<Division, JDivision>(Roles.SysAdmin, db.Divisions, "DivisionsController", x => x.ActiveFlag && x.Plant.Organization.Key == Organization, x => x.Plant.Organization);
         }
 
+        /// <summary>
+        /// Administrators this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> Administrators()
         {
@@ -83,6 +109,10 @@ namespace maQx.Controllers
             }
         }
 
+        /// <summary>
+        /// Menus this instance.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> Menus()
         {
@@ -96,6 +126,11 @@ namespace maQx.Controllers
             });
         }
 
+        /// <summary>
+        /// Users the menus.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> UserMenus(string id)
         {
@@ -108,6 +143,11 @@ namespace maQx.Controllers
             }, x => x.User, x => x.DepartmentMenu.Menu, x => x.DepartmentMenu.Department.Division.Plant.Organization);
         }
 
+        /// <summary>
+        /// Users the department menu.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> UserDepartmentMenu(string id)
         {
@@ -135,12 +175,22 @@ namespace maQx.Controllers
             }
         }
 
+        /// <summary>
+        /// Departments the menu.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> DepartmentMenu(string id)
         {
             return await _DepartmentMenu(id);
         }
 
+        /// <summary>
+        /// _s the department menu.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         private async Task<JsonResult> _DepartmentMenu(string id)
         {
             return await Format<DepartmentMenu, JsonListViewModel<JDepartmentMenu>, JDepartmentMenu>(Roles.SysAdmin, db.DepartmentMenus, null, x => x.Department.Division.Key == id, (value) =>
@@ -152,12 +202,22 @@ namespace maQx.Controllers
             }, x => x.Department.Division.Plant.Organization, x => x.Menu);
         }
 
+        /// <summary>
+        /// Departments the user.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> DepartmentUser(string id)
         {
             return await _DepartmentUser(id);
         }
 
+        /// <summary>
+        /// _s the department user.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         private async Task<JsonResult> _DepartmentUser(string id)
         {
             return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, x => x.Department.Division.Key == id, (value) =>
@@ -169,12 +229,22 @@ namespace maQx.Controllers
             }, x => x.Department.Division.Plant.Organization, x => x.User);
         }
 
+        /// <summary>
+        /// Divisions the access.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> DivisionAccess(string id)
         {
             return await _DivisionAccess(id);
         }
 
+        /// <summary>
+        /// _s the division access.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         private async Task<JsonResult> _DivisionAccess(string id)
         {
             var Organization = User.GetOrganization();
@@ -188,6 +258,10 @@ namespace maQx.Controllers
             }, x => x.Division.Plant.Organization, x => x.User);
         }
 
+        /// <summary>
+        /// Maps the users.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> MappedUsers()
         {
@@ -202,6 +276,12 @@ namespace maQx.Controllers
            }, x => x.Department.Division.Plant.Organization, x => x.User);
         }
 
+        /// <summary>
+        /// Exists the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<JsonResult> Exists(string id, string type)
         {
@@ -506,6 +586,13 @@ namespace maQx.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets the administrator.
+        /// </summary>
+        /// <param name="Value">The value.</param>
+        /// <param name="Exp">The exp.</param>
+        /// <param name="Organization">The organization.</param>
+        /// <returns></returns>
         static async Task<List<UserViewModel>> GetAdministrator(IQueryable<Administrator> Value, Expression<Func<Administrator, bool>> Exp, string Organization)
         {
             try
@@ -526,12 +613,34 @@ namespace maQx.Controllers
             }
         }
 
+        /// <summary>
+        /// Lists the specified role.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Role">The role.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="Controller">The controller.</param>
+        /// <param name="exp">The exp.</param>
+        /// <param name="Includes">The includes.</param>
+        /// <returns></returns>
         private async Task<JsonResult> List<T>(string Role, DbSet<T> value, string Controller, Expression<Func<T, bool>> exp, params Expression<Func<T, object>>[] Includes)
             where T : class
         {
             return await ViewHelper.List<T, JsonViewModel>(Request, Response, Controller, Role, User, value, exp, Includes, null);
         }
 
+        /// <summary>
+        /// Lists the specified role.
+        /// </summary>
+        /// <typeparam name="T1">The type of the 1.</typeparam>
+        /// <typeparam name="T2">The type of the 2.</typeparam>
+        /// <param name="Role">The role.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="Controller">The controller.</param>
+        /// <param name="exp">The exp.</param>
+        /// <param name="operation">The operation.</param>
+        /// <param name="Includes">The includes.</param>
+        /// <returns></returns>
         private async Task<JsonResult> List<T1, T2>(string Role, DbSet<T1> value, string Controller, Expression<Func<T1, bool>> exp, Func<List<T1>, T2> operation = null, params Expression<Func<T1, object>>[] Includes)
             where T1 : class
             where T2 : JsonViewModel
@@ -539,6 +648,17 @@ namespace maQx.Controllers
             return await ViewHelper.List(Request, Response, Controller, Role, User, value, exp, Includes, operation);
         }
 
+        /// <summary>
+        /// Formats the specified role.
+        /// </summary>
+        /// <typeparam name="T1">The type of the 1.</typeparam>
+        /// <typeparam name="T2">The type of the 2.</typeparam>
+        /// <param name="Role">The role.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="Controller">The controller.</param>
+        /// <param name="exp">The exp.</param>
+        /// <param name="Includes">The includes.</param>
+        /// <returns></returns>
         private async Task<JsonResult> Format<T1, T2>(string Role, DbSet<T1> value, string Controller, Expression<Func<T1, bool>> exp, params Expression<Func<T1, object>>[] Includes)
             where T1 : class
             where T2 : class, IJsonBase<T1, T2>
@@ -546,6 +666,19 @@ namespace maQx.Controllers
             return await ViewHelper.Format<T1, JsonViewModel, T2>(Request, Response, Controller, Role, User, value, exp, Includes, null);
         }
 
+        /// <summary>
+        /// Formats the specified role.
+        /// </summary>
+        /// <typeparam name="T1">The type of the 1.</typeparam>
+        /// <typeparam name="T2">The type of the 2.</typeparam>
+        /// <typeparam name="T3">The type of the 3.</typeparam>
+        /// <param name="Role">The role.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="Controller">The controller.</param>
+        /// <param name="exp">The exp.</param>
+        /// <param name="operation">The operation.</param>
+        /// <param name="Includes">The includes.</param>
+        /// <returns></returns>
         private async Task<JsonResult> Format<T1, T2, T3>(string Role, DbSet<T1> value, string Controller, Expression<Func<T1, bool>> exp, Func<List<T3>, T2> operation = null, params Expression<Func<T1, object>>[] Includes)
             where T1 : class
             where T2 : JsonViewModel
@@ -554,13 +687,38 @@ namespace maQx.Controllers
             return await ViewHelper.Format<T1, T2, T3>(Request, Response, Controller, Role, User, value, exp, Includes, operation);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class EntityManupulateHelper
         {
+            /// <summary>
+            /// Gets or sets the entity.
+            /// </summary>
+            /// <value>
+            /// The entity.
+            /// </value>
             public string Entity { get; set; }
+            /// <summary>
+            /// Gets or sets the add.
+            /// </summary>
+            /// <value>
+            /// The add.
+            /// </value>
             public string[] Add { get; set; }
+            /// <summary>
+            /// Gets or sets the remove.
+            /// </summary>
+            /// <value>
+            /// The remove.
+            /// </value>
             public string[] Remove { get; set; }
         }
 
+        /// <summary>
+        /// Releases unmanaged resources and optionally releases managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
