@@ -16,10 +16,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 
+
 namespace maQx.Controllers
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     [OutputCache(NoStore = true, Location = OutputCacheLocation.None, Duration = 0)]
     public class AppController : Controller
@@ -662,6 +663,7 @@ namespace maQx.Controllers
 
             return true;
         }
+
         /// <summary>
         /// Registers the user.
         /// </summary>
@@ -696,6 +698,44 @@ namespace maQx.Controllers
 
             return true;
         }
+
+
+        /// <summary>
+        /// Adds the role to user.
+        /// </summary>
+        /// <param name="User">The user.</param>
+        /// <param name="Role">The role.</param>
+        /// <returns></returns>
+        public async Task<bool> AddRoleToUser(ApplicationUser User, string Role)
+        {
+            // Check whether the user is in specified Role
+            // If the User is already in the Role return true. Otherwise add the User to Role and return whether task is succeeded or not.
+            if (!(await UserManager.IsInRoleAsync(User.Id, Role)))
+            {
+                return (await UserManager.AddToRoleAsync(User.Id, Role)).Succeeded;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes the role from user.
+        /// </summary>
+        /// <param name="User">The user.</param>
+        /// <param name="Role">The role.</param>
+        /// <returns></returns>
+        public async Task<bool> RemoveRoleFromUser(ApplicationUser User, string Role)
+        {
+            // Check whether the User is in specified Role
+            // If the User is already in the Role remove the User from the Role  and return whether task is succeeded or not. Otherwise return true.
+            if (await UserManager.IsInRoleAsync(User.Id, Role))
+            {
+                return (await UserManager.RemoveFromRoleAsync(User.Id, Role)).Succeeded;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Redirects to local.
         /// </summary>

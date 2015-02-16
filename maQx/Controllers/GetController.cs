@@ -8,6 +8,8 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Linq.Expressions;
+using Microsoft.AspNet.Identity;
+
 
 namespace maQx.Controllers
 {
@@ -24,7 +26,7 @@ namespace maQx.Controllers
         private AppContext db = new AppContext();
 
         /// <summary>
-        /// Organizationses this instance.
+        /// Organizations this instance.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -116,14 +118,22 @@ namespace maQx.Controllers
         [HttpGet]
         public async Task<JsonResult> Menus()
         {
-            var Roles = User.GetRoles();
-            return await Format<Menus, JsonMenuViewModel, JMenus>(null, db.Menus, null, x => Roles.Contains(x.Access), (value) =>
+            if (User.IsInRole(Roles.AppUser))
             {
-                return new JsonMenuViewModel()
+                return await _UserMenus(User.Identity.GetUserId());
+            }
+            else
+            {
+                var RoleList = User.GetRoles();
+
+                return await Format<Menus, JsonMenuViewModel, JMenus>(null, db.Menus, null, x => RoleList.Contains(x.Access), (value) =>
                 {
-                    Menus = value.OrderBy(x => x.Order).ToList()
-                };
-            });
+                    return new JsonMenuViewModel()
+                    {
+                        Menus = value.OrderBy(x => x.Order).ToList()
+                    };
+                });
+            }
         }
 
         /// <summary>
@@ -134,13 +144,29 @@ namespace maQx.Controllers
         [HttpGet]
         public async Task<JsonResult> UserMenus(string id)
         {
-            return await Format<MenuAccess, JsonListViewModel<JMenuAccess>, JMenuAccess>(Roles.SysAdmin, db.MenuAccess, null, x => x.User.Id == id, (value) =>
+            return await _UserMenus(id);
+        }
+
+        /// <summary>
+        /// _s the user menus.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
+        private async Task<JsonResult> _UserMenus(string id)
+        {
+            // BUG: return await Format<MenuAccess, JsonListViewModel<JMenus>, JMenuAccess>(Roles.SysAdmin, db.MenuAccess, null, x => x.User.Id == id, (value) =>
+            // FIX: Update SysAdmin with AppUser role. UserMenus are access by the Users with role AppUser. 16/02/2015
+            // BUG: return await Format<MenuAccess, JsonListViewModel<JMenus>, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, x => x.User.Id == id, (value) =>
+            // FIX: UserMenus should return JsonResult of the type of JsonMenuViewModel instead of JsonListViewModel<JMenus>. 16/02/2015
+            return await Format<MenuAccess, JsonMenuViewModel, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, x => x.User.Id == id, (value) =>
             {
-                return new JsonListViewModel<JMenuAccess>()
+                // BUG: return new JsonListViewModel<JMenus>()
+                // FIX: return as JsonMenuViewModel instead of JsonListViewModel<JMenus>. 16/02/2015
+                return new JsonMenuViewModel()
                 {
-                    List = value
+                    Menus = value.Select(x => x.DepartmentMenu.Menu).OrderBy(x => x.Order).ToList()
                 };
-            }, x => x.User, x => x.DepartmentMenu.Menu, x => x.DepartmentMenu.Department.Division.Plant.Organization);
+            }, x => x.User, x => x.DepartmentMenu.Menu);
         }
 
         /// <summary>
@@ -530,7 +556,6 @@ namespace maQx.Controllers
                         if (data != null)
                         {
                             var User = db.Users.Find(data.Entity);
-
                             if (User != null)
                             {
                                 var MenuAccess = db.MenuAccess;

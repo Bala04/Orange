@@ -84,17 +84,27 @@ namespace maQx.Models
         {
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             Organization Organization = null;
+            DepartmentUser DepartmentUsers = null;
 
             using (var db = new AppContext())
             {
                 var Entity = await db.Administrators.Include("Organization").SingleOrDefaultAsync(x => x.User.Id == this.Id);
                 Organization = Entity == null ? null : Entity.Organization;
+                DepartmentUsers = await db.DepartmentUsers.Where(x => x.User.Id == this.Id).FirstOrDefaultAsync();
             }
 
             userIdentity.AddClaim(new Claim("Firstname", Firstname));
             userIdentity.AddClaim(new Claim("Code", Code));
             userIdentity.AddClaim(new Claim("Organization.Key", Organization == null ? "" : Organization.Key));
             userIdentity.AddClaim(new Claim("Organization.Name", Organization == null ? "" : Organization.Name));
+
+            if (DepartmentUsers != null)
+            {
+                userIdentity.AddClaim(new Claim("Division.Key", DepartmentUsers.Department.Division.Key));
+                userIdentity.AddClaim(new Claim("Department.Key", DepartmentUsers.Department.Key));
+                userIdentity.AddClaim(new Claim("Department.Name", DepartmentUsers.Department.Name));
+            }
+
             return userIdentity;
         }
     }

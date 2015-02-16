@@ -784,6 +784,16 @@ namespace maQx.Utilities
             return ((ClaimsIdentity)User.Identity).FindFirst("Organization.Key").Value;
         }
 
+        public static string GetDivision(this IPrincipal User)
+        {
+            return ((ClaimsIdentity)User.Identity).FindFirst("Division.Key").Value;
+        }
+
+        public static string GetDepartment(this IPrincipal User)
+        {
+            return ((ClaimsIdentity)User.Identity).FindFirst("Department.Key").Value;
+        }
+
         /// <summary>
         /// Acts similar of .Include() LINQ method, but allows to include several object properties at once.
         /// </summary>
