@@ -31,7 +31,7 @@
         else if (self.type == "Success")
             return "fa-check";
         else if (self.type == "Error")
-            return "fa-ban";
+            return "fa-times";
         else if (self.type == "Note")
             return "fa-exclamation";
     };

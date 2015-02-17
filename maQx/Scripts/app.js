@@ -63,9 +63,6 @@ angular.module("tabularApp").factory('DTLoadingTemplate', function () {
 angular.module("orangeApp").config(['$httpProvider', 'cfpLoadingBarProvider', function ($httpProvider, cfpLoadingBarProvider) {
     _app.configModule($httpProvider, cfpLoadingBarProvider);
 }]);
-angular.module("tabularApp").config(['$httpProvider', 'cfpLoadingBarProvider', function ($httpProvider, cfpLoadingBarProvider) {
-    _app.configModule($httpProvider, cfpLoadingBarProvider);
-}]);
 angular.module("sectionApp").factory('Injector', ['$rootScope', '$q', function ($rootScope, $q) {
     var Injector = {
         request: function (config) {
@@ -75,6 +72,13 @@ angular.module("sectionApp").factory('Injector', ['$rootScope', '$q', function (
             return $q.reject(rejection);
         },
         response: function (response) {
+            if (response.data.Type != "SUCCESS") {
+                $rootScope.$broadcast("alert", {
+                    type: "Error",
+                    message: response.data.Message,
+                });
+                return $q.reject(response);
+            }
             return response || $q.when(response);
         },
         responseError: function (error) {
@@ -86,6 +90,9 @@ angular.module("sectionApp").factory('Injector', ['$rootScope', '$q', function (
         }
     };
     return Injector;
+}]);
+angular.module("tabularApp").config(['$httpProvider', 'cfpLoadingBarProvider', function ($httpProvider, cfpLoadingBarProvider) {
+    _app.configModule($httpProvider, cfpLoadingBarProvider);
 }]);
 angular.module("sectionApp").config(['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push('Injector');

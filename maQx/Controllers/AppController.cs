@@ -149,7 +149,8 @@ namespace maQx.Controllers
                     var identity = (ClaimsIdentity)User.Identity;
                     return Json(new JsonCurrentUserViewModel()
                     {
-                        Name = identity.FindFirst("Firstname").Value,
+                        Name = identity.FindFirstValue("Firstname"),
+                        Department = identity.FindFirstValue("Department.Name")
                     }, JsonRequestBehavior.AllowGet);
                 }
                 else

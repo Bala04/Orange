@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 
 namespace maQx.Utilities
 {
@@ -794,6 +795,28 @@ namespace maQx.Utilities
             return ((ClaimsIdentity)User.Identity).FindFirst("Department.Key").Value;
         }
 
+        public static bool HasMenuAccess(this IPrincipal User, string Menu)
+        {
+            using (var db = new AppContext())
+            {
+                var Id = User.Identity.GetUserId();
+                var Menus = db.MenuAccess.Include(x => x.DepartmentMenu.Menu).Where(x => x.User.Id == Id).Select(x => x.DepartmentMenu.Menu.ID).ToList();
+
+                return Menus.Contains(Menu);
+            }
+        }
+
+        public static async Task<bool> HasMenuAccessAsync(this IPrincipal User, string Menu)
+        {
+            using (var db = new AppContext())
+            {
+                var Id = User.Identity.GetUserId();
+                var Menus = await db.MenuAccess.Include(x => x.DepartmentMenu.Menu).Where(x => x.User.Id == Id).Select(x => x.DepartmentMenu.Menu.ID).ToListAsync();
+
+                return Menus.Contains(Menu);
+            }
+        }
+
         /// <summary>
         /// Acts similar of .Include() LINQ method, but allows to include several object properties at once.
         /// </summary>
@@ -985,6 +1008,11 @@ namespace maQx.Utilities
             {
                 if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
                 {
+                    if (typeof(T1) != typeof(MenuAccess) && (Role == Roles.AppUser && !await User.HasMenuAccessAsync(Request.RequestContext.RouteData.Values["action"].ToString())))
+                    {
+                        return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
+                    }
+
                     var format = Activator.CreateInstance<T3>();
                     var data = await value.IncludeMultiple(Includes).Where(exp).ToListAsync();
                     var d = data.Select(x =>

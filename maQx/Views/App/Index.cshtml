@@ -8,7 +8,7 @@
         <div class="menu-loader css-fade" ng-hide="mCtrl.isLoaded()">
             <div class="loader-animate"></div>
         </div>
-        <div class="menu-header">Administration Console</div>
+        <div class="menu-header" ng-bind="mCtrl.getTitle()">Administration Console</div>
         <div class="css-fade" ng-show="mCtrl.isLoaded()">
             <div class="menu-items" ng-repeat="menu in mCtrl.menus track by menu.ID" ng-click="mCtrl.selectMenu(menu)" ng-class="mCtrl.selectedMenu(menu)" ng-bind="menu.Name"></div>
         </div>

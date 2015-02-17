@@ -6,7 +6,7 @@ using System.Web;
 namespace maQx.Models
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T1">The type of the 1.</typeparam>
     /// <typeparam name="T2">The type of the 2.</typeparam>
@@ -21,7 +21,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JsonBase
     {
@@ -73,8 +73,40 @@ namespace maQx.Models
         public string Created { get; set; }
     }
 
+    public class JsonDivisionBase : JsonBase
+    {
+        public JDivision Division { get; set; }
+
+        public JsonDivisionBase() { }
+        public JsonDivisionBase(DivisionBase input)
+            : base(input)
+        {
+            Division = new JDivision(input.Division);
+        }
+    }
+
+    public class JsonEntityDivisionBase : JsonDivisionBase
+    {
+        public string Code { get; set; }
+        public string Description { get; set; }
+
+        public JsonEntityDivisionBase() { }
+
+        public JsonEntityDivisionBase(EntityDivisionBase input)
+            : base(input)
+        {
+            Code = input.Code;
+            Description = input.Description;
+        }
+    }
+
+    public class JsonDivisionEntityBase : JsonBase
+    {
+
+    }
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JOrganization : JsonBase, IJsonBase<Organization, JOrganization>
     {
@@ -128,7 +160,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JMenus : IJsonBase<Menus, JMenus>
     {
@@ -181,7 +213,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JInvite : JsonBase, IJsonBase<Invite, JInvite>
     {
@@ -235,7 +267,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JPlant : JsonBase, IJsonBase<Plant, JPlant>
     {
@@ -297,7 +329,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JDivision : JsonBase, IJsonBase<Division, JDivision>
     {
@@ -351,7 +383,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JDepartment : JsonBase, IJsonBase<Department, JDepartment>
     {
@@ -397,7 +429,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JDepartmentMenu : JsonBase, IJsonBase<DepartmentMenu, JDepartmentMenu>
     {
@@ -444,7 +476,7 @@ namespace maQx.Models
 
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JApplicationUser : IJsonBase<ApplicationUser, JApplicationUser>
     {
@@ -505,7 +537,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JDepartmentUser : JsonBase, IJsonBase<DepartmentUser, JDepartmentUser>
     {
@@ -551,7 +583,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JAccessLevel : JsonBase, IJsonBase<AccessLevel, JAccessLevel>
     {
@@ -597,7 +629,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JMenuAccess : JsonBase, IJsonBase<MenuAccess, JMenuAccess>
     {
@@ -639,6 +671,29 @@ namespace maQx.Models
         public JMenuAccess To(MenuAccess input)
         {
             return new JMenuAccess(input);
+        }
+    }
+
+    public class JRawMaterial : JsonEntityDivisionBase, IJsonBase<RawMaterial, JRawMaterial>
+    {
+        public Units Unit { get; set; }
+        public Measurements Measurement { get; set; }
+
+        public JRawMaterial()
+        {
+
+        }
+
+        public JRawMaterial(RawMaterial input)
+            : base(input)
+        {
+            Unit = input.Unit;
+            Measurement = input.Measurement;
+        }
+
+        public JRawMaterial To(RawMaterial input)
+        {
+            return new JRawMaterial(input);
         }
     }
 }

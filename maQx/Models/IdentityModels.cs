@@ -15,12 +15,14 @@ using System.Web;
 using System.Linq;
 using maQx.Utilities;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Web.Mvc.Filters;
+using System.Web.Mvc;
 
 
 namespace maQx.Models
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Roles
     {
@@ -43,21 +45,35 @@ namespace maQx.Models
         /// <summary>
         /// The organization
         /// </summary>
-        public const string Organization = "Organization";
+        public const string Create = "Create";
         /// <summary>
         /// The plant
         /// </summary>
-        public const string Plant = "Plant";
+        public const string Edit = "Edit";
         /// <summary>
         /// The division
         /// </summary>
-        public const string Division = "Division";
+        public const string Delete = "Delete";
     }
 
-    // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
+    public class AccessAuthorize : AuthorizeAttribute, IAuthorizationFilter
+    {
+        protected override bool AuthorizeCore(HttpContextBase Context)
+        {
+            return Context.User.Identity.IsAuthenticated ? Context.User.HasMenuAccess(Context.Request.RequestContext.RouteData.Values["controller"].ToString()) : false;
+        }
+
+        public override void OnAuthorization(AuthorizationContext context)
+        {
+            base.OnAuthorization(context);
+        }
+    }
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
+    ///
+    // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
         /// <summary>
@@ -90,13 +106,12 @@ namespace maQx.Models
             {
                 var Entity = await db.Administrators.Include("Organization").SingleOrDefaultAsync(x => x.User.Id == this.Id);
                 Organization = Entity == null ? null : Entity.Organization;
-                DepartmentUsers = await db.DepartmentUsers.Where(x => x.User.Id == this.Id).FirstOrDefaultAsync();
+                DepartmentUsers = await db.DepartmentUsers.Include(x => x.Department.Division).Where(x => x.User.Id == this.Id).FirstOrDefaultAsync();
             }
 
             userIdentity.AddClaim(new Claim("Firstname", Firstname));
             userIdentity.AddClaim(new Claim("Code", Code));
             userIdentity.AddClaim(new Claim("Organization.Key", Organization == null ? "" : Organization.Key));
-            userIdentity.AddClaim(new Claim("Organization.Name", Organization == null ? "" : Organization.Name));
 
             if (DepartmentUsers != null)
             {
@@ -110,7 +125,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
@@ -144,7 +159,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {
@@ -180,7 +195,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class AppContext : IdentityDbContext<ApplicationUser>
     {
@@ -449,7 +464,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class AppContextInitializer : DropCreateDatabaseIfModelChanges<AppContext>
     {

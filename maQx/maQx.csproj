@@ -246,6 +246,7 @@
     <Compile Include="Controllers\InvitesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PlantsController.cs" />
+    <Compile Include="Controllers\RawMaterialsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1182,6 +1183,11 @@
     <Content Include="Views\AccessLevel\Index.cshtml" />
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Shared\_DepartmentMapping.cshtml" />
+    <Content Include="Views\RawMaterials\Create.cshtml" />
+    <Content Include="Views\RawMaterials\Delete.cshtml" />
+    <Content Include="Views\RawMaterials\Details.cshtml" />
+    <Content Include="Views\RawMaterials\Edit.cshtml" />
+    <Content Include="Views\RawMaterials\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

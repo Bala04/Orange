@@ -25,17 +25,14 @@
                         if (a.Type == "SUCCESS") {
                             o._k(o._l, a);
                             b(a.List)
-                        } else if (a.Type == "ERROR") {
-                            c("Authentication Failed. You are not authorized to access the requested resource")
-                            $rootScope.$broadcast("alert", { type: "Error", message: a.Message });
+                        } else {
+                            b([]);
                         }
-                    }, function (a) {
-                        $rootScope.$broadcast("alert", { type: "Error", message: a });
-                        console.log(a);
-                        c(a)
+                    }, function () {
+                        b([]);
                     });
                 } else {
-                    console.log(o._u._d)
+                    console.log(o._u._d);
                 }
             })
         },

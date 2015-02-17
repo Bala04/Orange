@@ -12,8 +12,6 @@
         query: function () {
             if (self.menuList == null) {
                 self.menuList = menuResource.get();
-
-                console.log(self.menuList)
             }
 
             return self.menuList;

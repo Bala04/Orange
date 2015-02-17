@@ -5,6 +5,11 @@
         self.loadingMenu = null;
         self.loaded = false;
         self.menus = [];
+        self.user = {};
+
+        self.getTitle = function () {
+            return self.user.Department && self.user.Department != "" ? self.user.Department : "Administration Console";
+        };
 
         function loadFrame(value) {
             if (value.menu !== undefined) {
@@ -71,6 +76,10 @@
             if (menuID !== undefined) {
                 loadFrame({ menu: linq(self.menus).where('$.ID=="' + menuID + '"').toArray()[0], url: path });
             }
+        });
+
+        $rootScope.$on("UserLoaded", function (event, user) {
+            self.user = user;
         });
 
         init();
