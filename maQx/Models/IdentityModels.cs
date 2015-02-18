@@ -17,6 +17,7 @@ using maQx.Utilities;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Web.Mvc.Filters;
 using System.Web.Mvc;
+using System.Data.Entity.Validation;
 
 
 namespace maQx.Models
@@ -42,18 +43,16 @@ namespace maQx.Models
         /// The inviter
         /// </summary>
         public const string Inviter = "Inviter";
-        /// <summary>
-        /// The organization
-        /// </summary>
+
         public const string Create = "Create";
-        /// <summary>
-        /// The plant
-        /// </summary>
+
         public const string Edit = "Edit";
-        /// <summary>
-        /// The division
-        /// </summary>
+
         public const string Delete = "Delete";
+
+        public const string CreateEdit = "CreateEdit";
+
+        public const string EditDelete = "EditDelete";
     }
 
     public class AccessAuthorize : AuthorizeAttribute, IAuthorizationFilter
@@ -307,12 +306,16 @@ namespace maQx.Models
                 BeforeSave();
                 return await base.SaveChangesAsync();
             }
+            catch (DbEntityValidationException ex)
+            {
+                throw ex;
+            }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
         /// <summary>
         /// Saves all changes made in this context to the underlying database.
         /// </summary>
@@ -324,8 +327,19 @@ namespace maQx.Models
         /// </returns>
         public override int SaveChanges()
         {
-            BeforeSave();
-            return base.SaveChanges();
+            try
+            {
+                BeforeSave();
+                return base.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                throw ex;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

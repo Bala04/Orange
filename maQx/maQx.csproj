@@ -1188,6 +1188,8 @@
     <Content Include="Views\RawMaterials\Details.cshtml" />
     <Content Include="Views\RawMaterials\Edit.cshtml" />
     <Content Include="Views\RawMaterials\Index.cshtml" />
+    <Content Include="Views\RawMaterials\_Form.cshtml" />
+    <Content Include="Views\RawMaterials\_View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -8,7 +8,7 @@ using System.Web;
 namespace maQx.Models
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class BaseLoginViewModel
     {
@@ -18,8 +18,7 @@ namespace maQx.Models
         /// <value>
         /// The name of the user.
         /// </value>
-        [Required]
-        [Display(Name = "Username")]
+        [Required, Display(Name = "Username")]
         public string UserName { get; set; }
 
         /// <summary>
@@ -28,14 +27,12 @@ namespace maQx.Models
         /// <value>
         /// The password.
         /// </value>
-        [Required]
-        [Display(Name = "Password")]
-        [DataType(DataType.Password)]
+        [Required, Display(Name = "Password"), DataType(DataType.Password)]
         public string Password { get; set; }
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class LoginViewModel : BaseLoginViewModel
     {
@@ -58,7 +55,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class AdminRegisterViewModel
     {
@@ -68,10 +65,7 @@ namespace maQx.Models
         /// <value>
         /// The code.
         /// </value>
-        [Required]
-        [RegularExpression(RegExPatterns.AlphaNumericWithOutSpace, ErrorMessage = "Please enter a valid employee code.")]
-        [Display(Name = "User Code")]
-        [MaxLength(100)]
+        [Required, Display(Name = "User Code"), MaxLength(100), RegularExpression(RegExPatterns.AlphaNumericWithOutSpace, ErrorMessage = "Please enter a valid employee code.")]
         public string Code { get; set; }
 
         /// <summary>
@@ -80,10 +74,7 @@ namespace maQx.Models
         /// <value>
         /// The name.
         /// </value>
-        [Required]
-        [RegularExpression(RegExPatterns.Name, ErrorMessage = "Please enter a valid name.")]
-        [Display(Name = "Name")]
-        [MaxLength(100)]
+        [Required, Display(Name = "Name"), MaxLength(100), RegularExpression(RegExPatterns.Name, ErrorMessage = "Please enter a valid name.")]
         public string Name { get; set; }
 
         /// <summary>
@@ -92,11 +83,7 @@ namespace maQx.Models
         /// <value>
         /// The phone.
         /// </value>
-        [Required]
-        [DataType(DataType.PhoneNumber)]
-        [Display(Name = "Contact Number")]
-        [RegularExpression(RegExPatterns.PhoneNumber, ErrorMessage = "Please enter a valid contact number.")]
-        [StringLength(10, ErrorMessage = "Please enter a valid contact number.")]
+        [Required, DataType(DataType.PhoneNumber), Display(Name = "Contact Number"), RegularExpression(RegExPatterns.PhoneNumber, ErrorMessage = "Please enter a valid contact number."), StringLength(10, ErrorMessage = "Please enter a valid contact number.")]
         public string Phone { get; set; }
 
         /// <summary>
@@ -105,10 +92,7 @@ namespace maQx.Models
         /// <value>
         /// The password.
         /// </value>
-        [Required]
-        [Display(Name = "Password")]
-        [MinLength(6, ErrorMessage = "Password should have minimum 6 characters."), MaxLength(100)]
-        [DataType(DataType.Password)]
+        [Required, Display(Name = "Password"), MinLength(6, ErrorMessage = "Password should have minimum 6 characters."), MaxLength(100), DataType(DataType.Password)]
         public string Password { get; set; }
 
         /// <summary>
@@ -117,10 +101,7 @@ namespace maQx.Models
         /// <value>
         /// The confirm password.
         /// </value>
-        [Required]
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm Password")]
-        [Compare("Password")]
+        [Required, DataType(DataType.Password), Display(Name = "Confirm Password"), Compare("Password")]
         public string ConfirmPassword { get; set; }
 
         /// <summary>
@@ -134,7 +115,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class RegisterViewModel : AdminRegisterViewModel
     {
@@ -144,10 +125,7 @@ namespace maQx.Models
         /// <value>
         /// The name of the user.
         /// </value>
-        [Required]
-        [Display(Name = "Username")]
-        [RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid user name.")]
-        [MaxLength(100)]
+        [Required, Display(Name = "Username"), RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid user name."), MaxLength(100)]
         public string UserName { get; set; }
 
         /// <summary>
@@ -156,16 +134,12 @@ namespace maQx.Models
         /// <value>
         /// The email.
         /// </value>
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email Address")]
-        [RegularExpression(RegExPatterns.Email, ErrorMessage = "Please enter a valid email address.")]
-        [MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]
+        [Required, DataType(DataType.EmailAddress), Display(Name = "Email Address"), RegularExpression(RegExPatterns.Email, ErrorMessage = "Please enter a valid email address."), MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]
         public string Email { get; set; }
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class OrganizationViewModel
     {
@@ -175,10 +149,7 @@ namespace maQx.Models
         /// <value>
         /// The code.
         /// </value>
-        [Required]
-        [MaxLength(50)]
-        [Display(Name = "Organization Code")]
-        [RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid organization code.")]
+        [Required, MaxLength(50), Display(Name = "Organization Code"), RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid organization code.")]
         public string Code { get; set; }
 
         /// <summary>
@@ -187,10 +158,7 @@ namespace maQx.Models
         /// <value>
         /// The name.
         /// </value>
-        [Required]
-        [MaxLength(50)]
-        [Display(Name = "Organization Name")]
-        [RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid organization name.")]
+        [Required, MaxLength(50), Display(Name = "Organization Name"), RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid organization name.")]
         public string Name { get; set; }
 
         /// <summary>
@@ -199,15 +167,12 @@ namespace maQx.Models
         /// <value>
         /// The domain.
         /// </value>
-        [Required]
-        [MaxLength(100)]
-        [Display(Name = "Domain Address")]
-        [RegularExpression(RegExPatterns.Domain, ErrorMessage = "Please enter a valid domain name.")]
+        [Required, MaxLength(100), Display(Name = "Domain Address"), RegularExpression(RegExPatterns.Domain, ErrorMessage = "Please enter a valid domain name.")]
         public string Domain { get; set; }
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class OrganizationEditViewModel : OrganizationViewModel
     {
@@ -222,7 +187,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class PlantEditViewModel : PlantViewModel
     {
@@ -237,7 +202,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class DivisionEditViewModel : DivisionViewModel
     {
@@ -270,7 +235,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class OrganizationBaseViewModel
     {
@@ -293,7 +258,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class DepartmentDivisionViewModel
     {
@@ -322,7 +287,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class PlantBaseViewModel
     {
@@ -345,7 +310,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class InviteViewModel : OrganizationBaseViewModel
     {
@@ -355,10 +320,7 @@ namespace maQx.Models
         /// <value>
         /// The username.
         /// </value>
-        [Required]
-        [Display(Name = "Username")]
-        [RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid user name.")]
-        [MaxLength(100)]
+        [Required, Display(Name = "Username"), RegularExpression(RegExPatterns.Username, ErrorMessage = "Please enter a valid user name."), MaxLength(100)]
         public string Username { get; set; }
 
         /// <summary>
@@ -367,16 +329,12 @@ namespace maQx.Models
         /// <value>
         /// The email.
         /// </value>
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email Address")]
-        [RegularExpression(RegExPatterns.Email, ErrorMessage = "Please enter a valid email address.")]
-        [MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]
+        [Required, DataType(DataType.EmailAddress), Display(Name = "Email Address"), RegularExpression(RegExPatterns.Email, ErrorMessage = "Please enter a valid email address."), MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]
         public string Email { get; set; }
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class PlantViewModel
     {
@@ -386,10 +344,7 @@ namespace maQx.Models
         /// <value>
         /// The code.
         /// </value>
-        [Required]
-        [MaxLength(50)]
-        [Display(Name = "Plant Code")]
-        [RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid plant code.")]
+        [Required, MaxLength(50), Display(Name = "Plant Code"), RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid plant code.")]
         public string Code { get; set; }
 
         /// <summary>
@@ -398,10 +353,7 @@ namespace maQx.Models
         /// <value>
         /// The name.
         /// </value>
-        [Required]
-        [MaxLength(50)]
-        [Display(Name = "Plant Name")]
-        [RegularExpression(RegExPatterns.SpecialAlphaNumeric, ErrorMessage = "Please enter a valid plant name.")]
+        [Required, MaxLength(50), Display(Name = "Plant Name"), RegularExpression(RegExPatterns.SpecialAlphaNumeric, ErrorMessage = "Please enter a valid plant name.")]
         public string Name { get; set; }
 
         /// <summary>
@@ -410,14 +362,12 @@ namespace maQx.Models
         /// <value>
         /// The location.
         /// </value>
-        [Required]
-        [Display(Name = "Plant Name")]
-        [MaxLength(50)]
+        [Required, Display(Name = "Plant Name"), MaxLength(50)]
         public string Location { get; set; }
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class DivisionViewModel : PlantBaseViewModel
     {
@@ -427,10 +377,7 @@ namespace maQx.Models
         /// <value>
         /// The code.
         /// </value>
-        [Required]
-        [MaxLength(50)]
-        [Display(Name = "Division Code")]
-        [RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid division code.")]
+        [Required, MaxLength(50), Display(Name = "Division Code"), RegularExpression(RegExPatterns.AlphaNumeric, ErrorMessage = "Please enter a valid division code.")]
         public string Code { get; set; }
 
         /// <summary>
@@ -439,16 +386,13 @@ namespace maQx.Models
         /// <value>
         /// The name.
         /// </value>
-        [Required]
-        [MaxLength(50)]
-        [Display(Name = "Division Name")]
-        [RegularExpression(RegExPatterns.SpecialAlphaNumeric, ErrorMessage = "Please enter a valid division name.")]
+        [Required, MaxLength(50), Display(Name = "Division Name"), RegularExpression(RegExPatterns.SpecialAlphaNumeric, ErrorMessage = "Please enter a valid division name.")]
         public string Name { get; set; }
 
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public enum ClientInfoType
     {
@@ -471,7 +415,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class ClientInfo
     {
@@ -499,7 +443,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class GetEmailConfirmViewModel
     {
@@ -526,11 +470,7 @@ namespace maQx.Models
         /// <value>
         /// The email.
         /// </value>
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        [RegularExpression(RegExPatterns.Email, ErrorMessage = "Please enter a valid email address.")]
-        [Display(Name = "Email Address")]
-        [MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]
+        [Required, DataType(DataType.EmailAddress), RegularExpression(RegExPatterns.Email, ErrorMessage = "Please enter a valid email address."), Display(Name = "Email Address"), MinLength(5, ErrorMessage = "Please enter a valid email address."), MaxLength(100)]
         public string Email { get; set; }
 
         /// <summary>
@@ -544,7 +484,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class SetEmailConfirmViewModel : GetEmailConfirmViewModel
     {
@@ -559,7 +499,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class InitViewModel
     {
@@ -587,7 +527,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class UserViewModel
     {
@@ -636,7 +576,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class DepartmentViewModel : DepartmentDivisionViewModel
     {
@@ -651,7 +591,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class DepartmentEditViewModel : DepartmentViewModel
     {
@@ -666,7 +606,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class AccessLevelViewModel
     {
@@ -687,4 +627,40 @@ namespace maQx.Models
         public System.Web.Mvc.SelectList Users { get; set; }
     }
 
+    public class RawMaterialViewModel
+    {
+        [Required, MaxLength(50), Display(Name = "Raw Material Code")]
+        public string Code { get; set; }
+
+        [Required, MaxLength(50), Display(Name = "Raw Material Description")]
+        public string Description { get; set; }
+
+        [Required, Range(1, 4, ErrorMessage = "Unit Of Measure field is required."), Display(Name = "Unit Of Measure")]
+        public Units Unit { get; set; }
+
+        [Required, Range(1, 3, ErrorMessage = "Measurement Type field is required."), Display(Name = "Measurement Type")]
+        public Measurements Measurement { get; set; }
+
+        public RawMaterialViewModel() { }
+        public RawMaterialViewModel(RawMaterial input)
+        {
+            Code = input.Code;
+            Description = input.Description;
+            Unit = input.Unit;
+            Measurement = input.Measurement;
+        }
+    }
+
+    public class RawMaterialEditViewModel : RawMaterialViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+
+        public RawMaterialEditViewModel() { }
+        public RawMaterialEditViewModel(RawMaterial input)
+            : base(input)
+        {
+            Key = input.Key;
+        }
+    }
 }

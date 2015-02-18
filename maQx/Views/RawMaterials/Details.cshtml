@@ -5,47 +5,23 @@
     Layout = "~/Views/Shared/_FramePage.cshtml";
 }
 
-<h2>Details</h2>
+<div class="generic-template generic-form detail-template">
+    <h1>Raw Material details</h1>
 
-<div>
-    <h4>RawMaterial</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Unit)
-        </dt>
+    @{Html.RenderPartial("_View", Model);}
 
-        <dd>
-            @Html.DisplayFor(model => model.Unit)
-        </dd>
+    <div>
+        <div class="form-group">
+            <div>
+                <div>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Key }, new { @class = "btn btn-primary btn-warning" })
+                    @Html.ActionLink("Delete", "Delete", new { id = Model.Key }, new { @class = "btn btn-primary btn-danger" })
+                </div>
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Measurement)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Measurement)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Code)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Code)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-    </dl>
+        <div class="generic-form-bottom-tools">
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Key }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

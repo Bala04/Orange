@@ -5,53 +5,28 @@
     Layout = "~/Views/Shared/_FramePage.cshtml";
 }
 
-<h2>Delete</h2>
+<div class="generic-template generic-form detail-template">
+    <h1>Delete raw material</h1>
+    <h3 class="delete-detail">
+        Are you sure you want to delete this?
+    </h3>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>RawMaterial</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Unit)
-        </dt>
+    @{Html.RenderPartial("_View", Model);}
 
-        <dd>
-            @Html.DisplayFor(model => model.Unit)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Measurement)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Measurement)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Code)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Code)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+        <div class="form-group">
+            <div>
+                <div>
+                    <input type="submit" value="Yes, Delete" class="btn btn-default btn-danger" />
+                </div>
+            </div>
+        </div>
+
+        <div class="generic-form-bottom-tools">
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
         </div>
     }
 </div>

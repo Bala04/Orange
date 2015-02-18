@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using maQx.Utilities;
 
 namespace maQx.Models
 {
@@ -678,6 +679,22 @@ namespace maQx.Models
     {
         public Units Unit { get; set; }
         public Measurements Measurement { get; set; }
+
+        public string UnitName
+        {
+            get
+            {
+                return Unit.DisplayName();
+            }
+        }
+
+        public string MeasurementName
+        {
+            get
+            {
+                return Measurement.DisplayName();
+            }
+        }
 
         public JRawMaterial()
         {

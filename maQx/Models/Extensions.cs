@@ -818,6 +818,30 @@ namespace maQx.Utilities
         }
 
         /// <summary>
+        /// Gets the DataAnnotation DisplayName attribute for a given enum (for displaying enums values nicely to users)
+        /// </summary>
+        /// <param name="Value">Enum value to get display for</param>
+        /// <returns>Pretty version of enum (if there is one)</returns>
+        /// <remarks>
+        public static string DisplayName(this Enum Value)
+        {
+            var EnumType = Value.GetType();
+            var EnumValue = Enum.GetName(EnumType, Value);
+            var Member = EnumType.GetMember(EnumValue)[0];
+
+            var Attrs = Member.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false);
+
+            if (Attrs.Any())
+            {
+                var DisplayAttribute = ((System.ComponentModel.DataAnnotations.DisplayAttribute)Attrs[0]);
+
+                return DisplayAttribute.ResourceType != null ? DisplayAttribute.GetName() : DisplayAttribute.Name;
+            }
+
+            return Value.ToString();
+        }
+
+        /// <summary>
         /// Acts similar of .Include() LINQ method, but allows to include several object properties at once.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -843,7 +867,7 @@ namespace maQx.Utilities
         /// </returns>
         public static List<T> GetConstantValues<T>(this Type type)
         {
-            FieldInfo[] fields = type.GetFields(BindingFlags.Public
+            var fields = type.GetFields(BindingFlags.Public
                 | BindingFlags.Static
                 | BindingFlags.FlattenHierarchy);
 
@@ -914,7 +938,7 @@ namespace maQx.Utilities
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class ViewHelper
     {

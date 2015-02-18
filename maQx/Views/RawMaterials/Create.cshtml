@@ -1,65 +1,27 @@
-﻿@model maQx.Models.RawMaterial
+﻿@model maQx.Models.RawMaterialViewModel
 
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_FramePage.cshtml";
 }
 
-<h2>Create</h2>
+<div class="generic-template generic-form">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
+        <div class="admin-form">
+            <h1>Create a Raw Material</h1>
+            <p>Raw Materials</p>
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>RawMaterial</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Unit, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.Unit, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
+            @{Html.RenderPartial("_Form", Model);}
+
+            <div class="generic-form-bottom-tools">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
             </div>
         </div>
+    }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Measurement, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.Measurement, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Measurement, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+

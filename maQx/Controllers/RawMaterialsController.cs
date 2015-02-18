@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using maQx.Models;
+using maQx.Utilities;
 
 namespace maQx.Controllers
 {
@@ -45,15 +46,29 @@ namespace maQx.Controllers
         }
 
         // POST: RawMaterials/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Key,Unit,Measurement,Code,Description,UserCreated,UserModified,CreatedAt,UpdatedAt,TimeStamp,ActiveFlag")] RawMaterial rawMaterial)
+        public async Task<ActionResult> Create([Bind(Include = "Unit,Measurement,Code,Description")] RawMaterialViewModel rawMaterial)
         {
             if (ModelState.IsValid)
             {
-                db.RawMaterials.Add(rawMaterial);
+                var Division = await db.Divisions.FindAsync(User.GetDivision());
+
+                if (Division == null)
+                {
+                    return HttpNotFound();
+                }
+
+                db.RawMaterials.Add(new RawMaterial
+                {
+                    Code = rawMaterial.Code,
+                    Description = rawMaterial.Description,
+                    Unit = rawMaterial.Unit,
+                    Measurement = rawMaterial.Measurement,
+                    Division = Division
+                });
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -73,19 +88,26 @@ namespace maQx.Controllers
             {
                 return HttpNotFound();
             }
-            return View(rawMaterial);
+            return View(new RawMaterialEditViewModel(rawMaterial));
         }
 
         // POST: RawMaterials/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Key,Unit,Measurement,Code,Description,UserCreated,UserModified,CreatedAt,UpdatedAt,TimeStamp,ActiveFlag")] RawMaterial rawMaterial)
+        public async Task<ActionResult> Edit([Bind(Include = "Key,Unit,Measurement,Code,Description")] RawMaterialEditViewModel rawMaterial)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(rawMaterial).State = EntityState.Modified;
+                var Material = await db.RawMaterials.Include(x => x.Division).Where(x => x.Key == rawMaterial.Key).FirstOrDefaultAsync();
+
+                Material.Code = rawMaterial.Code;
+                Material.Description = rawMaterial.Description;
+                Material.Unit = rawMaterial.Unit;
+                Material.Measurement = rawMaterial.Measurement;
+
+                db.Entry(Material).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }

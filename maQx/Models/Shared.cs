@@ -8,7 +8,7 @@ using System.Data.Entity;
 namespace maQx.Models
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class Shared
     {
@@ -44,7 +44,7 @@ namespace maQx.Models
         {
             using (AppContext db = new AppContext())
             {
-                var List = await db.DepartmentUsers.Include(x => x.User).Where(x => x.Department.Division.Plant.Organization.Key == Organization).Select(x => x.User).ToListAsync();
+                var List = await db.DepartmentUsers.Include(x => x.User).Where(x => x.ActiveFlag && x.Department.Division.Plant.Organization.Key == Organization).Select(x => x.User).OrderBy(x => x.Firstname).ToListAsync();
 
                 return List.Select(x =>
                 {
