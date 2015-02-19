@@ -65,6 +65,14 @@ namespace maQx.Models
         /// <c>true</c> if this instance is delete able; otherwise, <c>false</c>.
         /// </value>
         public bool IsDeleteable { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [allow create].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [allow create]; otherwise, <c>false</c>.
+        /// </value>
+        public bool AllowCreate { get; set; }
     }
 
     /// <summary>
@@ -186,7 +194,7 @@ namespace maQx.Models
         /// </summary>
         /// <param name="List">The list.</param>
         /// <param name="Values">The values.</param>
-        public JsonListViewModel(List<T> List, Tuple<bool, bool, bool> Values)
+        public JsonListViewModel(List<T> List, Tuple<bool, bool, bool, bool> Values)
             : base("SUCCESS")
         {
             this.List = List;
@@ -196,6 +204,7 @@ namespace maQx.Models
                 IsViewable = Values.Item1;
                 IsEditable = Values.Item2;
                 IsDeleteable = Values.Item3;
+                AllowCreate = Values.Item4;
             }
         }
 

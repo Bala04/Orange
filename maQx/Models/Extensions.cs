@@ -34,21 +34,26 @@ namespace maQx.Utilities
         /// <param name="T">The t.</param>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        private static bool Get(Type T, string name)
+        private static bool Get(Type T, string Name, bool Condition)
         {
-            try
+            if (Condition)
             {
-                var a = T.GetMethod(name);
-                return a != null;
+                try
+                {
+                    var a = T.GetMethod(Name);
+                    return a != null;
+                }
+                catch (AmbiguousMatchException)
+                {
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
-            catch (AmbiguousMatchException)
-            {
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -56,9 +61,14 @@ namespace maQx.Utilities
         /// </summary>
         /// <param name="T">The t.</param>
         /// <returns></returns>
-        public static Tuple<bool, bool, bool> GetTools(Type T)
+        public static Tuple<bool, bool, bool, bool> GetTools(Type T, List<string> UserRoles)
         {
-            return new Tuple<bool, bool, bool>(Get(T, "Details"), Get(T, "Edit"), Get(T, "Delete"));
+            return new Tuple<bool, bool, bool, bool>(Get(T, "Details", true), Get(T, "Edit", UserRoles.ContainsAll(Roles.Edit, Roles.EditDelete)), Get(T, "Delete", UserRoles.ContainsAll(Roles.Delete, Roles.EditDelete)), UserRoles.ContainsAll(Roles.Create, Roles.CreateEdit));
+        }
+
+        public static Tuple<bool, bool, bool, bool> GetTools(Type T)
+        {
+            return new Tuple<bool, bool, bool, bool>(Get(T, "Details", true), Get(T, "Edit", true), Get(T, "Delete", true), true);
         }
     }
 
@@ -267,6 +277,21 @@ namespace maQx.Utilities
         {
             if (null == source) throw new ArgumentNullException("source");
             return list.Contains(source);
+        }
+
+        public static bool ContainsAll<T>(this IEnumerable<T> source, params T[] list)
+        {
+            if (null == source) throw new ArgumentNullException("source");
+
+            foreach (var item in list)
+            {
+                if (!source.Contains(item))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
         /// <summary>
         /// Withes the specified arguments.
@@ -951,7 +976,7 @@ namespace maQx.Utilities
         /// <param name="operation">The operation.</param>
         /// <param name="data">The data.</param>
         /// <returns></returns>
-        private static async Task<JsonResult> List<T1, T2>(string Controller, Func<List<T2>, T1> operation, List<T2> data)
+        private static async Task<JsonResult> List<T1, T2>(string Controller, Func<List<T2>, T1> operation, List<T2> data, IPrincipal User, string Role)
             where T1 : maQx.Models.JsonViewModel
             where T2 : class
         {
@@ -960,7 +985,7 @@ namespace maQx.Utilities
                 return await operation(data).toJson();
             }
 
-            return await new JsonListViewModel<T2>(data, String.IsNullOrWhiteSpace(Controller) ? null : TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller))).toJson();
+            return await new JsonListViewModel<T2>(data, String.IsNullOrWhiteSpace(Controller) ? null : (Role == Roles.AppUser ? TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller), User.GetRoles()) : TableTools.GetTools(Type.GetType("maQx.Controllers." + Controller)))).toJson();
         }
 
         /// <summary>
@@ -990,7 +1015,7 @@ namespace maQx.Utilities
                 {
                     var data = await value.IncludeMultiple(Includes).Where(exp).ToListAsync();
 
-                    return await List<T2, T1>(Controller, operation, data);
+                    return await List<T2, T1>(Controller, operation, data, User, Role);
                 }
                 else
                 {
@@ -1044,7 +1069,7 @@ namespace maQx.Utilities
                         return format.To(x);
                     }).ToList();
 
-                    return await List<T2, T3>(Controller, operation, d);
+                    return await List<T2, T3>(Controller, operation, d, User, Role);
                 }
                 else
                 {

@@ -40,6 +40,7 @@ namespace maQx.Controllers
         }
 
         // GET: RawMaterials/Create
+        [Roles(Roles.Create, Roles.CreateEdit)]
         public ActionResult Create()
         {
             return View();
@@ -50,6 +51,7 @@ namespace maQx.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Roles(Roles.Create, Roles.CreateEdit)]
         public async Task<ActionResult> Create([Bind(Include = "Unit,Measurement,Code,Description")] RawMaterialViewModel rawMaterial)
         {
             if (ModelState.IsValid)
@@ -77,6 +79,7 @@ namespace maQx.Controllers
         }
 
         // GET: RawMaterials/Edit/5
+        [Roles(Roles.Edit, Roles.CreateEdit)]
         public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
@@ -96,6 +99,7 @@ namespace maQx.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Roles(Roles.Edit, Roles.CreateEdit)]
         public async Task<ActionResult> Edit([Bind(Include = "Key,Unit,Measurement,Code,Description")] RawMaterialEditViewModel rawMaterial)
         {
             if (ModelState.IsValid)
@@ -115,6 +119,7 @@ namespace maQx.Controllers
         }
 
         // GET: RawMaterials/Delete/5
+        [Roles(Roles.Delete, Roles.EditDelete)]
         public async Task<ActionResult> Delete(string id)
         {
             if (id == null)
@@ -132,6 +137,7 @@ namespace maQx.Controllers
         // POST: RawMaterials/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Roles(Roles.Delete, Roles.EditDelete)]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
             RawMaterial rawMaterial = await db.RawMaterials.FindAsync(id);
