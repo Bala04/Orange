@@ -605,7 +605,7 @@ namespace maQx.Controllers
         private async Task<bool> AuthenticateUser(string Username, string Password, bool RememberMe)
         {
             // Authenticate non-admin users
-            // Default Count 
+            // Default Count
             var Count = -1;
 
             // Allows user to specify only the user name without the domain if only one organization exists in the application scope.
@@ -626,7 +626,10 @@ namespace maQx.Controllers
             }
 
             // Check whether the specified domain is exists and the organization is active
-            var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Username.Split('@')[1]).FirstOrDefaultAsync();
+            // BUG:  var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Username.Split('@')[1]).FirstOrDefaultAsync(); ArrayIndex not supported in Entity Framework
+            // FIX: Create Domain as string and pass to the query
+            var Domain = Username.Split('@')[1];
+            var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Domain).FirstOrDefaultAsync();
 
             // if not found return false to prevent login.
             if (Organization == null)

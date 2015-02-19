@@ -82,6 +82,13 @@ namespace maQx.Controllers
             return await Format<RawMaterial, JRawMaterial>(Roles.AppUser, db.RawMaterials, "RawMaterialsController", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> Products()
+        {
+            var Division = User.GetDivision();
+            return await Format<Product, JProduct>(Roles.AppUser, db.Products, "ProductsController", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
+        }
+
         /// <summary>
         /// Administrators this instance.
         /// </summary>

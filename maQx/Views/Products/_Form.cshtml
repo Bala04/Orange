@@ -1,0 +1,34 @@
+﻿@model maQx.Models.ProductViewModel
+
+<div class="admin-form-layout">
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @{
+        var a = @ViewContext.RouteData.Values["action"].ToString();
+    }
+
+    <div class="form-group">
+        <div>
+            @Html.TextBoxFor(model => model.Code, new { placeholder = "Product Code" })
+            @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            @Html.TextBoxFor(model => model.Description, new { placeholder = "Product Description" })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            <div>
+                <input type="submit" value="@a" class="btn btn-default @(a == "Edit" ? "btn-warning" : "app-btn")" />
+                <input type="reset" value="Clear" class="btn btn-default inverse-btn" />
+            </div>
+        </div>
+    </div>
+</div>
+
+

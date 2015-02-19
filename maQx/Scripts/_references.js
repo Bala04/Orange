@@ -6,7 +6,6 @@
 /// <reference path="respond.js" />
 /// <reference path="section/app-controller.js" />
 /// <reference path="section/page-controller.js" />
-/// <reference path="section/login-controller.js" />
 /// <reference path="section/user-controller.js" />
 /// <reference path="components/directives/app-directive.js" />
 /// <reference path="components/services/app-service.js" />

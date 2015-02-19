@@ -713,4 +713,19 @@ namespace maQx.Models
             return new JRawMaterial(input);
         }
     }
+
+    public class JProduct : JsonEntityDivisionBase, IJsonBase<Product, JProduct>
+    {
+        public JProduct() { }
+        public JProduct(Product input)
+            : base(input)
+        {
+
+        }
+
+        public JProduct To(Product input)
+        {
+            return new JProduct(input);
+        }
+    }
 }

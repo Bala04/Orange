@@ -246,6 +246,7 @@
     <Compile Include="Controllers\InvitesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PlantsController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\RawMaterialsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1102,7 +1103,6 @@
     <Content Include="Scripts\section\department-user-controller.js" />
     <Content Include="Scripts\section\frame-controller.js" />
     <Content Include="Scripts\section\invite-controller.js" />
-    <Content Include="Scripts\section\login-controller.js" />
     <Content Include="Scripts\section\menu-controller.js" />
     <Content Include="Scripts\section\page-controller.js" />
     <Content Include="Scripts\section\shared-controller.js" />
@@ -1190,6 +1190,13 @@
     <Content Include="Views\RawMaterials\Index.cshtml" />
     <Content Include="Views\RawMaterials\_Form.cshtml" />
     <Content Include="Views\RawMaterials\_View.cshtml" />
+    <Content Include="Views\Products\Create.cshtml" />
+    <Content Include="Views\Products\Delete.cshtml" />
+    <Content Include="Views\Products\Details.cshtml" />
+    <Content Include="Views\Products\Edit.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\_Form.cshtml" />
+    <Content Include="Views\Products\_View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

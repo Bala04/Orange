@@ -56,7 +56,7 @@
                     </div>
                     <div class="form-group">
                         <div>
-                            @Html.HiddenFor(m => m.StepCode)
+                            @Html.HiddenFor(m => m.StepCode, new { @readonly = "readonly" })
                             <div>
                                 <input type="submit" value="Continue" class="btn btn-default app-btn" />
                                 <input type="reset" value="Clear" class="btn btn-default inverse-btn" />

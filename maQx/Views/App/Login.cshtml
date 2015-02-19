@@ -17,7 +17,7 @@
             </div>
         </div>
     }
-    <div class="login-layout" ng-controller="LoginController as lCtrl">
+    <div class="login-layout">
         <div class="login-form">
             <div class="logo-placeholder"></div>
             <div class="version-placeholder" ng-bind="'version '+ aCtrl.appVersion">version</div>
@@ -27,13 +27,13 @@
                     @Html.AntiForgeryToken()
 
                     <div class="login-form-control">
-                        @Html.TextBoxFor(m => m.UserName, new { placeholder = "username", ng_model = "lCtrl.username", required = "required" })
+                        @Html.TextBoxFor(m => m.UserName, new { placeholder = "username", required = "required" })
                     </div>
                     <div class="login-form-control">
                         @Html.PasswordFor(m => m.Password, new { placeholder = "password and hit enter", required = "required" })
                     </div>
                     <div class="login-form-control stay-signed-in">
-                        @Html.CheckBoxFor(m => m.RememberMe, new { ng_model = "lCtrl.rememberMe" })
+                        @Html.CheckBoxFor(m => m.RememberMe)
                         @Html.LabelFor(m => m.RememberMe, "stay signed in")
                     </div>
 
@@ -65,6 +65,4 @@
     </footer>
 
 </div>
-@section Scripts {
-    @Scripts.Render("~/bundles/angular-login-controller")
-}
+

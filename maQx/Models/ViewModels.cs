@@ -673,4 +673,33 @@ namespace maQx.Models
             Key = input.Key;
         }
     }
+
+    public class ProductViewModel
+    {
+        [Required, MaxLength(50), Display(Name = "Product Code")]
+        public string Code { get; set; }
+
+        [Required, MaxLength(50), Display(Name = "Product Description")]
+        public string Description { get; set; }
+
+        public ProductViewModel() { }
+        public ProductViewModel(Product input)
+        {
+            Code = input.Code;
+            Description = input.Description;
+        }
+    }
+
+    public class ProductEditViewModel : ProductViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+
+        public ProductEditViewModel() { }
+        public ProductEditViewModel(Product input)
+            : base(input)
+        {
+            Key = input.Key;
+        }
+    }
 }

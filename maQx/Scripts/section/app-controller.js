@@ -35,10 +35,12 @@
 
         $rootScope.$on("FrameLoading", function (event, menu) {
             self.title = "Loading..."
-        });        
+        });
 
         $rootScope.$on("FrameLoaded", function (event, menu) {
-            self.pageTitle = menu.Name;
-            self.title = AppService.getPageTitle($window.location.pathname) + " - " + self.pageTitle;
+            if (menu) {
+                self.pageTitle = menu.Name;
+                self.title = AppService.getPageTitle($window.location.pathname) + " - " + self.pageTitle;
+            }
         });
     }]);

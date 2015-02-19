@@ -46,7 +46,6 @@ namespace maQx
                     "~/Scripts/components/services/menu-service.js",
                     "~/Scripts/components/directives/app-directive.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/angular-login-controller").Include("~/Scripts/section/login-controller.js"));
             bundles.Add(new ScriptBundle("~/bundles/angular-table-controller").Include("~/Scripts/section/table-controller.js"));
             bundles.Add(new ScriptBundle("~/bundles/section-invite-controller").Include("~/Scripts/section/invite-controller.js"));
             bundles.Add(new ScriptBundle("~/bundles/section-shared-controller").Include("~/Scripts/section/shared-controller.js"));
