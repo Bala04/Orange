@@ -91,7 +91,7 @@ namespace maQx.Controllers
         /// <returns></returns>
         public async Task<ActionResult> Create()
         {
-            var Organization = await db.Organizations.ToListAsync();
+            var Organization = await db.Organizations.Where(x => x.ActiveFlag).ToListAsync();
 
             return View(new InviteViewModel()
             {
@@ -183,7 +183,7 @@ namespace maQx.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Username,Email,Organization")] InviteViewModel invite)
         {
-            var Organizations = await db.Organizations.ToListAsync();
+            var Organizations = await db.Organizations.Where(x => x.ActiveFlag).ToListAsync();
 
             if (ModelState.IsValid)
             {

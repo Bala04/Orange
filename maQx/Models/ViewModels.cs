@@ -389,6 +389,16 @@ namespace maQx.Models
         [Required, MaxLength(50), Display(Name = "Division Name"), RegularExpression(RegExPatterns.SpecialAlphaNumeric, ErrorMessage = "Please enter a valid division name.")]
         public string Name { get; set; }
 
+        public DivisionViewModel() { }
+
+        public DivisionViewModel(Division division, System.Web.Mvc.SelectList Plants)
+        {
+            Code = division.Code;
+            Name = division.Name;
+            Plant = division.Plant.Key;
+            this.Plants = Plants;
+        }
+
     }
 
     /// <summary>

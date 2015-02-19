@@ -48,7 +48,7 @@ namespace maQx.Controllers
                 return HttpNotFound();
             }
 
-            var Plant = await db.Plants.ToListAsync();
+            var Plant = await db.Plants.Where(x => x.ActiveFlag).ToListAsync();
 
             return View(new DivisionViewModel
             {
@@ -63,9 +63,11 @@ namespace maQx.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Code,Name,Plant")] DivisionViewModel division)
         {
+            var Plants = await db.Plants.Where(x => x.ActiveFlag).ToListAsync();
+
             if (ModelState.IsValid)
             {
-                var Plant = await db.Plants.FindAsync(division.Plant);
+                var Plant = Plants.Where(x => x.Key == division.Plant).FirstOrDefault();
 
                 if (Plant != null)
                 {
@@ -83,7 +85,7 @@ namespace maQx.Controllers
                     ModelState.AddModelError("Plant", "Selected plant is not found.");
                 }
             }
-
+            division.Plants = Plants.ToSelectList("Name", " - Plant -", SelectedField: division.Plant);
             return View(division);
         }
 
@@ -100,12 +102,12 @@ namespace maQx.Controllers
                 return HttpNotFound();
             }
 
-            var Plants = await db.Plants.ToListAsync();
+            var Plants = await db.Plants.Where(x => x.ActiveFlag).ToListAsync();
             return View(new DivisionEditViewModel(division, Plants.ToSelectList("Name", SelectedField: division.Plant.Key)));
         }
 
         // POST: Divisions/Edit/5
-        // To protect from over posting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from over posting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -140,7 +142,7 @@ namespace maQx.Controllers
             }
 
             var Plants = await db.Plants.ToListAsync();
-            return View(new DivisionEditViewModel(div, Plants.ToSelectList("Name", SelectedField: division.Plant)));
+            return View(new DivisionEditViewModel(div, Plants.ToSelectList("Name", " - Plant -", SelectedField: division.Plant)));
         }
 
         // GET: Divisions/Delete/5

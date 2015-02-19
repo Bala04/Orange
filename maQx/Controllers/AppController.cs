@@ -625,6 +625,13 @@ namespace maQx.Controllers
                 // else nothing to do here.
             }
 
+            // Check whether the specified domain is exists and the organization is active
+            var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Username.Split('@')[1]).FirstOrDefaultAsync();
+
+            // if not found return false to prevent login.
+            if (Organization == null)
+                return false;
+
             // Check for whether the user is exists
             var User = await UserManager.FindAsync(Username, Password);
 
@@ -632,9 +639,28 @@ namespace maQx.Controllers
             if (User != null)
             {
                 // AppUsers should belongs to a division and should have access to at least one Menu
-                if (await UserManager.IsInRoleAsync(User.Id, Roles.AppUser) && (await db.MenuAccess.Where(x => x.User.Id == User.Id).CountAsync()) < 1)
+                if (await UserManager.IsInRoleAsync(User.Id, Roles.AppUser))
                 {
-                    throw new AccessDeniedException("Your account doesn't have any scope to access this application. Please contact your System Administrator for further assistance.");
+                    var AccessMenus = await db.MenuAccess.Include(x => x.DepartmentMenu.Department.Division.Plant).ToListAsync();
+
+                    if (AccessMenus.Count() < 1)
+                    {
+                        throw new AccessDeniedException("Your account doesn't have any scope to access this application. Please contact your System Administrator for further assistance.");
+                    }
+                    else if (false) // Check dashboard access
+                    {
+
+                    }
+                    else
+                    {
+                        var AccessMenu = AccessMenus.First();
+                        string Entity = (AccessMenu.DepartmentMenu.Department.ActiveFlag ? AccessMenu.DepartmentMenu.Department.Division.ActiveFlag ? AccessMenu.DepartmentMenu.Department.Division.Plant.ActiveFlag ? String.Empty : "plant" : "division" : "department");
+
+                        if (Entity != String.Empty)
+                        {
+                            throw new AccessDeniedException("Your " + Entity + " has been disabled by your System Administrator. Please contact your System Administrator for further assistance.");
+                        }
+                    }
                 }
 
                 await SignInAsync(User, RememberMe);
