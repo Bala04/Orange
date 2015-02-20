@@ -626,14 +626,20 @@ namespace maQx.Controllers
             }
 
             // Check whether the specified domain is exists and the organization is active
-            // BUG:  var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Username.Split('@')[1]).FirstOrDefaultAsync(); ArrayIndex not supported in Entity Framework
-            // FIX: Create Domain as string and pass to the query
-            var Domain = Username.Split('@')[1];
-            var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Domain).FirstOrDefaultAsync();
+            // BUG: var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Username.Split('@')[1]).FirstOrDefaultAsync(); ArrayIndex not supported in Entity Framework
+            // FIX: Create Domain as string and pass to the query. 18/02/2015
+            // BUG: var Domain = Username.Split('@')[1]; Administrator accounts are not belongs to specific organization
+            // FIX: Skip authentication checks for administrator account
+            // Check whether the account is the administrator. If yes skip authentication.
+            if (Username != AdminUsername.ToLower())
+            {
+                var Domain = Username.Split('@')[1];
+                var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Domain).FirstOrDefaultAsync();
 
-            // if not found return false to prevent login.
-            if (Organization == null)
-                return false;
+                // if not found return false to prevent login.
+                if (Organization == null)
+                    return false;
+            }
 
             // Check for whether the user is exists
             var User = await UserManager.FindAsync(Username, Password);
