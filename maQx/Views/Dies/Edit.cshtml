@@ -1,0 +1,27 @@
+﻿@model maQx.Models.DieEditViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+<div class="generic-template generic-form">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Key, htmlAttributes: new { @readonly = "readonly" })
+
+        <div class="admin-form">
+            <h1>Edit details</h1>
+
+            <p>Editing a die will not affect any other entities.</p>
+
+            @{Html.RenderPartial("_Form", Model);}
+
+            <div class="generic-form-bottom-tools">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
+            </div>
+        </div>
+    }
+
+</div>

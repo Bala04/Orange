@@ -36,7 +36,7 @@ namespace maQx.Utilities
         /// <returns></returns>
         private static bool Get(Type T, string Name, bool Condition)
         {
-            if (true)
+            if (Condition)
             {
                 try
                 {
@@ -140,7 +140,7 @@ namespace maQx.Utilities
         /// <summary>
         /// The decimal
         /// </summary>
-        public const string Decimal = "^[0-9.]+$";
+        public const string Decimal = @"^\d+(.\d+){0,1}$";
         /// <summary>
         /// The phone number
         /// </summary>

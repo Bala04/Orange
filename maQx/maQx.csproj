@@ -241,6 +241,7 @@
     <Compile Include="Controllers\DepartmentMenusController.cs" />
     <Compile Include="Controllers\DepartmentsController.cs" />
     <Compile Include="Controllers\DepartmentUsersController.cs" />
+    <Compile Include="Controllers\DiesController.cs" />
     <Compile Include="Controllers\DivisionsController.cs" />
     <Compile Include="Controllers\GetController.cs" />
     <Compile Include="Controllers\InvitesController.cs" />
@@ -249,6 +250,7 @@
     <Compile Include="Controllers\ProcessController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\RawMaterialsController.cs" />
+    <Compile Include="Controllers\ToolsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1205,6 +1207,20 @@
     <Content Include="Views\Process\Index.cshtml" />
     <Content Include="Views\Process\_Form.cshtml" />
     <Content Include="Views\Process\_View.cshtml" />
+    <Content Include="Views\Tools\Create.cshtml" />
+    <Content Include="Views\Tools\Delete.cshtml" />
+    <Content Include="Views\Tools\Details.cshtml" />
+    <Content Include="Views\Tools\Edit.cshtml" />
+    <Content Include="Views\Tools\Index.cshtml" />
+    <Content Include="Views\Tools\_Form.cshtml" />
+    <Content Include="Views\Tools\_View.cshtml" />
+    <Content Include="Views\Dies\Create.cshtml" />
+    <Content Include="Views\Dies\Delete.cshtml" />
+    <Content Include="Views\Dies\Details.cshtml" />
+    <Content Include="Views\Dies\Edit.cshtml" />
+    <Content Include="Views\Dies\Index.cshtml" />
+    <Content Include="Views\Dies\_Form.cshtml" />
+    <Content Include="Views\Dies\_View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

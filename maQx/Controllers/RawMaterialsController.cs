@@ -79,7 +79,7 @@ namespace maQx.Controllers
         }
 
         // GET: RawMaterials/Edit/5
-        [Roles(Roles.Edit, Roles.CreateEdit)]
+         [Roles(Roles.Edit, Roles.CreateEdit, Roles.EditDelete)]
         public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
@@ -99,7 +99,7 @@ namespace maQx.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Roles(Roles.Edit, Roles.CreateEdit)]
+        [Roles(Roles.Edit, Roles.CreateEdit, Roles.EditDelete)]
         public async Task<ActionResult> Edit([Bind(Include = "Key,Unit,Measurement,Code,Description")] RawMaterialEditViewModel rawMaterial)
         {
             if (ModelState.IsValid)

@@ -903,7 +903,7 @@ namespace maQx.Models
         /// <value>
         /// The tolerance.
         /// </value>
-        [Required, Range(1, int.MaxValue)]
+        [Required, Range(0, int.MaxValue)]
         public int Tolerance { get; set; }
     }
 
@@ -1011,7 +1011,7 @@ namespace maQx.Models
         /// <value>
         /// The maximum sink.
         /// </value>
-        [Required, Range(1, int.MaxValue)]
+        [Required, Range(0, int.MaxValue)]
         public int MaxSink { get; set; }
     }
 

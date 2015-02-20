@@ -735,4 +735,84 @@ namespace maQx.Models
             Key = input.Key;
         }
     }
+
+    public class ToolDieBaseViewModel
+    {
+        [Required, Display(Name = "Life Count"), RegularExpression(RegExPatterns.Numeric, ErrorMessage = "Please enter a valid life count."), Range(1, int.MaxValue, ErrorMessage = "Please enter a valid life count.")]
+        public int MaxCount { get; set; }
+
+        [Required, Display(Name = "Tolerance"), RegularExpression(RegExPatterns.Numeric, ErrorMessage = "Please enter a valid tolerance."), Range(0, int.MaxValue, ErrorMessage = "Please enter a valid tolerance.")]
+        public int Tolerance { get; set; }
+
+        public ToolDieBaseViewModel() { }
+        public ToolDieBaseViewModel(ToolDieBase input)
+        {
+            MaxCount = input.MaxCount;
+            Tolerance = input.Tolerance;
+        }
+    }
+
+    public class ToolViewModel : ToolDieBaseViewModel
+    {
+        [Required, MaxLength(50), Display(Name = "Tool Code")]
+        public string Code { get; set; }
+
+        [Required, MaxLength(50), Display(Name = "Tool Description")]
+        public string Description { get; set; }
+
+        public ToolViewModel() { }
+        public ToolViewModel(Tool input)
+            : base(input)
+        {
+            Code = input.Code;
+            Description = input.Description;
+        }
+    }
+
+    public class ToolEditViewModel : ToolViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+
+        public ToolEditViewModel() { }
+        public ToolEditViewModel(Tool input)
+            : base(input)
+        {
+            Key = input.Key;
+        }
+    }
+
+    public class DieViewModel : ToolDieBaseViewModel
+    {
+        [Required, MaxLength(50), Display(Name = "Die Code")]
+        public string Code { get; set; }
+
+        [Required, MaxLength(50), Display(Name = "Die Description")]
+        public string Description { get; set; }
+
+        [Required, Display(Name = "Sink Count"), RegularExpression(RegExPatterns.Numeric, ErrorMessage = "Please enter a valid sink count."), Range(0, int.MaxValue, ErrorMessage = "Please enter a valid sink count.")]
+        public int MaxSink { get; set; }
+
+        public DieViewModel() { }
+        public DieViewModel(Die input)
+            : base(input)
+        {
+            Code = input.Code;
+            Description = input.Description;
+            MaxSink = input.MaxSink;
+        }
+    }
+
+    public class DieEditViewModel : DieViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+
+        public DieEditViewModel() { }
+        public DieEditViewModel(Die input)
+            : base(input)
+        {
+            Key = input.Key;
+        }
+    }
 }

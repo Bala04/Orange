@@ -106,6 +106,20 @@ namespace maQx.Models
 
     }
 
+    public class JToolDieBase : JsonEntityDivisionBase
+    {
+        public int MaxCount { get; set; }
+        public int Tolerance { get; set; }
+
+        public JToolDieBase() { }
+        public JToolDieBase(ToolDieBase input)
+            : base(input)
+        {
+            MaxCount = input.MaxCount;
+            Tolerance = input.Tolerance;
+        }
+    }
+
     /// <summary>
     ///
     /// </summary>
@@ -750,6 +764,38 @@ namespace maQx.Models
         public JProcess To(Process input)
         {
             return new JProcess(input);
+        }
+    }
+
+    public class JTool : JToolDieBase, IJsonBase<Tool, JTool>
+    {
+        public JTool() { }
+        public JTool(Tool input)
+            : base(input)
+        {
+
+        }
+
+        public JTool To(Tool input)
+        {
+            return new JTool(input);
+        }
+    }
+
+    public class JDie : JToolDieBase, IJsonBase<Die, JDie>
+    {
+        public int MaxSink { get; set; }
+
+        public JDie() { }
+        public JDie(Die input)
+            : base(input)
+        {
+            MaxSink = input.MaxSink;
+        }
+
+        public JDie To(Die input)
+        {
+            return new JDie(input);
         }
     }
 }

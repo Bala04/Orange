@@ -10,11 +10,10 @@ using System.Security.Claims;
 using System.Linq.Expressions;
 using Microsoft.AspNet.Identity;
 
-
 namespace maQx.Controllers
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     [AjaxOnly]
     [AuthorizeGetView]
@@ -94,6 +93,20 @@ namespace maQx.Controllers
         {
             var Division = User.GetDivision();
             return await Format<Process, JProcess>(Roles.AppUser, db.Process, "ProcessController", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Tools()
+        {
+            var Division = User.GetDivision();
+            return await Format<Tool, JTool>(Roles.AppUser, db.Tools, "ProcessController", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Dies()
+        {
+            var Division = User.GetDivision();
+            return await Format<Die, JDie>(Roles.AppUser, db.Dies, "ProcessController", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
         }
 
         /// <summary>

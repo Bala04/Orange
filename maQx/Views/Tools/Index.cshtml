@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_TablePage.cshtml";
+}
+
+@section Scripts{
+    <script>
+        angular.module("tabularApp").service("DataService", ['$resource', function ($resource) {
+            return {
+                query: function () {
+                    return $resource('get/Tools').get();
+                },
+                init: function () {
+                    return [{ a: 'Code', b: 'Code' }, { a: 'Description', b: 'Description' }, { a: 'MaxCount', b: 'Max Count' }, { a: 'Tolerance', b: 'Tolerance Count' }, { a: 'Modified', b: 'Modified' }];
+                }
+            }
+        }]);
+    </script>
+}
+
+
