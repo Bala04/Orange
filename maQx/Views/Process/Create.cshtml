@@ -1,0 +1,26 @@
+﻿@model maQx.Models.ProcessViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+<div class="generic-template generic-form">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="admin-form">
+            <h1>Create a process</h1>
+            <p>Process</p>
+
+            @{Html.RenderPartial("_Form", Model);}
+
+            <div class="generic-form-bottom-tools">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
+            </div>
+        </div>
+    }
+
+</div>
+

@@ -728,4 +728,28 @@ namespace maQx.Models
             return new JProduct(input);
         }
     }
+
+    public class JProcess : JsonEntityDivisionBase, IJsonBase<Process, JProcess>
+    {
+        public bool ValidateRawMaterial { get; set; }
+        public string ValidateRawmaterialMessage
+        {
+            get
+            {
+                return ValidateRawMaterial ? "Required" : "Not Required";
+            }
+        }
+
+        public JProcess() { }
+        public JProcess(Process input)
+            : base(input)
+        {
+            ValidateRawMaterial = input.ValidateRawMaterial;
+        }
+
+        public JProcess To(Process input)
+        {
+            return new JProcess(input);
+        }
+    }
 }

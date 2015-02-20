@@ -1,0 +1,22 @@
+﻿@model maQx.Models.Process
+
+<table class="table table-responsive detail-table">
+    <tbody>
+        <tr>
+            <td><div>Code</div></td>
+            <td>:</td>
+            <td><div class="ui-bold">@Model.Code</div></td>
+        </tr>
+        <tr>
+            <td><div>Description</div></td>
+            <td>:</td>
+            <td><div class="ui-bold">@Model.Description</div></td>
+        </tr>
+        <tr>
+            <td><div>Raw Material Validation</div></td>
+            <td>:</td>
+            <td><div class="ui-bold">@(Model.ValidateRawMaterial ? "Required" : "Not Required")</div></td>
+        </tr>
+    </tbody>
+</table>
+

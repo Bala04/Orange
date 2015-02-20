@@ -1743,7 +1743,8 @@ header {
         }
         td {
             &:first-child {
-                width: 160px;
+                width: 1%;
+                white-space: nowrap;
             }
             &:nth-child(2) {
                 width: 10px;

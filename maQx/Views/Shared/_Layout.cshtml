@@ -4,12 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title ng-bind="aCtrl.getTitle()"></title>
-    <script>
-        (function () {
-            if (window.self !== window.top) {
-                window.top.location.href = window.self.location.href;
-            }
-        })();
+    <script type="text/javascript">
+        if (window.self !== window.top) {
+            window.top.location.href = window.self.location.href;
+        }
     </script>
     <link rel="icon" href="@Url.Content("~/Content/Images/favicon.ico")" />
     <link rel="stylesheet" href="@Url.Content("~/Content/fonts/fonts.css")" />
@@ -27,6 +25,5 @@
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/angular")
     @RenderSection("scripts", required: false)
-
 </body>
 </html>

@@ -12,12 +12,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
-    <script>
-        (function () {
-            if (window.self === window.top) {
-                window.location.href = "/#" + window.self.location.pathname;
-            }
-        })();
+    <script type="text/javascript">
+        if (window.self === window.top) {
+            window.location.href = "/#" + window.self.location.pathname;
+        }
     </script>
     <link rel="icon" href="@Url.Content("~/Content/Images/favicon.ico")" />
     <link rel="stylesheet" href="@Url.Content("~/Content/fonts/fonts.css")" />
@@ -31,7 +29,7 @@
     <div class="frame-layout">
         <div ng-controller="AlertController as aCtrl" class="frame-alert">
             <div class="alert display-none" ng-show="aCtrl.isShow()" ng-class="aCtrl.alertType()" role="alert">
-                <button type="button" class="close" ng-click="aCtrl.close()"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" ng-click="aCtrl.close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <strong><i class="fa" ng-class="aCtrl.getIcon()"></i><span ng-bind="aCtrl.type"></span> : </strong> <span ng-bind="aCtrl.message"></span>
             </div>
         </div>

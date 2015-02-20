@@ -702,4 +702,37 @@ namespace maQx.Models
             Key = input.Key;
         }
     }
+
+    public class ProcessViewModel
+    {
+        [Required, MaxLength(50), Display(Name = "Process Code")]
+        public string Code { get; set; }
+
+        [Required, MaxLength(50), Display(Name = "Process Description")]
+        public string Description { get; set; }
+
+        [Required, Display(Name = "Validate Raw Material")]
+        public bool ValidateRawMaterial { get; set; }
+
+        public ProcessViewModel() { }
+        public ProcessViewModel(Process input)
+        {
+            Code = input.Code;
+            Description = input.Description;
+            ValidateRawMaterial = input.ValidateRawMaterial;
+        }
+    }
+
+    public class ProcessEditViewModel : ProcessViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+
+        public ProcessEditViewModel() { }
+        public ProcessEditViewModel(Process input)
+            : base(input)
+        {
+            Key = input.Key;
+        }
+    }
 }

@@ -89,6 +89,13 @@ namespace maQx.Controllers
             return await Format<Product, JProduct>(Roles.AppUser, db.Products, "ProductsController", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> Process()
+        {
+            var Division = User.GetDivision();
+            return await Format<Process, JProcess>(Roles.AppUser, db.Process, "ProcessController", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
+        }
+
         /// <summary>
         /// Administrators this instance.
         /// </summary>

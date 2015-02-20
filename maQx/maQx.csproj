@@ -246,6 +246,7 @@
     <Compile Include="Controllers\InvitesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PlantsController.cs" />
+    <Compile Include="Controllers\ProcessController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\RawMaterialsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -1197,6 +1198,13 @@
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="Views\Products\_Form.cshtml" />
     <Content Include="Views\Products\_View.cshtml" />
+    <Content Include="Views\Process\Create.cshtml" />
+    <Content Include="Views\Process\Delete.cshtml" />
+    <Content Include="Views\Process\Details.cshtml" />
+    <Content Include="Views\Process\Edit.cshtml" />
+    <Content Include="Views\Process\Index.cshtml" />
+    <Content Include="Views\Process\_Form.cshtml" />
+    <Content Include="Views\Process\_View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

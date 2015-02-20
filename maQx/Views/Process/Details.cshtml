@@ -1,0 +1,27 @@
+﻿@model maQx.Models.Process
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+<div class="generic-template generic-form detail-template">
+    <h1>Process details</h1>
+
+    @{Html.RenderPartial("_View", Model);}
+
+    <div>
+        <div class="form-group">
+            <div>
+                <div>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Key }, new { @class = "btn btn-primary btn-warning" })
+                    @Html.ActionLink("Delete", "Delete", new { id = Model.Key }, new { @class = "btn btn-primary btn-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="generic-form-bottom-tools">
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
+        </div>
+    </div>
+</div>

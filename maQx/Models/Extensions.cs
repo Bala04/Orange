@@ -36,7 +36,7 @@ namespace maQx.Utilities
         /// <returns></returns>
         private static bool Get(Type T, string Name, bool Condition)
         {
-            if (Condition)
+            if (true)
             {
                 try
                 {
