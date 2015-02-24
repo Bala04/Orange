@@ -248,6 +248,7 @@
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PlantsController.cs" />
     <Compile Include="Controllers\ProcessController.cs" />
+    <Compile Include="Controllers\ProductRawMaterialsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\RawMaterialsController.cs" />
     <Compile Include="Controllers\ToolsController.cs" />
@@ -1221,6 +1222,7 @@
     <Content Include="Views\Dies\Index.cshtml" />
     <Content Include="Views\Dies\_Form.cshtml" />
     <Content Include="Views\Dies\_View.cshtml" />
+    <Content Include="Views\ProductRawMaterials\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

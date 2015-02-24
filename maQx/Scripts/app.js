@@ -72,14 +72,20 @@ angular.module("sectionApp").factory('Injector', ['$rootScope', '$q', function (
             return $q.reject(rejection);
         },
         response: function (response) {
-            if (response.data.Type != "SUCCESS") {
-                $rootScope.$broadcast("alert", {
-                    type: "Error",
-                    message: response.data.Message,
-                });
-                return $q.reject(response);
+            if (response.config.cached) {
+                return response || $q.when(response);
+            } else if (response.config.url.indexOf("Context") > 0) {
+                return response || $q.when(response);
+            } else {
+                if (response.data.Type != "SUCCESS") {
+                    $rootScope.$broadcast("alert", {
+                        type: "Error",
+                        message: response.data.Message,
+                    });
+                    return $q.reject(response);
+                }
+                return response || $q.when(response);
             }
-            return response || $q.when(response);
         },
         responseError: function (error) {
             $rootScope.$broadcast("alert", {

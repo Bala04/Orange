@@ -53,5 +53,30 @@ namespace maQx.Models
                 });
             }
         }
+
+        public static async Task<IEnumerable<T>> OrderAndSelect<T>(DbSet<T> Input, string Division) where T : EntityDivisionBase
+        {
+            return (await Input.Where(x => x.ActiveFlag && x.Division.Key == Division).OrderBy(x => x.Code).ThenBy(x => x.Description).ToListAsync()).Select(x =>
+            {
+                x.Description = x.Code + " - " + x.Description;
+                return x;
+            });
+        }
+
+        public static async Task<IEnumerable<Product>> GetProducts(string Division)
+        {
+            using (AppContext db = new AppContext())
+            {
+                return await OrderAndSelect(db.Products, Division);
+            }
+        }
+
+        public static async Task<IEnumerable<RawMaterial>> GetRawMaterials(string Division)
+        {
+            using (AppContext db = new AppContext())
+            {
+                return await OrderAndSelect(db.RawMaterials, Division);
+            }
+        }
     }
 }

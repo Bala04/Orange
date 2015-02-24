@@ -600,6 +600,15 @@ namespace maQx.Models
         public string Name { get; set; }
     }
 
+    public class ProductRawMaterialViewModel
+    {
+        public string Product { get; set; }
+        public System.Web.Mvc.SelectList Products { get; set; }
+
+        public string RawMaterial { get; set; }
+        public System.Web.Mvc.SelectList RawMaterials { get; set; }
+    }
+
     /// <summary>
     ///
     /// </summary>

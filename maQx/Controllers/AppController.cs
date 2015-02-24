@@ -629,7 +629,7 @@ namespace maQx.Controllers
             // BUG: var Organization = await db.Organizations.Where(x => x.ActiveFlag && x.Domain == Username.Split('@')[1]).FirstOrDefaultAsync(); ArrayIndex not supported in Entity Framework
             // FIX: Create Domain as string and pass to the query. 18/02/2015
             // BUG: var Domain = Username.Split('@')[1]; Administrator accounts are not belongs to specific organization
-            // FIX: Skip authentication checks for administrator account
+            // FIX: Skip authentication checks for administrator account. 20/02/2015
             // Check whether the account is the administrator. If yes skip authentication.
             if (Username != AdminUsername.ToLower())
             {
