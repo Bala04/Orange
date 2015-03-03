@@ -43,6 +43,7 @@
         </ObjectGroup>
       </Objects>
     </PublishDatabaseSettings>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -1109,6 +1110,7 @@
     <Content Include="Scripts\section\invite-controller.js" />
     <Content Include="Scripts\section\menu-controller.js" />
     <Content Include="Scripts\section\page-controller.js" />
+    <Content Include="Scripts\section\product-raw-material-controller.js" />
     <Content Include="Scripts\section\shared-controller.js" />
     <Content Include="Scripts\section\table-controller.js" />
     <Content Include="Scripts\section\user-controller.js" />

@@ -1,4 +1,4 @@
-﻿@import "compass/css3";
+@import "compass/css3";
 @import "compass/css3/transform";
 
 @mixin flexbox {
@@ -804,6 +804,19 @@ a.btn + a.btn {
 
 .btn {
     @extend %transition;
+    .spaced.caret {
+        margin-left: 5px;
+    }
+    .fa {
+        padding-right: 7px;
+    }
+    &.btn-disabled {
+        pointer-events: none;
+        cursor: not-allowed !important;
+        background: #DFDFDF !important;
+        border: #DFDFDF thin solid !important;
+        color: #fff;
+    }
     .spaced.caret {
         margin-left: 5px;
     }
@@ -1639,6 +1652,11 @@ header {
             }
             label .form-control {
                 margin: 0;
+            }
+        }
+        .material-list-view-paginate {
+            .entity-detail {
+                padding-top: 10px;
             }
         }
         ul.material-list-view {

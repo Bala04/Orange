@@ -63,13 +63,41 @@ namespace maQx.Utilities
         /// <returns></returns>
         public static Tuple<bool, bool, bool, bool> GetTools(Type T, List<string> UserRoles)
         {
-            return new Tuple<bool, bool, bool, bool>(Get(T, "Details", true), Get(T, "Edit", UserRoles.ContainsAll(Roles.Edit, Roles.EditDelete)), Get(T, "Delete", UserRoles.ContainsAll(Roles.Delete, Roles.EditDelete)), UserRoles.ContainsAll(Roles.Create, Roles.CreateEdit));
+            return new Tuple<bool, bool, bool, bool>(Get(T, "Details", true), Get(T, "Edit", UserRoles.ContainsAny(Roles.Edit, Roles.EditDelete)), Get(T, "Delete", UserRoles.ContainsAny(Roles.Delete, Roles.EditDelete)), UserRoles.ContainsAny(Roles.Create, Roles.CreateEdit));
         }
 
         public static Tuple<bool, bool, bool, bool> GetTools(Type T)
         {
             return new Tuple<bool, bool, bool, bool>(Get(T, "Details", true), Get(T, "Edit", true), Get(T, "Delete", true), true);
         }
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    public class EntityManupulateHelper
+    {
+        /// <summary>
+        /// Gets or sets the entity.
+        /// </summary>
+        /// <value>
+        /// The entity.
+        /// </value>
+        public string Entity { get; set; }
+        /// <summary>
+        /// Gets or sets the add.
+        /// </summary>
+        /// <value>
+        /// The add.
+        /// </value>
+        public string[] Add { get; set; }
+        /// <summary>
+        /// Gets or sets the remove.
+        /// </summary>
+        /// <value>
+        /// The remove.
+        /// </value>
+        public string[] Remove { get; set; }
     }
 
     /// <summary>
@@ -293,6 +321,22 @@ namespace maQx.Utilities
 
             return true;
         }
+
+        public static bool ContainsAny<T>(this IEnumerable<T> source, params T[] list)
+        {
+            if (null == source) throw new ArgumentNullException("source");
+
+            foreach (var item in list)
+            {
+                if (source.Contains(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Withes the specified arguments.
         /// </summary>

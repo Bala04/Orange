@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
+using System.Collections.Generic;
 
 
 namespace maQx.Controllers
@@ -206,6 +207,92 @@ namespace maQx.Controllers
                         {
                             List = List.Select(x => new JApplicationUser(x.User)).ToList()
                         }.toJson();
+                    }
+                }
+                // If user is not authenticated return UserUnauhorizedError to client.
+                return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
+            }
+            catch (Exception ex)
+            {
+                return Json(JsonExceptionViewModel.Get(ex), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [AjaxOnly]
+        public async Task<JsonResult> UserRoles(string Id)
+        {
+            try
+            {
+                if (Request.IsAuthenticated)
+                {
+                    // User should belongs to the Role SysAdmin to access UserRoles
+                    if (User.IsInRole(Roles.SysAdmin))
+                    {
+                        var ManageUser = await db.Users.Where(x => x.Id == Id).FirstOrDefaultAsync();
+
+                        if (ManageUser != null)
+                        {
+                            return await UserRoles(ManageUser);
+                        }
+
+                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                    }
+                }
+                // If user is not authenticated return UserUnauhorizedError to client.
+                return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
+            }
+            catch (Exception ex)
+            {
+                return Json(JsonExceptionViewModel.Get(ex), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [AjaxOnly]
+        public async Task<JsonResult> ManageUserRoles(string Id, string Reference)
+        {
+            try
+            {
+                if (Request.IsAuthenticated)
+                {
+                    // User should belongs to the Role SysAdmin to access ManageUserRoles
+                    if (User.IsInRole(Roles.SysAdmin))
+                    {
+                        var Data = string.IsNullOrWhiteSpace(Reference) ? null : Newtonsoft.Json.JsonConvert.DeserializeObject<EntityManupulateHelper>(Reference);
+
+                        if (Data != null)
+                        {
+                            var ManageUser = await db.Users.Where(x => x.Id == Id).FirstOrDefaultAsync();
+
+                            if (ManageUser != null)
+                            {
+                                Exception Exception = null;
+
+                                try
+                                {
+                                    foreach (var Role in Data.Add)
+                                    {
+                                        await AddRoleToUser(ManageUser, Role);
+                                    }
+
+                                    foreach (var Role in Data.Remove)
+                                    {
+                                        await RemoveRoleFromUser(ManageUser, Role);
+                                    }
+
+                                    return await UserRoles(ManageUser);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Exception = ex;
+                                }
+
+                                return await JsonExceptionViewModel.Get(Exception).toJson();
+                            }
+                        }
+
+                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                     }
                 }
                 // If user is not authenticated return UserUnauhorizedError to client.
@@ -770,6 +857,19 @@ namespace maQx.Controllers
             }
 
             return true;
+        }
+
+        public async Task<List<string>> GetUserRoles(ApplicationUser User)
+        {
+            return (await UserManager.GetRolesAsync(User.Id)).Select(x => x).ToList();
+        }
+
+        private async Task<JsonResult> UserRoles(ApplicationUser AppUser)
+        {
+            return await new JsonListViewModel<string>
+            {
+                List = await GetUserRoles(AppUser)
+            }.toJson();
         }
 
         /// <summary>

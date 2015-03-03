@@ -46,6 +46,24 @@ angular.module("sectionApp").directive("indeterminateCheckbox", [function () {
             }, true);
         }
     };
+}]).directive("anchorUrl", [function () {
+    return {
+        restrict: "A",
+        scope: {
+            anchorUrl: "&",
+            anchorIf: "="
+        },
+        link: function (scope, element) {
+            var url = scope.anchorUrl();
+            scope.$watch('anchorIf', function (a) {
+                if (a) {
+                    $(element).prop("href", url).removeClass("btn-disabled");
+                } else {
+                    $(element).removeAttr("href").addClass("btn-disabled");
+                }
+            });
+        }
+    }
 }]);
 
 angular.module("base").directive("showWhen", [function () {

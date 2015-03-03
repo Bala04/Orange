@@ -798,4 +798,24 @@ namespace maQx.Models
             return new JDie(input);
         }
     }
+
+    public class JProductRawMaterial : JsonBase, IJsonBase<ProductRawMaterial, JProductRawMaterial>
+    {
+        public double Quantity { get; set; }
+        public JRawMaterial RawMaterial { get; set; }
+        public JProduct Product { get; set; }
+
+        public JProductRawMaterial() { }
+        public JProductRawMaterial(ProductRawMaterial input)
+        {
+            Quantity = input.Quantity;
+            RawMaterial = new JRawMaterial(input.RawMaterial);
+            Product = new JProduct(input.Product);
+        }
+
+        public JProductRawMaterial To(ProductRawMaterial input)
+        {
+            return new JProductRawMaterial(input);
+        }
+    }
 }

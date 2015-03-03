@@ -42,3 +42,4 @@
 /// <reference path="angular.min.js" />
 /// <reference path="section/department-mapping-controller.js" />
 /// <reference path="section/access-level-controller.js" />
+/// <reference path="section/product-raw-material-controller.js" />

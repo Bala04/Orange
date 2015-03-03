@@ -8,6 +8,8 @@
     var Condition = Controller == "DepartmentUsersController";
     var Key = Condition ? "Id" : "ID";
     var Name = Condition ? "Firstname" : "Name";
+    var Collection = Condition ? "User List" : "Menu Collection";
+    var Entities = Condition ? "users" : "menus";
 }
 
 <div class="app-generic-template detail-template">
@@ -46,16 +48,16 @@
 
                     <div class="css-fade" ng-show="dCtrl.proto.showContent()">
                         <div class="menu-info-text">
-                            <span class="fa fa-info-circle"></span><span class="ui-bold" ng-bind="dCtrl.proto.getMenuCount()"></span> of <span class="ui-bold" ng-bind="dCtrl.proto.getMappedMenuCount()"></span> menus mapped
+                            <span class="fa fa-info-circle"></span><span class="ui-bold" ng-bind="dCtrl.proto.getMenuCount()"></span> of <span class="ui-bold" ng-bind="dCtrl.proto.getMappedMenuCount()"></span> @Entities mapped
                         </div>
 
                         <div ng-repeat="item in dCtrl.divisionDepartment | select:dCtrl.division:'division':'0' track by item.division">
                             <div class="menu-content" ng-repeat="node in item.departmentList | filter:search | orderBy : 'department.Name' track by node.department.Key">
-                                <div><span ng-bind="node.department.Name"></span> <span class="fa fa-edit pull-right" data-toggle="tooltip" title="Manage Menus" ng-click="dCtrl.openMenus('lg', node.department)"></span></div>
+                                <div><span ng-bind="node.department.Name"></span> <span class="fa fa-edit pull-right" data-toggle="tooltip" title="Manage @Entities" ng-click="dCtrl.openMenus('lg', node.department)"></span></div>
                                 <div>
                                     <ul ng-hide="dCtrl.proto.showMenus(node)">
                                         <li class="text-center">
-                                            No menus added
+                                            No @Entities added
                                         </li>
                                     </ul>
                                     <ul ng-show="dCtrl.proto.showMenus(node)">
@@ -90,22 +92,22 @@
 
         <script type="text/ng-template" id="modal-selector.html">
             <div class="modal-header">
-                <h3 class="modal-title">Menu Collection</h3>
+                <h3 class="modal-title">@Collection</h3>
                 <div class="pull-right">
                     <label class="modal-search"><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" ng-model="entitySearch"></label>
                 </div>
             </div>
             <div class="modal-body">
-                <p class="modal-content-title">Select menus for <span class="ui-bold" ng-bind="items.department.Name"></span></p>
+                <p class="modal-content-title">Select @Entities for <span class="ui-bold" ng-bind="items.department.Name"></span></p>
                 <ul class="menu-selector-list">
-                    <li ng-repeat="element in entityList | filter:entitySearch track by element.entity.@Key">
+                    <li ng-repeat="element in entityList | filter:entitySearch | orderBy:'element.entity.@Name' track by element.entity.@Key">
                         <input type="checkbox" ng-disabled="!isSelectable(element)" ng-model="element.selected" id="{{element.entity.@Key}}" /><label for="{{element.entity.@Key}}" ng-bind="element.entity.@Name"></label>
                     </li>
                 </ul>
             </div>
             <div class="modal-footer">
                 <div class="pull-left statusText" ng-show="Loading()">
-                    Updating menus...
+                    Updating @Entities...
                 </div>
                 <button class="btn btn-primary app-btn" ng-disabled="Loading()" ng-click="ok()">Save</button>
                 <button class="btn btn-warning inverse-btn" ng-disabled="Loading()" ng-click="cancel()">Cancel</button>

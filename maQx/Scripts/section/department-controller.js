@@ -22,13 +22,16 @@
             getPage: function () {
                 return self.page;
             },
-            add: function (division) {          
+            disableStatus: function () {
+                return self.isLoading || self.department.Name == "";
+            },
+            add: function (division) {
                 self.division = division.Key;
                 self.department = self.proto.def();
                 self.page = pages.add;
                 self.formEdit = true;
             },
-            del: function (department) {               
+            del: function (department) {
                 self.department = department;
                 self.page = pages.del;
                 self.formEdit = true;
@@ -41,7 +44,7 @@
                 self.formEdit = true;
             },
             closeEdit: function () {
-                self.formEdit = false;                
+                self.formEdit = false;
             },
             save: function () {
                 self.isLoading = true;
@@ -57,7 +60,7 @@
                             if (division.division.Key == self.division) {
                                 division.departmentList.push(a);
                             }
-                        });                       
+                        });
                         self.isLoading = false;
                         self.formEdit = false;
                     }
@@ -86,7 +89,6 @@
                                 }
                             });
                         });
-                       
                         self.isLoading = false;
                         self.formEdit = false;
                     }
@@ -115,7 +117,6 @@
                                 }
                             });
                         });
-                       
                         self.isLoading = false;
                         self.formEdit = false;
                     }

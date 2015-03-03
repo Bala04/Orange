@@ -8,7 +8,7 @@
 
     function getDivision() {
         return linq(self.divisionDepartment).where("$.division=='" + self.division + "'").firstOrDefault();
-    }    
+    }
 
     self.openMenus = function (size, department) {
         DepartmentMappingFactory.open(size, department, getDivision, $modal, self.proto.load, show_error, ["menu", "ID", "Menu"]);
@@ -22,22 +22,22 @@
         isLoading: function () {
             return DepartmentMappingFactory.isLoading(self);
         },
-        isLoaded: function () {           
+        isLoaded: function () {
             return DepartmentMappingFactory.isLoaded(self);
         },
-        showContent: function () {           
+        showContent: function () {
             return DepartmentMappingFactory.showContent(self);
         },
-        showWarning: function () {          
+        showWarning: function () {
             return DepartmentMappingFactory.showWarning(self);
         },
-        showMenus: function (item) {            
+        showMenus: function (item) {
             return DepartmentMappingFactory.showEntity(item);
         },
-        getMappedMenuCount: function () {           
+        getMappedMenuCount: function () {
             return DepartmentMappingFactory.getMappedEntityCount(getDivision);
         },
-        getMenuCount: function () {          
+        getMenuCount: function () {
             return DepartmentMappingFactory.getEntityCount(self);
         },
         load: function (List, entityType, Key, division) {

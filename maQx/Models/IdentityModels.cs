@@ -460,6 +460,7 @@ namespace maQx.Models
             userIdentity.AddClaim(new Claim("Firstname", Firstname));
             userIdentity.AddClaim(new Claim("Code", Code));
             userIdentity.AddClaim(new Claim("Organization.Key", Organization == null ? "" : Organization.Key));
+            userIdentity.AddClaim(new Claim("Organization.Name", Organization == null ? "" : Organization.Name));
 
             if (DepartmentUsers != null)
             {

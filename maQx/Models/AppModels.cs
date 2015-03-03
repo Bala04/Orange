@@ -819,6 +819,12 @@ namespace maQx.Models
         /// </value>
         [Required]
         public double Quantity { get; set; }
+
+        [Required]
+        public double InputQuantity { get; set; }
+
+        [Required]
+        public Units SelectedUnit { get; set; }
     }
 
     /// <summary>

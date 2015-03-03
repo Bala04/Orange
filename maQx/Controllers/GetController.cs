@@ -109,6 +109,13 @@ namespace maQx.Controllers
             return await Format<Die, JDie>(Roles.AppUser, db.Dies, "ProcessController", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> ProductRawMaterials()
+        {
+            var Division = User.GetDivision();
+            return await Format<ProductRawMaterial, JProductRawMaterial>(Roles.AppUser, db.ProductRawMaterials, null, x => x.ActiveFlag && x.Product.Division.Key == Division);
+        }
+
         /// <summary>
         /// Administrators this instance.
         /// </summary>
@@ -746,33 +753,7 @@ namespace maQx.Controllers
             return await ViewHelper.Format<T1, T2, T3>(Request, Response, Controller, Role, User, value, exp, Includes, operation);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public class EntityManupulateHelper
-        {
-            /// <summary>
-            /// Gets or sets the entity.
-            /// </summary>
-            /// <value>
-            /// The entity.
-            /// </value>
-            public string Entity { get; set; }
-            /// <summary>
-            /// Gets or sets the add.
-            /// </summary>
-            /// <value>
-            /// The add.
-            /// </value>
-            public string[] Add { get; set; }
-            /// <summary>
-            /// Gets or sets the remove.
-            /// </summary>
-            /// <value>
-            /// The remove.
-            /// </value>
-            public string[] Remove { get; set; }
-        }
+
 
         /// <summary>
         /// Releases unmanaged resources and optionally releases managed resources.

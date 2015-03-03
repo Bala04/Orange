@@ -136,13 +136,11 @@
         },
 
         remove: function (entityItem, divisionKey, departmentKey) {
-            if (entityItem.division == divisionKey && entityItem.department == departmentItem.department.Key) {
+            if (entityItem.division == divisionKey && entityItem.department == departmentKey) {
                 entityItem.mapper = null;
                 entityItem.selected = false;
                 entityItem.division = null;
                 entityItem.department = null;
-
-                console.log("Removed", entityItem.entity.Firstname, entityItem)
             }
         },
 
@@ -161,16 +159,12 @@
                             entityItem.division = division.division;
                             entityItem.department = departmentItem.department.Key;
                         } else {
-                            if (entityItem.division == division.division && entityItem.department == departmentItem.department.Key) {
-                                factory.remove(entityItem);                                
-                            }
+                            factory.remove(entityItem, division.division, departmentItem.department.Key);
                         }
                     });
                 } else {
                     angular.forEach(newEntity, function (entityItem) {
-                        if (entityItem.division == division.division && entityItem.department == departmentItem.department.Key) {
-                            factory.remove(entityItem);
-                        }
+                        factory.remove(entityItem, division.division, departmentItem.department.Key);
                     });
                 }
                 departmentItem.entites = element;

@@ -1,5 +1,5 @@
 ﻿// Copyright (c) IP Rings Ltd. All rights reserved.
-// Version 2.0.1. Author: Prasanth <@prashanth702> 
+// Version 2.0.1. Author: Prasanth <@prashanth702>
 
 using maQx.Models;
 using Microsoft.AspNet.Identity;

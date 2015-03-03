@@ -20,7 +20,19 @@
 
     self.getAppVersion = function () {
         return self.appVersion;
-    };    
+    };
+}]);
+
+angular.module("sectionApp").factory("PromiseFactory", ['$http', '$q', function ($http, $q) {
+    return {
+        Resolve: function (requests) {
+            var promises = [];
+            angular.forEach(requests, function (request) {
+                promises.push($http({ method: 'GET', url: request, cache: 'true' }));
+            });
+            return $q.all(promises);
+        }
+    }
 }]);
 
 //angular.module("base").factory('$exceptionHandler', [function () {
@@ -30,8 +42,7 @@
 //                var rScope = $injector.get('$rootScope');
 //                rScope.$broadcast("alert", { type: "Error", message: exception.message });
 //            }
-//        };      
-
+//        };
 //        exception.message += ' (caused by "' + cause + '")';
 //        throw exception;
 //    };

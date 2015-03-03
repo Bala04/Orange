@@ -41,7 +41,7 @@
         console.log(data);
 
         self.type = data.type;
-        if (data.message.status !== undefined) {  
+        if (data.message && data.message.status) {
             self.message = data.message.statusText != "" ? data.message.statusText : "Opps! something went wrong."
         } else {
             self.message = data.message;

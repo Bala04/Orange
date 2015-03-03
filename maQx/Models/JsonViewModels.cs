@@ -320,7 +320,7 @@ namespace maQx.Models
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class JsonExceptionViewModel : JsonErrorViewModel
     {

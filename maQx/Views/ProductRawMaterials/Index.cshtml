@@ -7,7 +7,7 @@
 
 
 <div class="app-generic-template detail-template">
-    <div class="modular-layout">
+    <div class="modular-layout" ng-controller="ProductRawMaterialController as dCtrl">
 
         @if (Model != null && Model.Products.Count() <= 1)
         {
@@ -53,7 +53,7 @@
                 <div class="modular-controls">
                     <div class="select-control">
                         <div>
-                            Divisions
+                            Product
                         </div>
                         <div>
                             @Html.DropDownListFor(model => model.Product, Model.Products, htmlAttributes: new { ng_model = "dCtrl.product", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()" })
@@ -61,14 +61,14 @@
                     </div>
                     <div class="select-control">
                         <div>
-                            Divisions
+                            Raw Material
                         </div>
                         <div>
-                            @Html.DropDownListFor(model => model.RawMaterial, Model.RawMaterials, htmlAttributes: new { ng_model = "dCtrl.material", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()" })
+                            @Html.DropDownListFor(model => model.RawMaterial, Model.RawMaterials, htmlAttributes: new { ng_model = "dCtrl.rawMaterial", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()" })
                         </div>
                     </div>
                     <div class="pull-right">
-                        <label><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" aria-controls="DataTables_Table_0" ng-model="search"></label>
+                        <label><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" aria-controls="DataTables_Table_0" ng-model="dCtrl.search"></label>
                     </div>
                 </div>
                 <div>
@@ -77,22 +77,49 @@
                             <div class="loader-animate"></div>
                             <div><h3>Loading..</h3></div>
                         </div>
-                        <ul class="material-list-view css-fade pull-control" ng-show="dCtrl.proto.isLoaded()"></ul>
+                        <div ng-show="dCtrl.proto.isLoaded()">
+                            <ul class="material-list-view css-fade pull-control">
+                                <li ng-repeat="product in dCtrl.proto.getEntityList() | select:dCtrl.product:'Key':'0' | filter:dCtrl.search | orderBy:Description track by product.Key">
+                                    <div>
+                                        <span class="fa fa-angle-double-right fa-lg"></span><span class="ui-bold" ng-bind="product.Description"></span>
+                                    </div>
+                                    <div class="pull-right">
+                                        <button type="button" ng-click="dCtrl.proto.add(product)" class="btn btn-sm app-btn fa-clear"><span class="fa fa-plus"></span></button>
+                                    </div>
+                                    <ul>
+                                        <li>
+                                            <div>
+                                                <span class="fa fa-chevron-right "></span><span>Hello</span>
+                                            </div>
+                                            <div class="item-controls">
+                                                <div class="tp-delete" ng-click="dCtrl.proto.del(item)">
+                                                    <span class="fa fa-trash-o"></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div class="text-right material-list-view-paginate" ng-show="dCtrl.proto.showPagination()">
+                                <pagination total-items="dCtrl.proto.totalItems()" items-per-page="dCtrl.itemPerPage" ng-model="dCtrl.currentPage"></pagination>
+                                <div class="pull-left entity-detail">Showing <span class="ui-bold" ng-bind="dCtrl.proto.startItem()"></span> to <span class="ui-bold" ng-bind="dCtrl.proto.pageItem()"></span> of <span class="ui-bold" ng-bind="dCtrl.proto.totalItems()"></span> entries</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             @section Scripts {
-                @Scripts.Render("~/bundles/department-controller")
+                @Scripts.Render("~/bundles/product-raw-material-controller")
 
                 <script type="text/ng-template" id="create.html">
-                    <h1>Create a department</h1>
-                    <p>Departments are used to separate modules</p>
+                    <h1>Add raw material to product</h1>
+                    <p>Adds the selected to the product <span ng-bind="dCtrl.selectedProduct.Description"></span></p>
                     <div class="admin-form-layout">
                         <div class="form-group">
                             <div>
                                 <div>
-                                    <input type="text" ng-model="dCtrl.department.Name" placeholder="Department Name" class="form-control" />
+                                    <select ng-options="item.subItem as item.label for item in values track by item.id" ng-model="selected"></select>
                                 </div>
                             </div>
                         </div>

@@ -1,10 +1,16 @@
 ﻿angular.module('tabularApp').controller('TableController', ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "$resource", "$q", 'DataService', '$rootScope', function (h, j, k, l, m, n, $rootScope) {
+    var self = this;
+    self.allowCreate = false;
+    self.loadUrl = function (url) {
+        return decodeURIComponent(url);
+    };
     var o = {
         _l: [],
         _k: function (a, b) {
             a[0] = b.IsViewable;
             a[1] = b.IsEditable;
-            a[2] = b.IsDeleteable
+            a[2] = b.IsDeleteable;
+            self.allowCreate = b.AllowCreate;
         },
         _a: function (b, c, d, f) {
             return o._l[f] ? '<a data-toggle="tooltip" data-placement="top" title="' + b + '" href="' + $("#baseNode").val() + '/' + b + '/' + c + '" class="btn btn-sm tp-' + String(b).toLowerCase() + '"><span class="fa fa-' + d + '"></span></a>' : ''

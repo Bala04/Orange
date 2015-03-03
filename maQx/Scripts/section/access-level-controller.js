@@ -1,10 +1,8 @@
-﻿angular.module("sectionApp").controller("AccessLevelsController", ['$rootScope', '$http', function ($rootScope, $http) {
+﻿angular.module("sectionApp").controller("AccessLevelsController", ['$rootScope', '$http', "PromiseFactory", function ($rootScope, $http, PromiseFactory) {
     var self = this;
     self.user = "-1";
-    self.isPlantLoading = false;
-    self.isMenuLoading = false;
-    self.isPlantLoaded = false;
-    self.isMenuLoaded = false;
+    self.isLoading = false;
+    self.isLoaded = false;
     self.isTransparentLoading = false;
     self.userList = [];
     self.status = {
@@ -12,66 +10,77 @@
         isFirstDisabled: false
     };
     self.plantList = [];
+    self.roles = [
+        { Role: "Create", Description: "Can Create" },
+        { Role: "Edit", Description: "Can Edit" },
+        { Role: "Delete", Description: "Can Delete" },
+        { Role: "CreateEdit", Description: "Can Create and Edit" },
+        { Role: "EditDelete", Description: "Can Edit and Delete" },
+    ];
+
+
     function getUser() {
         return linq(self.userList).where("$.Id=='" + self.user + "'").firstOrDefault();
     }
 
-    function show_error(error) {
-        $rootScope.$broadcast("alert", error);
-    }
     self.proto = {
+        def: function () {
+            return {
+                Add: [],
+                Remove: [],
+                Entity: self.user
+            };
+        },
         isLoading: function () {
-            return self.isPlantLoading || self.isMenuLoading || self.isTransparentLoading;
+            return self.isLoading || self.isTransparentLoading;
         },
-        isPlantLoading: function () {
-            return self.isPlantLoading;
-        },
-        isMenuLoading: function () {
-            return self.isMenuLoading;
+        isContentLoading: function () {
+            return self.isLoading;
         },
         isTransparentLoading: function () {
             return self.isTransparentLoading;
         },
         showContent: function () {
-            return self.user != "-1";
-        },
-        showPlantContent: function () {
-            return !self.isPlantLoading && self.isPlantLoaded;
-        },
-        showMenuContent: function () {
-            return !self.isMenuLoading && self.isMenuLoaded;
+            return !self.isLoading && self.isLoaded;
         },
         showWarning: function () {
-            return self.user == "-1" && !self.proto.isLoading();
+            return self.user == "-1" && !self.isLoading;
+        },
+        showTabContent: function () {
+            return self.user != "-1";
         },
         getIcon: function (plant) {
             return plant.open ? "open" : "";
         },
-        request: function (request, type, entity, Key, param) {
+        request: function (url, entity, Key, request) {
             if (request.Add.length > 0 || request.Remove.length > 0) {
                 self.isTransparentLoading = true;
-                $http.get("/get/Exists/" + param + "?type=" + type + "&ref=" + JSON.stringify(request)).then(function (result) {
-                    if (result.data.Type == "SUCCESS") {
-                        var await = self.proto.setup(result.data[Key], getUser(), entity);
-                    } else {
-                        show_error({
-                            type: "Error",
-                            message: result.data.Message
-                        });
-                    }
-                    self.isTransparentLoading = false;
-                }, function () {
+                $http.get(url).then(function (result) {
+                    var await = self.proto.setup(result.data[Key], getUser(), entity);
+                }).finally(function () {
                     self.isTransparentLoading = false;
                 });
             }
         },
+        loadRole: function (role) {
+            if (self.user != "-1") {
+                var request = self.proto.def();
+                var user = getUser();
+                prevRole = linq(user._roleList).where("$.Role=='" + role.Role + "'").first();
+                if (role.selected != prevRole.selected) {
+                    if (role.selected) {
+                        request.Add.push(role.Role);
+                    } else {
+                        request.Remove.push(role.Role)
+                    }
+                }
+
+                self.proto.request("/app/ManageUserRoles/" + self.user + "?Reference=" + JSON.stringify(request), "Roles", "List", request);
+            }
+        },
         loadMenu: function (menu) {
             if (self.user != "-1") {
-                var request = {
-                    Add: [],
-                    Remove: [],
-                    Entity: self.user
-                };
+                var request = self.proto.def();
                 var user = getUser();
                 prevMenu = linq(user._menuList).where("$.ID=='" + menu.ID + "'").first();
                 if (menu.selected != prevMenu.selected) {
@@ -81,16 +90,13 @@
                         request.Remove.push(menu.mapper)
                     }
                 }
-                self.proto.request(request, "access-menu", "Menu", "Value", user.department.Key);
+
+                self.proto.request("/get/Exists/" + user.department.Key + "?type=access-menu&ref=" + JSON.stringify(request), "Menu", "Value", request);
             }
         },
         loadPlant: function (plant) {
             if (self.user != "-1") {
-                var request = {
-                    Add: [],
-                    Remove: [],
-                    Entity: self.user
-                };
+                var request = self.proto.def();
                 var prev = linq(getUser()._plantList).where("$.Key=='" + plant.Key + "'").first();
                 angular.forEach(plant.divisionList, function (entity) {
                     var division = linq(prev.divisionList).where("$.Key=='" + entity.Key + "'").first();
@@ -102,7 +108,8 @@
                         }
                     }
                 });
-                self.proto.request(request, "access-division", "Plant", "List", "plant");
+
+                self.proto.request("/get/Exists/plant?type=access-division&ref=" + JSON.stringify(request), "Plant", "List", request);
             }
         },
         initPlant: function (plant) {
@@ -134,6 +141,9 @@
             plant.open = state;
             var a = linq(self.plantList).where("$.Key=='" + plant.Key + "'").first();
             a.open = state;
+        },
+        openRole: function (role) {
+            self.proto.loadRole(role);
         },
         openMenu: function (menu) {
             self.proto.loadMenu(menu);
@@ -184,11 +194,18 @@
                     user.menuList.push(menu);
                 });
                 user._menuList = _app.clone(user.menuList);
+            } else if (type == "Roles") {
+                user.roleList = [];
+                angular.forEach(_app.clone(self.roles), function (role) {
+                    role.selected = linq(List).where("$=='" + role.Role + "'").any();
+                    user.roleList.push(role);
+                });
+                user._roleList = _app.clone(user.roleList);
             }
             return true;
         },
         init: function () {
-            self.isPlantLoading = true;
+            self.isLoading = true;
             $http.get("/get/Divisions").then(function (result) {
                 if (result.data.Type == "SUCCESS") {
                     var plant = linq(result.data.List).select("$.Plant.Key").distinct();
@@ -211,16 +228,9 @@
                         });
                         self.plantList.push(plant);
                     });
-                    self.isPlantLoading = false;
-                } else if (result.data.Type == "ERROR") {
-                    show_error({
-                        type: "Error",
-                        message: result.data.Message
-                    });
-                    self.isPlantLoading = false;
                 }
-            }, function () {
-                self.isPlantLoading = false;
+            }).finally(function () {
+                self.isLoading = false;
             });
         },
         change: function () {
@@ -228,44 +238,20 @@
                 self.userList.push({
                     Id: self.user
                 });
-                self.isPlantLoading = true;
-                $http.get("/get/DivisionAccess/" + self.user).then(function (result) {
-                    if (result.data.Type == "SUCCESS") {
-                        self.isPlantLoaded = self.proto.setup(result.data.List, getUser(), "Plant");
-                        self.isPlantLoading = false;
+                self.isLoading = true;
+                PromiseFactory.Resolve(["/get/DivisionAccess/" + self.user, "/get/UserDepartmentMenu/" + self.user, "/app/UserRoles/" + self.user]).then(function (result) {
+                    var department = linq(result[1].data.Value.Item1).select("$.Department").firstOrDefault();
+                    if (department != null) {
+                        var user = getUser();
+                        user.department = department;
                     }
-                    else if (result.data.Type == "ERROR") {
-                        show_error({
-                            type: "Error",
-                            message: result.data.Message
-                        });
-                        self.isPlantLoading = false;
-                    }
-                }, function (error) {
-                    self.isPlantLoaded = false;
-                    self.isPlantLoading = false;
-                });
-                self.isMenuLoading = true;
-                $http.get("/get/UserDepartmentMenu/" + self.user).then(function (result) {
-                    if (result.data.Type == "SUCCESS") {
-                        var department = linq(result.data.Value.Item1).select("$.Department").firstOrDefault();
-                        if (department != null) {
-                            var user = getUser();
-                            user.department = department;
-                        }
-                        self.isMenuLoaded = self.proto.setup(result.data.Value, getUser(), "Menu");
-                        self.isMenuLoading = false;
-                    }
-                    else if (result.data.Type == "ERROR") {
-                        show_error({
-                            type: "Error",
-                            message: result.data.Message
-                        });
-                        self.isMenuLoading = false;
-                    }
-                }, function (error) {
-                    self.isMenuLoaded = false;
-                    self.isMenuLoading = false;
+
+                    self.isLoaded = self.proto.setup(result[0].data.List, getUser(), "Plant")
+                        & self.proto.setup(result[1].data.Value, getUser(), "Menu")
+                        & self.proto.setup(result[2].data.List, getUser(), "Roles");
+
+                }).finally(function () {
+                    self.isLoading = false;
                 });
             }
         }
