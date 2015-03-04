@@ -5,6 +5,7 @@
         self.totalPages = 0;
         self.productRawMaterialList = [];
         self.productList = [];
+        self.rawMaterialList = [];
         self.isLoading = false;
         self.isLoaded = false;
         self.formEdit = false;
@@ -14,14 +15,15 @@
         self.search = "";
         self.addMaterial = null;
         self.selectedProduct = null;
+        var pages = { add: "create.html", del: "delete.html", edit: "edit.html" };
 
-        self.rawMaterialList = $("#select > option").map(function () {
-            var opt = {};
-            opt[$(this).val()] = $(this).text();
-            return opt;
-        }).get();
+        self.addProducts = function (value) {         
+            self.productList = value;
+        };
 
-        console.log(self.rawMaterialList);
+        self.addRawMaterials = function (value) {
+            self.rawMaterialList = value;
+        };
 
         self.proto = {
             def: function () {
@@ -33,8 +35,7 @@
             },
             init: function () {
                 self.isLoading = true;
-                PromiseFactory.Resolve(["/get/ProductRawMaterials/", "/get/Products/"]).then(function (result) {
-                    self.productList = result[1].data.List;
+                PromiseFactory.Resolve(["/get/ProductRawMaterials/"]).then(function (result) {                    
                     self.isLoaded = true;
                 }).finally(function () {
                     self.isLoading = false;
@@ -47,6 +48,9 @@
             },
             startItem: function () {
                 return ((self.currentPage - 1) * self.itemPerPage) + 1;
+            },
+            closeEdit: function () {
+                self.formEdit = false;
             },
             showPagination: function () {
                 return !(self.search != "" || self.product != '0' || self.rawMaterial != '0');
@@ -69,10 +73,13 @@
             formEdit: function () {
                 return self.formEdit;
             },
-
+            getPage: function () {
+                return self.page;
+            },
             add: function (product) {
                 self.addMaterial = self.proto.def();
                 self.selectedProduct = product;
+                self.page = pages.add;
                 self.formEdit = true;
             }
         };

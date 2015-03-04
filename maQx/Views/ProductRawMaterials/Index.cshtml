@@ -56,7 +56,7 @@
                             Product
                         </div>
                         <div>
-                            @Html.DropDownListFor(model => model.Product, Model.Products, htmlAttributes: new { ng_model = "dCtrl.product", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()" })
+                            @Html.DropDownListFor(model => model.Product, Model.Products, htmlAttributes: new { ng_model = "dCtrl.product", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()", return_json="dCtrl.addProducts(value)" })
                         </div>
                     </div>
                     <div class="select-control">
@@ -64,7 +64,7 @@
                             Raw Material
                         </div>
                         <div>
-                            @Html.DropDownListFor(model => model.RawMaterial, Model.RawMaterials, htmlAttributes: new { ng_model = "dCtrl.rawMaterial", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()" })
+                            @Html.DropDownListFor(model => model.RawMaterial, Model.RawMaterials, htmlAttributes: new { ng_model = "dCtrl.rawMaterial", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()", return_json = "dCtrl.addRawMaterials(value)" })
                         </div>
                     </div>
                     <div class="pull-right">
@@ -79,9 +79,9 @@
                         </div>
                         <div ng-show="dCtrl.proto.isLoaded()">
                             <ul class="material-list-view css-fade pull-control">
-                                <li ng-repeat="product in dCtrl.proto.getEntityList() | select:dCtrl.product:'Key':'0' | filter:dCtrl.search | orderBy:Description track by product.Key">
+                                <li ng-repeat="product in dCtrl.proto.getEntityList() | select:dCtrl.product:'value':'0' | filter:dCtrl.search | orderBy:'text' track by product.value">
                                     <div>
-                                        <span class="fa fa-angle-double-right fa-lg"></span><span class="ui-bold" ng-bind="product.Description"></span>
+                                        <span class="fa fa-angle-double-right fa-lg"></span><span class="ui-bold" ng-bind="product.text"></span>
                                     </div>
                                     <div class="pull-right">
                                         <button type="button" ng-click="dCtrl.proto.add(product)" class="btn btn-sm app-btn fa-clear"><span class="fa fa-plus"></span></button>
@@ -114,12 +114,14 @@
 
                 <script type="text/ng-template" id="create.html">
                     <h1>Add raw material to product</h1>
-                    <p>Adds the selected to the product <span ng-bind="dCtrl.selectedProduct.Description"></span></p>
+                    <p>Adds the selected raw material to the <span ng-bind="dCtrl.selectedProduct.text"></span></p>
                     <div class="admin-form-layout">
                         <div class="form-group">
                             <div>
                                 <div>
-                                    <select ng-options="item.subItem as item.label for item in values track by item.id" ng-model="selected"></select>
+                                    <select ng-model="dCtrl.selectedRawMaterial" ng-options="item.text for item in dCtrl.rawMaterialList track by item.value">
+                                        <option style="display:none" value=""> - Select Raw Material - </option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
