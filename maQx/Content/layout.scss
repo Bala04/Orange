@@ -816,12 +816,16 @@ a.btn + a.btn {
         background: #DFDFDF !important;
         border: #DFDFDF thin solid !important;
         color: #fff;
+        @include transition(none);
     }
     .spaced.caret {
         margin-left: 5px;
     }
     .fa {
         padding-right: 7px;
+    }
+    &.control-btn {
+        @include transition(none);
     }
     &.app-btn, &.inverse-btn, &.warning-btn, &.danger-btn {
         color: #fff;
