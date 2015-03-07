@@ -64,6 +64,23 @@ angular.module("sectionApp").directive("indeterminateCheckbox", [function () {
             });
         }
     }
+}]).directive("returnJson", [function () {
+    return {
+        restrict: "A",
+        scope: {
+            returnJson: "&"
+        },
+        link: function (scope, element) {
+            var elements = [];
+            $(element).find("option").map(function () {
+                var val = $(this).val();
+                if (val != "0" && val != "-1")
+                    elements.push({ value: val, text: $(this).text() });
+            });
+
+            scope.returnJson({ value: elements });
+        }
+    };
 }]);
 
 angular.module("base").directive("showWhen", [function () {
