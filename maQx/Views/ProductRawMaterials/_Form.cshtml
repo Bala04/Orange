@@ -1,0 +1,66 @@
+﻿@model maQx.Models.ProductRawMaterialCreateViewModel
+
+<div class="admin-form-layout">
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @{
+        var a = @ViewContext.RouteData.Values["action"].ToString();
+    }
+
+    @if (a == "Edit")
+    {
+
+    }
+    else
+    {
+        <div class="form-group">
+            <div>
+                <div class="input-group">
+                    @Html.DropDownListFor(model => model.Product, Model.Products)
+                    @Html.ValidationMessageFor(model => model.Product, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                <div class="input-group">
+                    @Html.DropDownListFor(model => model.RawMaterial, Model.RawMaterials)
+                    @Html.ValidationMessageFor(model => model.RawMaterial, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <div>
+            @Html.TextBoxFor(model => model.InputQuantity, new { placeholder = "Raw Material Norms" })
+            @Html.ValidationMessageFor(model => model.InputQuantity, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            <div class="input-group">
+                @if (a == "Edit")
+                {
+                    @Html.EnumDropDownListFor(model => model.Unit)
+                }
+                else
+                {
+                    @Html.EnumDropDownListFor(model => model.Unit, "- Norm Unit Of Measure -")
+                }
+                @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div>
+            <div>
+                <input type="submit" value="@a" class="btn btn-default @(a == "Edit" ? "btn-warning" : "app-btn")" />
+                <input type="reset" value="Clear" class="btn btn-default inverse-btn" />
+            </div>
+        </div>
+    </div>
+</div>

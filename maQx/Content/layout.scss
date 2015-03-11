@@ -489,6 +489,10 @@ h4, h5, h6 {
     color: #DB5B51;
 }
 
+.colored {
+    color: #01A7A5;
+}
+
 img {
     -ms-interpolation-mode: bicubic;
 }
@@ -1711,7 +1715,7 @@ header {
                     @extend %absolute;
                     top: 0;
                     right: 0;
-                    & > div {
+                    & > * {
                         padding: 10px 15px;
                         @extend %inline-block;
                         @extend %align-middle;
@@ -1757,9 +1761,8 @@ header {
     }
     .detail-table {
         @include font-size(14px);
-        margin-top: 15px !important;
-        margin-left: 10px;
-        margin-bottom: 20px !important;
+        margin-bottom: 10px !important;
+        margin-left: 5px;
         tbody {
             margin-top: 10px;
         }
@@ -1786,6 +1789,11 @@ header {
         }
         h3.delete-detail {
             color: #D9534F;
+        }
+        .detail-table {
+            margin-top: 15px !important;
+            margin-left: 10px;
+            margin-bottom: 20px !important;
         }
     }
     h1 {

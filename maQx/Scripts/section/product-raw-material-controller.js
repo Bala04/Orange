@@ -3,9 +3,7 @@
         var self = this;
         self.currentPage = 1;
         self.totalPages = 0;
-        self.productRawMaterialList = [];
         self.productList = [];
-        self.rawMaterialList = [];
         self.isLoading = false;
         self.isLoaded = false;
         self.formEdit = false;
@@ -13,29 +11,41 @@
         self.rawMaterial = "0";
         self.itemPerPage = 10;
         self.search = "";
-        self.addMaterial = null;
-        self.selectedProduct = null;
-        var pages = { add: "create.html", del: "delete.html", edit: "edit.html" };
 
-        self.addProducts = function (value) {         
+        self.allowCreate = false;
+        self.allowDelete = false;
+        self.allowEdit = false;
+
+        self.loadUrl = function (url, product) {
+            return decodeURIComponent(url) + "/" + product.value;
+        };
+
+        self.loadItemUrl = function (url, rawMaterial) {
+            return decodeURIComponent(url) + "/" + rawMaterial.Key;
+        };
+
+        self.addProducts = function (value) {
             self.productList = value;
+            angular.forEach(self.productList, function (product) {
+                product.rawMaterialList = [];
+            });
         };
 
-        self.addRawMaterials = function (value) {
-            self.rawMaterialList = value;
-        };
 
         self.proto = {
-            def: function () {
-                return {
-                    rawMaterial: "-1",
-                    quantity: null,
-                    uom: "-1",
-                }
-            },
+
             init: function () {
                 self.isLoading = true;
-                PromiseFactory.Resolve(["/get/ProductRawMaterials/"]).then(function (result) {                    
+                PromiseFactory.Resolve(["/get/ProductRawMaterials/"]).then(function (result) {
+
+                    console.log(result);
+
+                    self.allowCreate = result[0].data.AllowCreate;
+                    self.allowDelete = result[0].data.IsDeleteable;
+                    self.allowEdit = result[0].data.IsEditable;
+                    angular.forEach(self.productList, function (product) {
+                        product.rawMaterialList = linq(result[0].data.List).where("$.Product.Key=='" + product.value + "'").toArray();
+                    });
                     self.isLoaded = true;
                 }).finally(function () {
                     self.isLoading = false;
@@ -56,7 +66,18 @@
                 return !(self.search != "" || self.product != '0' || self.rawMaterial != '0');
             },
             getEntityList: function () {
-                return self.proto.showPagination() ? linq(self.productList).skip((self.currentPage - 1) * self.itemPerPage).take(self.itemPerPage).toArray() : self.productList;
+                var productList = [];
+
+                if (self.rawMaterial == "0") {
+                    productList = self.productList;
+                } else {
+                    angular.forEach(self.productList, function (product) {
+                        if (linq(product.rawMaterialList).any("$.RawMaterial.Key=='" + self.rawMaterial + "'")) {
+                            productList.push(product);
+                        }
+                    });
+                }
+                return self.proto.showPagination() ? linq(productList).skip((self.currentPage - 1) * self.itemPerPage).take(self.itemPerPage).toArray() : productList;
             },
             getItemsPerPage: function () {
                 return self.itemPerPage;
@@ -70,18 +91,15 @@
             isLoaded: function () {
                 return self.isLoaded;
             },
-            formEdit: function () {
-                return self.formEdit;
+            allowCreate: function () {
+                return self.allowCreate;
             },
-            getPage: function () {
-                return self.page;
+            allowEdit: function () {
+                return self.allowEdit;
             },
-            add: function (product) {
-                self.addMaterial = self.proto.def();
-                self.selectedProduct = product;
-                self.page = pages.add;
-                self.formEdit = true;
-            }
+            allowDelete: function () {
+                return self.allowDelete;
+            },
         };
 
         self.proto.init();

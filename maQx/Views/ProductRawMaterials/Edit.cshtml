@@ -1,0 +1,45 @@
+﻿@model maQx.Models.ProductRawMaterialEditViewModel
+
+@{
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+
+<div class="generic-template generic-form">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Key)
+        @Html.HiddenFor(model => model.Product)
+        @Html.HiddenFor(model => model.RawMaterial)
+
+        <div class="admin-form">
+            <h1>Edit details</h1>
+
+            <p>Editing a product raw material</p>
+
+            <table class="table table-responsive detail-table">
+                <tbody>
+                    <tr>
+                        <td><div>Product</div></td>
+                        <td>:</td>
+                        <td><div class="ui-bold">@Model.ProductItem.Code - @Model.ProductItem.Description</div></td>
+                    </tr>
+                    <tr>
+                        <td><div>Raw Material</div></td>
+                        <td>:</td>
+                        <td><div class="ui-bold">@Model.RawMaterialItem.Code - @Model.RawMaterialItem.Description</div></td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            @{Html.RenderPartial("_Form", Model);}
+
+            <div class="generic-form-bottom-tools">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
+            </div>
+        </div>
+    }
+
+</div>

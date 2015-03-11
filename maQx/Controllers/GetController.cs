@@ -113,7 +113,7 @@ namespace maQx.Controllers
         public async Task<JsonResult> ProductRawMaterials()
         {
             var Division = User.GetDivision();
-            return await Format<ProductRawMaterial, JProductRawMaterial>(Roles.AppUser, db.ProductRawMaterials, null, x => x.ActiveFlag && x.Product.Division.Key == Division);
+            return await Format<ProductRawMaterial, JProductRawMaterial>(Roles.AppUser, db.ProductRawMaterials, "ProductRawMaterialsController", x => x.ActiveFlag && x.Product.Division.Key == Division, x => x.Product, x => x.RawMaterial);
         }
 
         /// <summary>

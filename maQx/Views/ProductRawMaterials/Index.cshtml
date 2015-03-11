@@ -39,16 +39,7 @@
         }
         else
         {
-            <div class="modular-form generic-template generic-form css-fade detail-template" ng-show="dCtrl.proto.formEdit()">
-                <form>
-                    <div class="admin-form">
-                        <div ng-include="dCtrl.proto.getPage()"></div>
-                        <div class="generic-form-bottom-tools">
-                            <a href="#" show-when="!dCtrl.isLoading" ng-click="dCtrl.proto.closeEdit()" class="btn btn-sm">Back to list</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
+
             <div class="css-fade" ng-hide="dCtrl.proto.formEdit()">
                 <div class="modular-controls">
                     <div class="select-control">
@@ -56,7 +47,7 @@
                             Product
                         </div>
                         <div>
-                            @Html.DropDownListFor(model => model.Product, Model.Products, htmlAttributes: new { ng_model = "dCtrl.product", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()", return_json="dCtrl.addProducts(value)" })
+                            @Html.DropDownListFor(model => model.Product, Model.Products, htmlAttributes: new { ng_model = "dCtrl.product", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()", return_json = "dCtrl.addProducts(value)" })
                         </div>
                     </div>
                     <div class="select-control">
@@ -64,7 +55,7 @@
                             Raw Material
                         </div>
                         <div>
-                            @Html.DropDownListFor(model => model.RawMaterial, Model.RawMaterials, htmlAttributes: new { ng_model = "dCtrl.rawMaterial", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()", return_json = "dCtrl.addRawMaterials(value)" })
+                            @Html.DropDownListFor(model => model.RawMaterial, Model.RawMaterials, htmlAttributes: new { ng_model = "dCtrl.rawMaterial", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()" })
                         </div>
                     </div>
                     <div class="pull-right">
@@ -73,32 +64,39 @@
                 </div>
                 <div>
                     <div>
-                        <div class="circle-loader  css-fade" ng-show="dCtrl.proto.isLoading()">
-                            <div class="loader-animate"></div>
-                            <div><h3>Loading..</h3></div>
-                        </div>
                         <div ng-show="dCtrl.proto.isLoaded()">
                             <ul class="material-list-view css-fade pull-control">
-                                <li ng-repeat="product in dCtrl.proto.getEntityList() | select:dCtrl.product:'value':'0' | filter:dCtrl.search | orderBy:'text' track by product.value">
+                                <li ng-repeat="product in filteredProducts = (dCtrl.proto.getEntityList() | select:dCtrl.product:'value':'0' | filter:dCtrl.search | orderBy:'text') track by product.value">
                                     <div>
                                         <span class="fa fa-angle-double-right fa-lg"></span><span class="ui-bold" ng-bind="product.text"></span>
                                     </div>
                                     <div class="pull-right">
-                                        <button type="button" ng-click="dCtrl.proto.add(product)" class="btn btn-sm app-btn fa-clear"><span class="fa fa-plus"></span></button>
+                                        <a anchor-if="dCtrl.allowCreate" ng-show="dCtrl.proto.allowCreate()" anchor-url="dCtrl.loadUrl('@HttpUtility.UrlEncode(Url.Action("Create","ProductRawMaterials"))', product)" class="btn btn-sm btn-primary app-btn btn-disabled control-btn fa-clear"><span class="fa fa-plus"></span></a>
                                     </div>
                                     <ul>
-                                        <li>
+                                        <li ng-repeat="rawMaterial in (product.rawMaterialList | select:dCtrl.rawMaterial:'RawMaterial.Key':'0' | filter:dCtrl.search | orderBy:'RawMaterial.Description') track by rawMaterial.Key">
                                             <div>
-                                                <span class="fa fa-chevron-right "></span><span>Hello</span>
+                                                <span class="fa fa-chevron-right "></span>
+                                                <span>
+                                                    <span ng-bind="rawMaterial.RawMaterial.Code"></span> - <span ng-bind="rawMaterial.RawMaterial.Description"></span> -
+                                                </span>
+                                                <span class="colored">
+                                                    <span ng-bind="rawMaterial.InputQuantity"></span> <span ng-bind="rawMaterial.SelectedUnitString"></span>
+                                                </span>
                                             </div>
                                             <div class="item-controls">
-                                                <div class="tp-delete" ng-click="dCtrl.proto.del(item)">
+                                                <a class="tp-edit" anchor-if="dCtrl.allowEdit" anchor-url="dCtrl.loadItemUrl('@HttpUtility.UrlEncode(Url.Action("Edit","ProductRawMaterials"))', rawMaterial)" ng-show="dCtrl.proto.allowEdit()">
+                                                    <span class="fa fa-edit"></span>
+                                                </a>
+                                                <a class="tp-delete" anchor-if="dCtrl.allowEdit" anchor-url="dCtrl.loadItemUrl('@HttpUtility.UrlEncode(Url.Action("Delete","ProductRawMaterials"))', rawMaterial)" ng-show="dCtrl.proto.allowDelete()">
                                                     <span class="fa fa-trash-o"></span>
-                                                </div>
+                                                </a>
                                             </div>
                                         </li>
                                     </ul>
                                 </li>
+
+                                <li class="text-center" ng-show="!filteredProducts.length">No records were found that match the specified search.</li>
                             </ul>
                             <div class="text-right material-list-view-paginate" ng-show="dCtrl.proto.showPagination()">
                                 <pagination total-items="dCtrl.proto.totalItems()" items-per-page="dCtrl.itemPerPage" ng-model="dCtrl.currentPage"></pagination>
@@ -111,73 +109,6 @@
 
             @section Scripts {
                 @Scripts.Render("~/bundles/product-raw-material-controller")
-
-                <script type="text/ng-template" id="create.html">
-                    <h1>Add raw material to product</h1>
-                    <p>Adds the selected raw material to the <span ng-bind="dCtrl.selectedProduct.text"></span></p>
-                    <div class="admin-form-layout">
-                        <div class="form-group">
-                            <div>
-                                <div>
-                                    <select ng-model="dCtrl.selectedRawMaterial" ng-options="item.text for item in dCtrl.rawMaterialList track by item.value">
-                                        <option style="display:none" value=""> - Select Raw Material - </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <div>
-                                    <input type="button" value="Create" disable-when="dCtrl.isLoading" ng-click="dCtrl.proto.save()" class="btn btn-default app-btn" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </script>
-                <script type="text/ng-template" id="edit.html">
-                    <h1>Edit department</h1>
-                    <p>Editing a department will not affect other entities</p>
-                    <div class="admin-form-layout">
-                        <div class="form-group">
-                            <div>
-                                <div>
-                                    <input type="text" ng-model="dCtrl.department.Name" placeholder="Department Name" class="form-control" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <div>
-                                    <input type="button" value="Edit" disable-when="dCtrl.isLoading" ng-click="dCtrl.proto.update()" class="btn btn-default btn-warning" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </script>
-                <script type="text/ng-template" id="delete.html">
-                    <h1>Delete department</h1>
-                    <h3 class="delete-detail">
-                        Are you sure you want to delete this?
-                    </h3>
-                    <table class="table table-responsive detail-table">
-                        <tbody>
-                            <tr>
-                                <td><div>Name</div></td>
-                                <td>:</td>
-                                <td><div class="ui-bold" ng-bind="dCtrl.department.Name"></div></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="admin-form-layout">
-                        <div class="form-group">
-                            <div>
-                                <div>
-                                    <input type="button" value="Yes, Delete" disable-when="dCtrl.isLoading" ng-click="dCtrl.proto.remove()" class="btn btn-default btn-danger" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </script>
             }
         }
     </div>

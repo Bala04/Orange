@@ -1,0 +1,25 @@
+﻿@model maQx.Models.ProductRawMaterialCreateViewModel
+
+@{
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+
+<div class="generic-template generic-form">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="admin-form">
+            <h1>Add raw material to product</h1>
+            <p>Adds the specified raw material to the a product</p>
+
+            @{Html.RenderPartial("_Form", Model);}
+
+            <div class="generic-form-bottom-tools">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
+            </div>
+        </div>
+    }
+
+</div>

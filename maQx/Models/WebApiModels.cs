@@ -802,15 +802,21 @@ namespace maQx.Models
     public class JProductRawMaterial : JsonBase, IJsonBase<ProductRawMaterial, JProductRawMaterial>
     {
         public double Quantity { get; set; }
+        public double InputQuantity { get; set; }
+        public Units SelectedUnit { get; set; }
+        public string SelectedUnitString { get { return SelectedUnit.ToString(); } }
         public JRawMaterial RawMaterial { get; set; }
         public JProduct Product { get; set; }
 
         public JProductRawMaterial() { }
         public JProductRawMaterial(ProductRawMaterial input)
+            :base(input)
         {
             Quantity = input.Quantity;
             RawMaterial = new JRawMaterial(input.RawMaterial);
             Product = new JProduct(input.Product);
+            InputQuantity = input.InputQuantity;
+            SelectedUnit = input.SelectedUnit;
         }
 
         public JProductRawMaterial To(ProductRawMaterial input)

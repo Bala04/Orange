@@ -20,6 +20,7 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using UnitsNet;
 
 namespace maQx.Utilities
 {
@@ -1191,5 +1192,32 @@ namespace maQx.Utilities
         }
     }
 
+    public static class UnitOfMeasure
+    {
+        public static Mass GetBaseUnit(Units unitFrom, double Value)
+        {
+            switch (unitFrom)
+            {
+                case Units.Kgs: return Mass.FromKilograms(Value);
+                case Units.Tons: return Mass.FromTonnes(Value);
+                case Units.Grams: return Mass.FromGrams(Value);
+                default: throw new Exception("Unable to convert specified Unit of Measures");
+            }
+        }
 
+        public static double Convert(double Value, Units unitFrom, Units unitTo)
+        {
+            if (unitFrom == unitTo) return Value;
+            if (unitFrom == Units.Nos || unitTo == Units.Nos) return Value;
+
+            var BaseUnit = GetBaseUnit(unitFrom, Value);
+            switch (unitTo)
+            {
+                case Units.Grams: return BaseUnit.Grams;
+                case Units.Tons: return BaseUnit.Tonnes;
+                case Units.Kgs: return BaseUnit.Kilograms;
+                default: throw new Exception("Unable to convert specified Unit of Measures");
+            }
+        }
+    }
 }

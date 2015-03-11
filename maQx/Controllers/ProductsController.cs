@@ -40,7 +40,7 @@ namespace maQx.Controllers
         }
 
         // GET: Products/Create
-      //  [Roles(Roles.Create, Roles.CreateEdit)]
+        [Roles(Roles.Create, Roles.CreateEdit)]
         public ActionResult Create()
         {
             return View();
@@ -51,7 +51,7 @@ namespace maQx.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-      //  [Roles(Roles.Create, Roles.CreateEdit)]
+        [Roles(Roles.Create, Roles.CreateEdit)]
         public async Task<ActionResult> Create([Bind(Include = "Code,Description")] ProductViewModel product)
         {
             if (ModelState.IsValid)

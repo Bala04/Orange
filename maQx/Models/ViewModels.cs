@@ -824,4 +824,43 @@ namespace maQx.Models
             Key = input.Key;
         }
     }
+
+    public class ProductRawMaterialCreateViewModel
+    {
+        [Required]
+        public string Product { get; set; }
+
+        [Required, Display(Name = "Raw Material")]
+        public string RawMaterial { get; set; }
+
+        [Required, Range(typeof(decimal), "0.0000000001", "2147483647", ErrorMessage = "Enter a valid raw material norm value"), Display(Name = "Raw Material Norms"), RegularExpression(RegExPatterns.Decimal, ErrorMessage = "Enter a valid raw material norm value")]
+        public string InputQuantity { get; set; }
+
+        [Required, Range(1, 4, ErrorMessage = "Unit Of Measure field is required."), Display(Name = "Unit Of Measure")]
+        public Units Unit { get; set; }
+
+        public System.Web.Mvc.SelectList RawMaterials { get; set; }
+        public System.Web.Mvc.SelectList Products { get; set; }
+    }
+
+    public class ProductRawMaterialEditViewModel : ProductRawMaterialCreateViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+
+        public ProductRawMaterialEditViewModel() { }
+        public ProductRawMaterialEditViewModel(ProductRawMaterial ProductRawMaterial)
+        {
+            Key = ProductRawMaterial.Key;
+            ProductItem = ProductRawMaterial.Product;
+            RawMaterialItem = ProductRawMaterial.RawMaterial;
+            InputQuantity = ProductRawMaterial.InputQuantity.ToString();
+            Unit = ProductRawMaterial.SelectedUnit;
+            Product = ProductRawMaterial.Product.Key;
+            RawMaterial = ProductRawMaterial.RawMaterial.Key;
+        }
+
+        public Product ProductItem { get; set; }
+        public RawMaterial RawMaterialItem { get; set; }
+    }
 }

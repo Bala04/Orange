@@ -1,0 +1,22 @@
+﻿@model maQx.Models.ProductRawMaterial
+
+<table class="table table-responsive detail-table">
+    <tbody>
+        <tr>
+            <td><div>Product</div></td>
+            <td>:</td>
+            <td><div class="ui-bold">@Model.Product.Code - @Model.Product.Description</div></td>
+        </tr>
+        <tr>
+            <td><div>Raw Material</div></td>
+            <td>:</td>
+            <td><div class="ui-bold">@Model.RawMaterial.Code - @Model.RawMaterial.Description</div></td>
+        </tr>
+        <tr>
+            <td><div>Raw Material Norms</div></td>
+            <td>:</td>
+            <td><div class="ui-bold">@Model.InputQuantity @Model.SelectedUnit.ToString()</div></td>
+        </tr>
+    </tbody>
+</table>
+
