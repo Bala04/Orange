@@ -15,8 +15,6 @@ namespace maQx
     {
         protected void Application_Start()
         {
-            Database.SetInitializer(new AppContextInitializer());
-
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

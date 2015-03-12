@@ -338,50 +338,6 @@ namespace maQx.Models
     /// <summary>
     ///
     /// </summary>
-    public class AppContextInitializer : DropCreateDatabaseIfModelChanges<AppContext>
-    {
-        /// <summary>
-        /// Seeds the specified context.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        protected override void Seed(AppContext context)
-        {
-            var Manager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
-
-            typeof(Roles).GetConstantValues<string>().ForEach(x =>
-            {
-                if (!context.Roles.AnyAsync(r => r.Name == x).Result)
-                {
-                    Manager.Create(new IdentityRole { Name = x });
-                }
-            });
-
-            // Default and Fixed Menus for the Application
-            (new List<Menus> {
-                new Menus { ID = "Organizations", Name = "Organizations", Access = Roles.AppAdmin, Order = 1, IsMappable = false },
-                new Menus { ID = "Invites", Name = "Invites", Access = Roles.Inviter, Order = 2, IsMappable = false },
-                new Menus { ID = "Administrators", Name = "People", Access = Roles.Inviter, Order = 3, IsMappable = false },
-                new Menus { ID = "Plants", Name = "Plants", Access = Roles.SysAdmin, Order = 4, IsMappable = false },
-                new Menus { ID = "Divisions", Name = "Divisions", Access = Roles.SysAdmin, Order = 5, IsMappable = false },
-                new Menus { ID = "Departments", Name = "Departments", Access = Roles.SysAdmin, Order = 6, IsMappable = false },
-                new Menus { ID = "DepartmentMenus", Name = "Department - Menu", Access = Roles.SysAdmin, Order = 7, IsMappable = false },
-                new Menus { ID = "DepartmentUsers", Name = "Department - User", Access = Roles.SysAdmin, Order = 8, IsMappable = false },
-                new Menus { ID = "AccessLevel", Name = "Access Levels", Access = Roles.SysAdmin, Order = 9, IsMappable = false },
-                new Menus { ID = "RawMaterials", Name = "Raw Materials", Access = Roles.AppUser, Order = 10, IsMappable = false },
-                new Menus { ID = "Products", Name = "Products", Access = Roles.AppUser, Order = 11, IsMappable = false },
-                new Menus { ID = "Process", Name = "Process", Access = Roles.AppUser, Order = 12, IsMappable = false },
-                new Menus { ID = "Tools", Name = "Tools", Access = Roles.AppUser, Order = 13, IsMappable = false },
-                new Menus { ID = "Dies", Name = "Dies", Access = Roles.AppUser, Order = 14, IsMappable = false },
-                new Menus { ID = "ProductRawMaterials", Name= "Product - Raw Material", Access = Roles.AppUser, Order = 15, IsMappable = false }
-            }).ForEach(x => { context.Menus.Add(x); });
-
-            base.Seed(context);
-        }
-    }
-
-    /// <summary>
-    ///
-    /// </summary>
     public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {
         /// <summary>

@@ -259,6 +259,19 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201503020606010_InitialCreate.cs" />
+    <Compile Include="Migrations\201503020606010_InitialCreate.Designer.cs">
+      <DependentUpon>201503020606010_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503120515004_InitialMigration.cs" />
+    <Compile Include="Migrations\201503120515004_InitialMigration.Designer.cs">
+      <DependentUpon>201503120515004_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503120522076_ProductProcess.cs" />
+    <Compile Include="Migrations\201503120522076_ProductProcess.Designer.cs">
+      <DependentUpon>201503120522076_ProductProcess.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AppModels.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\Extensions.cs" />
@@ -1244,6 +1257,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201503020606010_InitialCreate.resx">
+      <DependentUpon>201503020606010_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503120515004_InitialMigration.resx">
+      <DependentUpon>201503120515004_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503120522076_ProductProcess.resx">
+      <DependentUpon>201503120522076_ProductProcess.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
