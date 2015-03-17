@@ -72,6 +72,7 @@ namespace maQx
              "~/Scripts/section/access-level-controller.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
+                "~/Content/normalize.css",
                 "~/Content/bootstrap.css",
                 "~/Content/font-awesome.min.css",
                 "~/Content/layout.css", "~/Content/loading-bar.css"));
