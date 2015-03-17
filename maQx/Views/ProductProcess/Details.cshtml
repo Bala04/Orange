@@ -1,0 +1,43 @@
+﻿@model maQx.Models.ProductProcess
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ProductProcess</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Process.Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Process.Code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Product.Code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Order)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Order)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Key }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

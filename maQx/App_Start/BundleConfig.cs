@@ -65,6 +65,9 @@ namespace maQx
             bundles.Add(new ScriptBundle("~/bundles/product-raw-material-controller").Include(
                 "~/Scripts/section/product-raw-material-controller.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/product-process-controller").Include(
+              "~/Scripts/section/product-process-controller.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/access-level-controller").Include(
              "~/Scripts/section/access-level-controller.js"));
 

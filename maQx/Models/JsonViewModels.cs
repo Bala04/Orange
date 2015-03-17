@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using maQx.WebApiModels;
 
 
 namespace maQx.Models

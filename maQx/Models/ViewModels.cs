@@ -863,4 +863,10 @@ namespace maQx.Models
         public Product ProductItem { get; set; }
         public RawMaterial RawMaterialItem { get; set; }
     }
+
+    public class ProductProcessViewModel
+    {
+        public string Product { get; set; }
+        public System.Web.Mvc.SelectList Products { get; set; }
+    }
 }

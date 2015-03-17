@@ -16,6 +16,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using System.Collections.Generic;
+using maQx.WebApiModels;
 
 
 namespace maQx.Controllers

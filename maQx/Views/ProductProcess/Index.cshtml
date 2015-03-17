@@ -1,0 +1,111 @@
+﻿@model maQx.Models.ProductProcessViewModel
+
+
+@{
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+
+<div class="app-generic-template detail-template">
+    <div class="modular-layout" ng-controller="ProductProcessController as dCtrl">
+
+        @if (Model != null && Model.Products.Count() <= 1)
+        {
+            <div>
+                <div class="active-warning-info">
+                    <h3 class="info-title">
+                        <span class="fa-stack title-icon yellow">
+                            <i class="fa fa-square-o fa-stack-2x"></i>
+                            <i class="fa fa-info fa-stack-1x"></i>
+                        </span> No products were created yet.
+                    </h3>
+                    <p>
+                        Product - Process needs list of products. @Html.ActionLink("Create a product", "Create", "Products") to process further.
+                    </p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="css-fade">
+                <div class="modular-controls">
+                    <div class="select-control">
+                        <div>
+                            Select Product
+                        </div>
+                        <div>
+                            @Html.DropDownListFor(model => model.Product, Model.Products, htmlAttributes: new { ng_model = "dCtrl.product", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()", return_json = "dCtrl.loadProduct(value)" })
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <label><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" aria-controls="DataTables_Table_0" ng-model="dCtrl.search"></label>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div ng-show="dCtrl.proto.showWarning()" class="alert alert-warning" role="alert"><i class="fa fa-exclamation-triangle"></i> Please select a product from the list</div>
+                <div class="department-menu-layer">
+                    <div class="circle-loader" ng-show="dCtrl.proto.isLoading()">
+                        <div class="loader-animate"></div>
+                        <div><h3>Loading..</h3></div>
+                    </div>
+                    <div class="css-fade" ng-show="dCtrl.proto.showContent()">
+                        <ul class="material-list-view css-fade pull-control border-less">
+                            <li ng-repeat="product in filteredProducts = (dCtrl.productList | select:dCtrl.product:'value':'0' | filter:dCtrl.search | orderBy:'text') track by product.value">
+                                <div>
+                                    <span class="fa fa-angle-double-right fa-lg"></span><span class="ui-bold" ng-bind="product.text"></span>
+                                </div>
+                                <div class="pull-right">
+                                    <div ng-show="dCtrl.proto.allowCreate()" ng-click="dCtrl.proto.addProcess(product)" class="btn btn-sm btn-primary app-btn fa-clear"><span class="fa fa-plus"></span></div>
+                                </div>
+                                <ul>
+                                    <li ng-repeat="process in filteredProcess = (product.processList | filter: { selected: true } | filter:dCtrl.search | orderBy:'mapped.Order') track by process.mapped.Key">
+                                        <div>
+                                            <span class="fa fa-chevron-right "></span>
+                                            <span>
+                                                <span ng-bind="process.Code"></span> - <span ng-bind="process.Description"></span>
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li class="text-center" ng-show="!filteredProcess.length">No process mapped or no process that matches the specified search.</li>
+                                </ul>
+
+                            </li>
+
+                            <li class="text-center" ng-show="!filteredProducts.length">No records were found that match the specified search.</li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+            <script type="text/ng-template" id="modal-selector.html">
+                <div class="modal-header">
+                    <h3 class="modal-title">Process List</h3>
+                    <div class="pull-right">
+                        <label class="modal-search"><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" ng-model="entitySearch"></label>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-content-title">Select processes for <span class="ui-bold" ng-bind="items.product.text"></span> in <span class="ui-bold">correct sequence</span></p>
+                    <ul class="menu-selector-list">
+                        <li ng-repeat="element in items.product._processList | filter:entitySearch | orderBy:['Description'] track by element.Key">
+                            <input type="checkbox" ng-change="selectChange(element)" ng-model="element.selected" id="{{element.Key}}" /><label for="{{element.Key}}" ng-bind="element.Description"></label> <span ng-show="element.order > 0" class="label red-label" ng-bind="element.order"></span>
+                        </li>
+                    </ul>
+                    <p class="modal-content-footer"><span class="label red-label">number</span>  Sequence number of the process for the specified product</p>
+                </div>
+                <div class="modal-footer">
+                    <div class="pull-left statusText" ng-show="Loading()">
+                        Updating product and process lists...
+                    </div>
+                    <button class="btn btn-primary app-btn" ng-disabled="Loading()" ng-click="ok()">Save</button>
+                    <button class="btn btn-warning inverse-btn" ng-disabled="Loading()" ng-click="cancel()">Cancel</button>
+                </div>
+            </script>
+
+            @section Scripts {
+                @Scripts.Render("~/bundles/product-process-controller")
+            }
+        }
+    </div>
+</div>

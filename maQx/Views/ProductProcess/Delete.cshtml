@@ -1,0 +1,49 @@
+﻿@model maQx.Models.ProductProcess
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ProductProcess</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Process.Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Process.Code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Product.Code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Order)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Order)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using maQx.Models;
 using maQx.Utilities;
 
-namespace maQx.Models
+namespace maQx.WebApiModels
 {
     /// <summary>
     ///
@@ -822,6 +823,27 @@ namespace maQx.Models
         public JProductRawMaterial To(ProductRawMaterial input)
         {
             return new JProductRawMaterial(input);
+        }
+    }
+
+    public class JProductProcess : JsonBase, IJsonBase<ProductProcess, JProductProcess>
+    {
+        public int Order { get; set; }
+        public JProduct Product { get; set; }
+        public JProcess Process { get; set; }
+
+        public JProductProcess() { }
+        public JProductProcess(ProductProcess input)
+            : base(input)
+        {
+            Order = input.Order;
+            Process = new JProcess(input.Process);
+            Product = new JProduct(input.Product);
+        }
+
+        public JProductProcess To(ProductProcess input)
+        {
+            return new JProductProcess(input);
         }
     }
 }

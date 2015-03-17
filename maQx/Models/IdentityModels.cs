@@ -333,6 +333,8 @@ namespace maQx.Models
                 }
             }
         }
+
+        public DbSet<ProductProcess> ProductProcesses { get; set; }
     }
 
     /// <summary>

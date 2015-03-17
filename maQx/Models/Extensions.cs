@@ -21,6 +21,7 @@ using System.Web.Hosting;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using UnitsNet;
+using maQx.WebApiModels;
 
 namespace maQx.Utilities
 {
@@ -99,6 +100,24 @@ namespace maQx.Utilities
         /// The remove.
         /// </value>
         public string[] Remove { get; set; }
+    }
+
+    public class EntityManupulateHelper<T>
+    {
+        public string Entity { get; set; }
+        public T Add { get; set; }
+        public T Remove { get; set; }
+    }
+
+    public class EntityManuplateUpdateHelper<T> : EntityManupulateHelper<T>
+    {
+        public T Update { get; set; }
+    }
+
+    public class ProductProcessHelper
+    {
+        public string Key { get; set; }
+        public int Order { get; set; }
     }
 
     /// <summary>
@@ -1091,7 +1110,7 @@ namespace maQx.Utilities
         /// <param name="Includes">The includes.</param>
         /// <param name="operation">The operation.</param>
         /// <returns></returns>
-        public static async Task<JsonResult> Format<T1, T2, T3>(HttpRequestBase Request, HttpResponseBase Response, string Controller, string Role, IPrincipal User, DbSet<T1> value, Expression<Func<T1, bool>> exp, Expression<Func<T1, object>>[] Includes, Func<List<T3>, T2> operation = null)
+        public static async Task<JsonResult> Format<T1, T2, T3>(HttpRequestBase Request, HttpResponseBase Response, string Controller, string Action, string Role, IPrincipal User, DbSet<T1> value, Expression<Func<T1, bool>> exp, Expression<Func<T1, object>>[] Includes, Func<List<T3>, T2> operation = null)
             where T1 : class
             where T2 : maQx.Models.JsonViewModel
             where T3 : class, IJsonBase<T1, T3>
@@ -1102,7 +1121,9 @@ namespace maQx.Utilities
             {
                 if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
                 {
-                    if (typeof(T1) != typeof(MenuAccess) && (Role == Roles.AppUser && !await User.HasMenuAccessAsync(Request.RequestContext.RouteData.Values["action"].ToString())))
+                 //   if (typeof(T1) != typeof(MenuAccess) && (Role == Roles.AppUser && !await User.HasMenuAccessAsync(Request.RequestContext.RouteData.Values["action"].ToString())))
+
+                    if (typeof(T1) != typeof(MenuAccess) && (Role == Roles.AppUser && !await User.HasMenuAccessAsync(Action)))
                     {
                         return await JsonErrorViewModel.GetUserUnauhorizedError().toJson();
                     }

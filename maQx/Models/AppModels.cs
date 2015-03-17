@@ -885,7 +885,7 @@ namespace maQx.Models
         /// <value>
         /// The order.
         /// </value>
-        [Required, Range(1, int.MaxValue)]
+        [Required]
         [Index("IX_ProductProcess", 3, IsUnique = true)]
         public int Order { get; set; }
     }

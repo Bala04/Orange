@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using maQx.Models;
 using maQx.Utilities;
+using maQx.WebApiModels;
 
 namespace maQx.Controllers
 {
