@@ -1,0 +1,125 @@
+﻿@model maQx.Models.ProductProcessViewModel
+@{
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+@{
+    var Controller = @ViewContext.RouteData.Values["controller"].ToString() + "Controller";
+    var Condition = Controller == "ProductProcessToolsController";
+    var Collection = Condition ? "Tool List" : "Die List";
+    var Entities = Condition ? "tools" : "dies";
+    var Type = Condition ? "Tool" : "Die";
+}
+
+
+<div class="app-generic-template detail-template">
+    <div class="modular-layout" id="entity" data-entity="@Type" ng-controller="ProductProcessBaseController as dCtrl">
+        <div class="css-fade">
+            <div class="modular-controls">
+                @if (Model != null && Model.Products.Count() > 1)
+                {
+                    <div class="select-control">
+                        <div>
+                            Select Product
+                        </div>
+                        <div>
+                            @Html.DropDownListFor(model => model.Product, Model.Products, htmlAttributes: new { ng_model = "dCtrl.product", ng_disabled = "dCtrl.proto.isLoading()", ng_change = "dCtrl.proto.change()", return_json = "dCtrl.loadProduct(value)" })
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <label><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" aria-controls="DataTables_Table_0" ng-model="search"></label>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+        <div>
+            @if (Model != null && Model.Products.Count() > 1)
+            {
+                <div ng-show="dCtrl.proto.showWarning()" class="alert alert-warning" role="alert"><i class="fa fa-exclamation-triangle"></i> Please select a product from the list</div>
+                <div class="department-menu-layer">
+
+                    <div class="circle-loader" ng-show="dCtrl.proto.isLoading()">
+                        <div class="loader-animate"></div>
+                        <div><h3>Loading..</h3></div>
+                    </div>
+
+                    <div class="css-fade" ng-show="dCtrl.proto.showContent()">
+                        <div class="menu-info-text">
+                            <span class="fa fa-info-circle"></span><span class="ui-bold" ng-bind="dCtrl.proto.getMappedEntityCount()"></span> of <span class="ui-bold" ng-bind="dCtrl.proto.getEntityCount()"></span> @Entities mapped
+                        </div>
+
+                        <div ng-repeat="item in dCtrl.productList | select:dCtrl.product:'value':'0' track by item.value">
+                            <div class="menu-content" ng-repeat="process in item.processList | filter:search | orderBy : 'Process.Description' track by process.Key">
+                                <div><span ng-bind="process.Process.Description"></span> <span ng-show="dCtrl.proto.allowCreate()" class="fa fa-edit pull-right" data-toggle="tooltip" title="Manage @Entities" ng-click="dCtrl.proto.addEntity(item, process)"></span></div>
+                                <div>
+                                    <ul>
+                                        <li ng-repeat="selected in filteredList = (process.entityList | filter: { selected: true } | filter:search | orderBy:'Description') track by selected.Key">
+                                            <span ng-bind="selected.Description"></span>
+                                        </li>
+                                        <li ng-show="!filteredList.length" class=" text-center">
+                                            No @Entities added
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        @RenderBody()
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="active-warning-info">
+                    <h3 class="info-title">
+                        <span class="fa-stack title-icon yellow">
+                            <i class="fa fa-square-o fa-stack-2x"></i>
+                            <i class="fa fa-info fa-stack-1x"></i>
+                        </span> No divisions were created yet.
+                    </h3>
+                    <p>
+                        Product Process Tool mapping requires list of products. @Html.ActionLink("Create a product", "Create", "Product") to proceed further.
+                    </p>
+                </div>
+            }
+        </div>
+
+        <script type="text/ng-template" id="modal-selector.html">
+            <div class="modal-header">
+                <h3 class="modal-title">@Collection</h3>
+                <div class="pull-right">
+                    <label class="modal-search"><span class="input-group-addon addon-icon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span><input type="search" class="form-control input-sm" placeholder="Search" ng-model="entitySearch"></label>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p class="modal-content-title">Select @Entities for <span class="ui-bold" ng-bind="items.product.text"></span> and <span class="ui-bold" ng-bind="items.process.Process.Description"></span></p>
+                <ul class="menu-selector-list">
+                    <li ng-repeat="element in items.process._entityList | filter:entitySearch | orderBy:['Description'] track by element.Key">
+                        <input type="checkbox" ng-change="selectChange(element)" ng-model="element.selected" id="{{element.Key}}" /><label for="{{element.Key}}" ng-bind="element.Description"></label>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-left statusText" ng-show="Loading()">
+                    Updating @Entities list...
+                </div>
+                <button class="btn btn-primary app-btn" ng-disabled="Loading()" ng-click="ok()">Save</button>
+                <button class="btn btn-warning inverse-btn" ng-disabled="Loading()" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+
+
+
+        @section Scripts {
+
+            @Scripts.Render("~/bundles/product-process-base-controller")
+
+            @RenderSection("Scripts", required: false)
+        }
+
+    </div>
+</div>

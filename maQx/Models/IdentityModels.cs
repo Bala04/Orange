@@ -199,6 +199,10 @@ namespace maQx.Models
         /// </value>
         public DbSet<Tool> Tools { get; set; }
 
+        public DbSet<ProductProcess> ProductProcesses { get; set; }
+        public DbSet<ProductProcessTool> ProductProcessesTools { get; set; }
+        public DbSet<ProductProcessDie> ProductProcessesDies { get; set; }
+
         /// <summary>
         /// Creates this instance.
         /// </summary>
@@ -334,7 +338,7 @@ namespace maQx.Models
             }
         }
 
-        public DbSet<ProductProcess> ProductProcesses { get; set; }
+        
     }
 
     /// <summary>

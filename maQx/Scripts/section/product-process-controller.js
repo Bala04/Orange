@@ -88,7 +88,6 @@
                 process.order = mapped != null ? mapped.Order : 0;
                 product.processList.push(process);
             });
-            product._processList = _app.clone(product.processList);
         }
 
         function change() {
@@ -104,6 +103,7 @@
         }
 
         function addProcess(product) {
+            product._processList = _app.clone(product.processList);
             $modal.open({
                 templateUrl: 'modal-selector.html',
                 controller: 'ProcessSelectionController',

@@ -48,7 +48,7 @@
 
                     <div class="css-fade" ng-show="dCtrl.proto.showContent()">
                         <div class="menu-info-text">
-                            <span class="fa fa-info-circle"></span><span class="ui-bold" ng-bind="dCtrl.proto.getMenuCount()"></span> of <span class="ui-bold" ng-bind="dCtrl.proto.getMappedMenuCount()"></span> @Entities mapped
+                            <span class="fa fa-info-circle"></span><span class="ui-bold" ng-bind="dCtrl.proto.getMappedMenuCount()"></span> of <span class="ui-bold" ng-bind="dCtrl.proto.getMenuCount()"></span> @Entities mapped
                         </div>
 
                         <div ng-repeat="item in dCtrl.divisionDepartment | select:dCtrl.division:'division':'0' track by item.division">
@@ -61,7 +61,7 @@
                                         </li>
                                     </ul>
                                     <ul ng-show="dCtrl.proto.showMenus(node)">
-                                        <li ng-repeat="selected in node.entites | filter:search | orderBy:Name track by selected.@Key">
+                                        <li ng-repeat="selected in node.entites | filter:search | orderBy:'Name' track by selected.@Key">
                                             <span ng-bind="selected.@Name"></span>
                                         </li>
                                     </ul>

@@ -38,7 +38,30 @@ namespace maQx.Models
     /// <summary>
     ///
     /// </summary>
-    public class DateTimeStamp
+    ///
+
+    public interface IDateTimeStamp
+    {
+        DateTime CreatedAt { get; set; }
+        DateTime UpdatedAt { get; set; }
+        bool ActiveFlag { get; set; }
+        string Modified { get; }
+        string Created { get; }
+    }
+
+    public interface IAppBaseStamp : IDateTimeStamp
+    {
+        string Key { get; set; }
+        string UserCreated { get; set; }
+        string UserModified { get; set; }
+    }
+
+    public interface IProductProcessBase : IAppBaseStamp
+    {
+        ProductProcess ProductProcess { get; set; }
+    }
+
+    public class DateTimeStamp : IDateTimeStamp
     {
         /// <summary>
         /// Gets or sets the created at.
@@ -105,7 +128,7 @@ namespace maQx.Models
     /// <summary>
     ///
     /// </summary>
-    public class AppBaseStamp : DateTimeStamp
+    public class AppBaseStamp : DateTimeStamp, IAppBaseStamp
     {
         /// <summary>
         /// Gets or sets the key.
@@ -955,8 +978,15 @@ namespace maQx.Models
     /// <summary>
     /// 
     /// </summary>
-    public class ProductProcessTool : AppBaseStamp
+    public class ProductProcessTool : AppBaseStamp, IProductProcessBase
     {
+        public ProductProcessTool() { }
+        public ProductProcessTool(ProductProcess ProductProcess, Tool Tool)
+        {
+            this.ProductProcess = ProductProcess;
+            this.Tool = Tool;
+        }
+
         /// <summary>
         /// Gets or sets the product process key.
         /// </summary>
@@ -1024,8 +1054,15 @@ namespace maQx.Models
     /// <summary>
     /// 
     /// </summary>
-    public class ProductProcessDie : AppBaseStamp
+    public class ProductProcessDie : AppBaseStamp, IProductProcessBase
     {
+        public ProductProcessDie() { }
+        public ProductProcessDie(ProductProcess ProductProcess, Die Die)
+        {
+            this.ProductProcess = ProductProcess;
+            this.Die = Die;
+        }
+
         /// <summary>
         /// Gets or sets the product process key.
         /// </summary>
@@ -1094,8 +1131,15 @@ namespace maQx.Models
     /// <summary>
     /// 
     /// </summary>
-    public class ProductProcessScrap : AppBaseStamp
+    public class ProductProcessScrap : AppBaseStamp, IProductProcessBase
     {
+        public ProductProcessScrap() { }
+        public ProductProcessScrap(ProductProcess ProductProcess, Scrap Scrap)
+        {
+            this.ProductProcess = ProductProcess;
+            this.Scrap = Scrap;
+        }
+
         /// <summary>
         /// Gets or sets the product process key.
         /// </summary>
@@ -1141,8 +1185,15 @@ namespace maQx.Models
     /// <summary>
     /// 
     /// </summary>
-    public class ProductProcessRework : AppBaseStamp
+    public class ProductProcessRework : AppBaseStamp, IProductProcessBase
     {
+        public ProductProcessRework() { }
+        public ProductProcessRework(ProductProcess ProductProcess, Rework Rework)
+        {
+            this.ProductProcess = ProductProcess;
+            this.Rework = Rework;
+        }
+
         /// <summary>
         /// Gets or sets the product process key.
         /// </summary>

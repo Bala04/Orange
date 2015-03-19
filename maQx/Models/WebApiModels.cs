@@ -35,7 +35,7 @@ namespace maQx.WebApiModels
         /// Initializes a new instance of the <see cref="JsonBase"/> class.
         /// </summary>
         /// <param name="input">The input.</param>
-        public JsonBase(DateTimeStamp input)
+        public JsonBase(IDateTimeStamp input)
         {
             this.Modified = input.Modified;
             this.Created = input.Created;
@@ -45,7 +45,7 @@ namespace maQx.WebApiModels
         /// Initializes a new instance of the <see cref="JsonBase"/> class.
         /// </summary>
         /// <param name="input">The input.</param>
-        public JsonBase(AppBaseStamp input)
+        public JsonBase(IAppBaseStamp input)
         {
             this.Key = input.Key;
             this.Modified = input.Modified;
@@ -118,6 +118,17 @@ namespace maQx.WebApiModels
         {
             MaxCount = input.MaxCount;
             Tolerance = input.Tolerance;
+        }
+    }
+
+    public class JProductProcessBase : JsonBase
+    {
+        public JProductProcess ProductProcess { get; set; }
+        public JProductProcessBase() { }
+        public JProductProcessBase(IProductProcessBase input)
+            : base(input)
+        {
+            ProductProcess = new JProductProcess(input.ProductProcess);
         }
     }
 
@@ -800,6 +811,36 @@ namespace maQx.WebApiModels
         }
     }
 
+    public class JScrap : JsonEntityDivisionBase, IJsonBase<Scrap, JScrap>
+    {
+        public JScrap() { }
+        public JScrap(Scrap input)
+            : base(input)
+        {
+
+        }
+
+        public JScrap To(Scrap input)
+        {
+            return new JScrap(input);
+        }
+    }
+
+    public class JRework : JsonEntityDivisionBase, IJsonBase<Rework, JRework>
+    {
+        public JRework() { }
+        public JRework(Rework input)
+            : base(input)
+        {
+
+        }
+
+        public JRework To(Rework input)
+        {
+            return new JRework(input);
+        }
+    }
+
     public class JProductRawMaterial : JsonBase, IJsonBase<ProductRawMaterial, JProductRawMaterial>
     {
         public double Quantity { get; set; }
@@ -811,7 +852,7 @@ namespace maQx.WebApiModels
 
         public JProductRawMaterial() { }
         public JProductRawMaterial(ProductRawMaterial input)
-            :base(input)
+            : base(input)
         {
             Quantity = input.Quantity;
             RawMaterial = new JRawMaterial(input.RawMaterial);
@@ -844,6 +885,74 @@ namespace maQx.WebApiModels
         public JProductProcess To(ProductProcess input)
         {
             return new JProductProcess(input);
+        }
+    }
+
+    public class JProductProcessTool : JProductProcessBase, IJsonBase<ProductProcessTool, JProductProcessTool>
+    {
+        public JTool Tool { get; set; }
+
+        public JProductProcessTool() { }
+        public JProductProcessTool(ProductProcessTool input)
+            : base(input)
+        {
+            Tool = new JTool(input.Tool);
+        }
+
+        public JProductProcessTool To(ProductProcessTool input)
+        {
+            return new JProductProcessTool(input);
+        }
+    }
+
+    public class JProductProcessDie : JProductProcessBase, IJsonBase<ProductProcessDie, JProductProcessDie>
+    {
+        public JDie Die { get; set; }
+
+        public JProductProcessDie() { }
+        public JProductProcessDie(ProductProcessDie input)
+            : base(input)
+        {
+            Die = new JDie(input.Die);
+        }
+
+        public JProductProcessDie To(ProductProcessDie input)
+        {
+            return new JProductProcessDie(input);
+        }
+    }
+
+    public class JProductProcessScrap : JProductProcessBase, IJsonBase<ProductProcessScrap, JProductProcessScrap>
+    {
+        public JScrap Scrap { get; set; }
+
+        public JProductProcessScrap() { }
+        public JProductProcessScrap(ProductProcessScrap input)
+            : base(input)
+        {
+            Scrap = new JScrap(input.Scrap);
+        }
+
+        public JProductProcessScrap To(ProductProcessScrap input)
+        {
+            return new JProductProcessScrap(input);
+        }
+    }
+
+    public class JProductProcessRework : JProductProcessBase, IJsonBase<ProductProcessRework, JProductProcessRework>
+    {
+        public JRework Rework { get; set; }
+
+        public JProductProcessRework() { }
+        public JProductProcessRework(ProductProcessRework input)
+            : base(input)
+        {
+            Rework = new JRework(input.Rework);
+        }
+
+        public JProductProcessRework To(ProductProcessRework input)
+        {
+            return new JProductProcessRework(input);
         }
     }
 }

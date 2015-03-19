@@ -44,3 +44,4 @@
 /// <reference path="section/access-level-controller.js" />
 /// <reference path="section/product-raw-material-controller.js" />
 /// <reference path="section/product-process-controller.js" />
+/// <reference path="section/product-process-tool-die-controller.js" />

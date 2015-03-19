@@ -253,6 +253,8 @@
     <Compile Include="Controllers\PlantsController.cs" />
     <Compile Include="Controllers\ProcessController.cs" />
     <Compile Include="Controllers\ProductProcessController.cs" />
+    <Compile Include="Controllers\ProductProcessDiesController.cs" />
+    <Compile Include="Controllers\ProductProcessToolsController.cs" />
     <Compile Include="Controllers\ProductRawMaterialsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\RawMaterialsController.cs" />
@@ -1128,6 +1130,7 @@
     <Content Include="Scripts\section\invite-controller.js" />
     <Content Include="Scripts\section\menu-controller.js" />
     <Content Include="Scripts\section\page-controller.js" />
+    <Content Include="Scripts\section\product-process-tool-die-controller.js" />
     <Content Include="Scripts\section\product-raw-material-controller.js" />
     <Content Include="Scripts\section\product-process-controller.js" />
     <Content Include="Scripts\section\shared-controller.js" />
@@ -1250,6 +1253,9 @@
     <Content Include="Views\ProductRawMaterials\Delete.cshtml" />
     <Content Include="Views\ProductRawMaterials\_View.cshtml" />
     <Content Include="Views\ProductProcess\Index.cshtml" />
+    <Content Include="Views\ProductProcessTools\Index.cshtml" />
+    <Content Include="Views\Shared\_ProductProcessToolDie.cshtml" />
+    <Content Include="Views\ProductProcessDies\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

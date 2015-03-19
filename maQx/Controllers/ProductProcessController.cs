@@ -14,8 +14,6 @@ namespace maQx.Controllers
 {
     public class ProductProcessController : Controller
     {
-        private AppContext db = new AppContext();
-
         // GET: ProductProcess
         public async Task<ActionResult> Index()
         {
@@ -23,15 +21,6 @@ namespace maQx.Controllers
             {
                 Products = (await Shared.GetProducts(User.GetDivision())).ToSelectList("Description")
             });
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

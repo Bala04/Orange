@@ -187,7 +187,50 @@ namespace maQx.Controllers
         private async Task<JsonResult> _ProductProcess(string id)
         {
             var Division = User.GetDivision();
-            return await Format<ProductProcess, JProductProcess>(Roles.AppUser, db.ProductProcesses, "ProductProcessController", "ProductProcess", x => x.ActiveFlag && x.Product.Division.Key == Division && x.Process.Division.Key == Division && x.Product.Key == id, x => x.Product, x => x.Process);
+            return await Format<ProductProcess, JProductProcess>(Roles.AppUser, db.ProductProcesses, "ProductProcessController", "ProductProcess", x => x.ActiveFlag && x.Product.Division.Key == Division && x.Process.Division.Key == Division && x.Product.Key == id, x => x.Product.Division.Plant.Organization, x => x.Process.Division.Plant.Organization);
+        }
+
+        [HttpGet]
+        [Route("Get/ProductProcessTools/{Product}/{Process=All}")]
+        public async Task<JsonResult> ProductProcessTools(string Product, string Process)
+        {
+            return await _ProductProcessBase<ProductProcessTool, JProductProcessTool>(db.ProductProcessesTools, Product, Process, "Tools");
+        }
+
+        [HttpGet]
+        [Route("Get/ProductProcessDies/{Product}/{Process=All}")]
+        public async Task<JsonResult> ProductProcessDies(string Product, string Process)
+        {
+            return await _ProductProcessBase<ProductProcessDie, JProductProcessDie>(db.ProductProcessesDies, Product, Process, "Dies");
+        }
+
+        private async Task<JsonResult> _ProductProcessBase<T1, T2>(DbSet<T1> DbSet, string id, string Entity)
+            where T1 : class, IProductProcessBase
+            where T2 : class, IJsonBase<T1, T2>
+        {
+            var Division = User.GetDivision();
+
+            return await _ProductProcessBase<T1, T2>(DbSet, x => x.ActiveFlag && x.ProductProcess.Product.Division.Key == Division && x.ProductProcess.Process.Division.Key == Division && x.ProductProcess.Key == id, Entity);
+        }
+
+        private async Task<JsonResult> _ProductProcessBase<T1, T2>(DbSet<T1> DbSet, string Product, string Process, string Entity)
+            where T1 : class, IProductProcessBase
+            where T2 : class, IJsonBase<T1, T2>
+        {
+            var Division = User.GetDivision();
+
+            Expression<Func<T1, bool>> Condition = Process == "All" ? (Expression<Func<T1, bool>>)(x => x.ActiveFlag && x.ProductProcess.Product.Division.Key == Division && x.ProductProcess.Process.Division.Key == Division && x.ProductProcess.Product.Key == Product) : (x => x.ActiveFlag && x.ProductProcess.Product.Division.Key == Division && x.ProductProcess.Process.Division.Key == Division && x.ProductProcess.Product.Key == Product && x.ProductProcess.Process.Key == Process);
+
+            return await _ProductProcessBase<T1, T2>(DbSet, Condition, Entity);
+        }
+
+        private async Task<JsonResult> _ProductProcessBase<T1, T2>(DbSet<T1> DbSet, Expression<Func<T1, bool>> Condition, string Entity)
+            where T1 : class, IProductProcessBase
+            where T2 : class, IJsonBase<T1, T2>
+        {
+            var Action = "ProductProcess" + Entity;
+
+            return await Format<T1, T2>(Roles.AppUser, DbSet, Action + "Controller", Action, Condition, x => x.ProductProcess.Product.Division.Plant.Organization, x => x.ProductProcess.Process.Division.Plant.Organization);
         }
 
         /// <summary>
@@ -212,7 +255,7 @@ namespace maQx.Controllers
             // FIX: Update SysAdmin with AppUser role. UserMenus are access by the Users with role AppUser. 16/02/2015
             // BUG: return await Format<MenuAccess, JsonListViewModel<JMenus>, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, x => x.User.Id == id, (value) =>
             // FIX: UserMenus should return JsonResult of the type of JsonMenuViewModel instead of JsonListViewModel<JMenus>. 16/02/2015
-            return await Format<MenuAccess, JsonMenuViewModel, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, null, x => x.User.Id == id, (value) =>
+            return await Format<MenuAccess, JsonMenuViewModel, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, null, x => x.User.Id == id && x.DepartmentMenu.ActiveFlag, (value) =>
             {
                 // BUG: return new JsonListViewModel<JMenus>()
                 // FIX: return as JsonMenuViewModel instead of JsonListViewModel<JMenus>. 16/02/2015
@@ -240,9 +283,9 @@ namespace maQx.Controllers
                     return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                 }
 
-                var DepartmentMenu = (await db.DepartmentMenus.Include(x => x.Department.Division.Plant.Organization).Include(x => x.Menu).Where(x => x.Department.Key == DepartmentUser.Department.Key).ToListAsync()).Select(x => new JDepartmentMenu(x)).ToList();
+                var DepartmentMenu = (await db.DepartmentMenus.Include(x => x.Department.Division.Plant.Organization).Include(x => x.Menu).Where(x => x.ActiveFlag && x.Department.Key == DepartmentUser.Department.Key).ToListAsync()).Select(x => new JDepartmentMenu(x)).ToList();
 
-                var DepartmentSelectedMenu = (await db.MenuAccess.Include(x => x.DepartmentMenu.Menu).Where(x => x.User.Id == id).ToListAsync()).Select(x => new JMenuAccess(x)).ToList();
+                var DepartmentSelectedMenu = (await db.MenuAccess.Include(x => x.DepartmentMenu.Menu).Where(x => x.DepartmentMenu.ActiveFlag && x.User.Id == id).ToListAsync()).Select(x => new JMenuAccess(x)).ToList();
 
                 return await new JsonViewModel<Tuple<List<JDepartmentMenu>, List<JMenuAccess>>>
                 {
@@ -273,7 +316,7 @@ namespace maQx.Controllers
         /// <returns></returns>
         private async Task<JsonResult> _DepartmentMenu(string id)
         {
-            return await Format<DepartmentMenu, JsonListViewModel<JDepartmentMenu>, JDepartmentMenu>(Roles.SysAdmin, db.DepartmentMenus, null, null, x => x.Department.Division.Key == id, (value) =>
+            return await Format<DepartmentMenu, JsonListViewModel<JDepartmentMenu>, JDepartmentMenu>(Roles.SysAdmin, db.DepartmentMenus, null, null, x => x.ActiveFlag && x.Department.Division.Key == id, (value) =>
             {
                 return new JsonListViewModel<JDepartmentMenu>()
                 {
@@ -300,7 +343,7 @@ namespace maQx.Controllers
         /// <returns></returns>
         private async Task<JsonResult> _DepartmentUser(string id)
         {
-            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, null, x => x.Department.Division.Key == id, (value) =>
+            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, null, x => x.ActiveFlag && x.Department.Division.Key == id, (value) =>
             {
                 return new JsonListViewModel<JDepartmentUser>()
                 {
@@ -329,7 +372,7 @@ namespace maQx.Controllers
         {
             var Organization = User.GetOrganization();
 
-            return await Format<AccessLevel, JsonListViewModel<JAccessLevel>, JAccessLevel>(Roles.SysAdmin, db.AccessLevels, null, null, x => x.User.Id == id && x.Division.Plant.Organization.Key == Organization, (value) =>
+            return await Format<AccessLevel, JsonListViewModel<JAccessLevel>, JAccessLevel>(Roles.SysAdmin, db.AccessLevels, null, null, x => x.ActiveFlag && x.User.Id == id && x.Division.Plant.Organization.Key == Organization, (value) =>
             {
                 return new JsonListViewModel<JAccessLevel>()
                 {
@@ -347,7 +390,7 @@ namespace maQx.Controllers
         {
             var Organization = User.GetOrganization();
 
-            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, null, x => x.Department.Division.Plant.Organization.Key == Organization, (value) =>
+            return await Format<DepartmentUser, JsonListViewModel<JDepartmentUser>, JDepartmentUser>(Roles.SysAdmin, db.DepartmentUsers, null, null, x => x.ActiveFlag && x.Department.Division.Plant.Organization.Key == Organization, (value) =>
            {
                return new JsonListViewModel<JDepartmentUser>()
                {
@@ -385,7 +428,7 @@ namespace maQx.Controllers
 
         private async Task<JsonResult> _GetDepartments(string id)
         {
-            return await Format<Department, JsonListViewModel<JDepartment>, JDepartment>(Roles.SysAdmin, db.Departments, null, null, x => x.Division.Key == id && x.Access == Roles.SysAdmin, (value) =>
+            return await Format<Department, JsonListViewModel<JDepartment>, JDepartment>(Roles.SysAdmin, db.Departments, null, null, x => x.ActiveFlag && x.Division.Key == id && x.Access == Roles.SysAdmin, (value) =>
             {
                 return new JsonListViewModel<JDepartment>()
                 {
@@ -407,7 +450,7 @@ namespace maQx.Controllers
 
         private async Task<JsonResult> _GetDepartmentMenus(string id)
         {
-            return await List(Roles.SysAdmin, db.DepartmentMenus, null, x => x.Department.Division.Key == id, (value) =>
+            return await List(Roles.SysAdmin, db.DepartmentMenus, null, x => x.ActiveFlag && x.Department.Division.Key == id, (value) =>
             {
                 return new JsonListViewModel<DepartmentMenu>()
                 {
@@ -417,11 +460,6 @@ namespace maQx.Controllers
         }
 
         private async Task<JsonResult> _UpdateHandler<T>(string id, string Reference, Func<string, T, Task<JsonResult>> Handler)
-        {
-            return await _ReferenceChecker<T>(id, Reference, Handler);
-        }
-
-        private async Task<JsonResult> _ReferenceChecker<T>(string id, string Reference, Func<string, T, Task<JsonResult>> Handler)
         {
             if (!string.IsNullOrWhiteSpace(Reference))
             {
@@ -436,40 +474,51 @@ namespace maQx.Controllers
             return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
         }
 
-        private async Task<JsonResult> _AddDepartmentMenusHandler(string id, EntityManupulateHelper data)
+        private async Task<JsonResult> _AddDepartmentMenusHandler(string id, EntityManupulateHelper Data)
         {
-            var Department = await db.Departments.FindAsync(data.Entity);
+            var Department = await db.Departments.FindAsync(Data.Entity);
 
             if (Department != null)
             {
                 var DepartmentMenu = db.DepartmentMenus;
 
-                foreach (var item in data.Add)
+                foreach (var item in Data.Add)
                 {
-                    var Menu = await db.Menus.FindAsync(item);
+                    var MenuAdd = await db.DepartmentMenus.Include(x => x.Department).Include(x => x.Menu).Where(x => x.Menu.ID == item && x.Department.Key == Department.Key).FirstOrDefaultAsync();
 
-                    if (Menu == null)
+                    if (MenuAdd == null)
                     {
-                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                        var Menu = await db.Menus.FindAsync(item);
+
+                        if (Menu == null)
+                        {
+                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                        }
+
+                        DepartmentMenu.Add(new DepartmentMenu
+                        {
+                            Department = Department,
+                            Menu = Menu
+                        });
                     }
-
-                    DepartmentMenu.Add(new DepartmentMenu
+                    else
                     {
-                        Department = Department,
-                        Menu = Menu
-                    });
+                        MenuAdd.ActiveFlag = true;
+                        db.Entry(MenuAdd).State = EntityState.Modified;
+                    }
                 }
 
-                foreach (var item in data.Remove)
+                foreach (var item in Data.Remove)
                 {
-                    var Menu = await db.DepartmentMenus.FindAsync(item);
+                    var Menu = await db.DepartmentMenus.Include(x => x.Menu).Include(x => x.Department).Where(x => x.Key == item).FirstOrDefaultAsync();
 
                     if (Menu == null)
                     {
                         return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                     }
 
-                    DepartmentMenu.Remove(Menu);
+                    Menu.ActiveFlag = false;
+                    db.Entry(Menu).State = EntityState.Modified;
                 }
 
                 Exception Exception = null;
@@ -490,40 +539,51 @@ namespace maQx.Controllers
             return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
         }
 
-        private async Task<JsonResult> _AddDepartmentUserHandler(string id, EntityManupulateHelper data)
+        private async Task<JsonResult> _AddDepartmentUserHandler(string id, EntityManupulateHelper Data)
         {
-            var Department = await db.Departments.FindAsync(data.Entity);
+            var Department = await db.Departments.FindAsync(Data.Entity);
 
             if (Department != null)
             {
                 var DepartmentUser = db.DepartmentUsers;
 
-                foreach (var item in data.Add)
+                foreach (var item in Data.Add)
                 {
-                    var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
+                    var UserAdd = await db.DepartmentUsers.Include(x => x.Department).Include(x => x.User).Where(x => x.User.Id == item && x.Department.Key == Department.Key).FirstOrDefaultAsync();
 
-                    if (User == null)
+                    if (UserAdd == null)
                     {
-                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                        var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
+
+                        if (User == null)
+                        {
+                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                        }
+
+                        DepartmentUser.Add(new DepartmentUser
+                        {
+                            Department = Department,
+                            User = User
+                        });
                     }
-
-                    DepartmentUser.Add(new DepartmentUser
+                    else
                     {
-                        Department = Department,
-                        User = User
-                    });
+                        UserAdd.ActiveFlag = true;
+                        db.Entry(UserAdd).State = EntityState.Modified;
+                    }
                 }
 
-                foreach (var item in data.Remove)
+                foreach (var item in Data.Remove)
                 {
-                    var User = await db.DepartmentUsers.FindAsync(item);
+                    var User = await db.DepartmentUsers.Include(x => x.User).Include(x => x.Department).Where(x => x.Key == item).FirstOrDefaultAsync();
 
                     if (User == null)
                     {
                         return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                     }
 
-                    DepartmentUser.Remove(User);
+                    User.ActiveFlag = false;
+                    db.Entry(User).State = EntityState.Modified;
                 }
 
                 Exception Exception = null;
@@ -544,15 +604,15 @@ namespace maQx.Controllers
             return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
         }
 
-        private async Task<JsonResult> _AccessDivisionHandler(string id, EntityManupulateHelper data)
+        private async Task<JsonResult> _AccessDivisionHandler(string id, EntityManupulateHelper Data)
         {
-            var User = db.Users.Find(data.Entity);
+            var User = db.Users.Find(Data.Entity);
 
             if (User != null)
             {
                 var AccessLevel = db.AccessLevels;
 
-                foreach (var item in data.Add)
+                foreach (var item in Data.Add)
                 {
                     var Division = await db.Divisions.Where(x => x.Key == item).FirstOrDefaultAsync();
 
@@ -568,7 +628,7 @@ namespace maQx.Controllers
                     });
                 }
 
-                foreach (var item in data.Remove)
+                foreach (var item in Data.Remove)
                 {
                     var Access = await db.AccessLevels.FindAsync(item);
 
@@ -585,7 +645,7 @@ namespace maQx.Controllers
                 try
                 {
                     await db.SaveChangesAsync();
-                    return await _DivisionAccess(data.Entity);
+                    return await _DivisionAccess(Data.Entity);
                 }
                 catch (Exception ex)
                 {
@@ -651,7 +711,7 @@ namespace maQx.Controllers
             return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
         }
 
-        private async Task<JsonResult> _UpdateProductProcess(string id, EntityManuplateUpdateHelper<List<ProductProcessHelper>> Data)
+        private async Task<JsonResult> _AddProductProcessHandler(string id, EntityManuplateUpdateHelper<List<ProductProcessHelper>> Data)
         {
             var Product = await db.Products.FindAsync(id);
 
@@ -732,6 +792,95 @@ namespace maQx.Controllers
             return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
         }
 
+        private async Task<JsonResult> _UpdateHandler<T1, T2, T3, T4>(string id, string Reference, DbSet<T2> DbSet, DbSet<T3> Entity, Expression<Func<T2, object>> Includes, string EntityType, Func<string, DbSet<T2>, DbSet<T3>, Expression<Func<T2, object>>, string, T1, T4, Task<JsonResult>> Handler)
+            where T2 : class, IProductProcessBase
+            where T4 : class, IJsonBase<T2, T4>
+            where T3 : class
+        {
+            if (!string.IsNullOrWhiteSpace(Reference))
+            {
+                var Data = Newtonsoft.Json.JsonConvert.DeserializeObject<T1>(Reference);
+
+                if (Data != null)
+                {
+                    return await Handler(id, DbSet, Entity, Includes, EntityType, Data, Activator.CreateInstance<T4>());
+                }
+            }
+
+            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+        }
+
+        private async Task<JsonResult> _AddProductProcessBaseHandler<T1, T2, T3>(string id, DbSet<T1> ProductProcessTools, DbSet<T2> Tools, Expression<Func<T1, object>> Includes, string Entity, EntityManupulateHelper Data, T3 type)
+            where T2 : class
+            where T1 : class, IProductProcessBase
+            where T3 : class, IJsonBase<T1, T3>
+        {
+            var ProductProcess = await db.ProductProcesses.FindAsync(id);
+
+            if (ProductProcess != null)
+            {
+                foreach (var item in Data.Add)
+                {
+                    dynamic Invoke = null;
+
+                    if (Entity == "Tools")
+                    {
+                        Invoke = await db.ProductProcessesTools.Include(x => x.ProductProcess).Include(x => x.Tool).Where(x => x.Tool.Key == item && x.ProductProcess.Key == id).FirstOrDefaultAsync();
+                    }
+                    else if (Entity == "Dies")
+                    {
+                        Invoke = await db.ProductProcessesDies.Include(x => x.ProductProcess).Include(x => x.Die).Where(x => x.Die.Key == item && x.ProductProcess.Key == id).FirstOrDefaultAsync();
+                    }
+
+                    if (Invoke != null)
+                    {
+                        Invoke.ActiveFlag = true;
+                        db.Entry(Invoke).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        var Tool = await Tools.FindAsync(item);
+
+                        if (Tool == null)
+                        {
+                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                        }
+
+                        ProductProcessTools.Add((T1)Activator.CreateInstance(typeof(T1), ProductProcess, Tool));
+                    }
+                }
+
+                foreach (var item in Data.Remove)
+                {
+                    var ProdProcessTool = await ProductProcessTools.Include(x => x.ProductProcess).Include(Includes).Where(x => x.Key == item).FirstOrDefaultAsync();
+
+                    if (ProdProcessTool == null)
+                    {
+                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                    }
+
+                    ProdProcessTool.ActiveFlag = false;
+                    db.Entry(ProdProcessTool).State = EntityState.Modified;
+                }
+
+                Exception Exception = null;
+
+                try
+                {
+                    await db.SaveChangesAsync();
+                    return await _ProductProcessBase<T1, T3>(ProductProcessTools, id, Entity);
+                }
+                catch (Exception ex)
+                {
+                    Exception = ex;
+                }
+
+                return await JsonExceptionViewModel.Get(Exception).toJson();
+            }
+
+            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+        }
+
         /// <summary>
         /// Exists the specified identifier.
         /// </summary>
@@ -751,7 +900,9 @@ namespace maQx.Controllers
                 case "add-department-user": return await _UpdateHandler<EntityManupulateHelper>(id, Request.QueryString["ref"], _AddDepartmentUserHandler);
                 case "access-division": return await _UpdateHandler<EntityManupulateHelper>(id, Request.QueryString["ref"], _AccessDivisionHandler);
                 case "access-menu": return await _UpdateHandler<EntityManupulateHelper>(id, Request.QueryString["ref"], _AccessMenuHandler);
-                case "update-product-process": return await _UpdateHandler<EntityManuplateUpdateHelper<List<ProductProcessHelper>>>(id, Request.QueryString["ref"], _UpdateProductProcess);
+                case "update-product-process": return await _UpdateHandler<EntityManuplateUpdateHelper<List<ProductProcessHelper>>>(id, Request.QueryString["ref"], _AddProductProcessHandler);
+                case "add-product-process-tools": return await _UpdateHandler<EntityManupulateHelper, ProductProcessTool, Tool, JProductProcessTool>(id, Request.QueryString["ref"], db.ProductProcessesTools, db.Tools, x => x.Tool, "Tools", _AddProductProcessBaseHandler);
+                case "add-product-process-dies": return await _UpdateHandler<EntityManupulateHelper, ProductProcessDie, Die, JProductProcessDie>(id, Request.QueryString["ref"], db.ProductProcessesDies, db.Dies, x => x.Die, "Dies", _AddProductProcessBaseHandler);
                 default: return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
             }
         }
@@ -856,8 +1007,6 @@ namespace maQx.Controllers
         {
             return await ViewHelper.Format<T1, T2, T3>(Request, Response, Controller, Action, Role, User, value, exp, Includes, operation);
         }
-
-
 
         /// <summary>
         /// Releases unmanaged resources and optionally releases managed resources.
