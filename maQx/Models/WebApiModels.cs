@@ -75,26 +75,26 @@ namespace maQx.WebApiModels
         public string Created { get; set; }
     }
 
-    public class JsonDivisionBase : JsonBase
+    public class JDivisionBase : JsonBase
     {
         public JDivision Division { get; set; }
 
-        public JsonDivisionBase() { }
-        public JsonDivisionBase(DivisionBase input)
+        public JDivisionBase() { }
+        public JDivisionBase(DivisionBase input)
             : base(input)
         {
             Division = new JDivision(input.Division);
         }
     }
 
-    public class JsonEntityDivisionBase : JsonDivisionBase
+    public class JEntityDivisionBase : JDivisionBase
     {
         public string Code { get; set; }
         public string Description { get; set; }
 
-        public JsonEntityDivisionBase() { }
+        public JEntityDivisionBase() { }
 
-        public JsonEntityDivisionBase(EntityDivisionBase input)
+        public JEntityDivisionBase(EntityDivisionBase input)
             : base(input)
         {
             Code = input.Code;
@@ -107,7 +107,7 @@ namespace maQx.WebApiModels
 
     }
 
-    public class JToolDieBase : JsonEntityDivisionBase
+    public class JToolDieBase : JEntityDivisionBase
     {
         public int MaxCount { get; set; }
         public int Tolerance { get; set; }
@@ -701,7 +701,7 @@ namespace maQx.WebApiModels
         }
     }
 
-    public class JRawMaterial : JsonEntityDivisionBase, IJsonBase<RawMaterial, JRawMaterial>
+    public class JRawMaterial : JEntityDivisionBase, IJsonBase<RawMaterial, JRawMaterial>
     {
         public Units Unit { get; set; }
         public Measurements Measurement { get; set; }
@@ -740,7 +740,7 @@ namespace maQx.WebApiModels
         }
     }
 
-    public class JProduct : JsonEntityDivisionBase, IJsonBase<Product, JProduct>
+    public class JProduct : JEntityDivisionBase, IJsonBase<Product, JProduct>
     {
         public JProduct() { }
         public JProduct(Product input)
@@ -755,7 +755,7 @@ namespace maQx.WebApiModels
         }
     }
 
-    public class JProcess : JsonEntityDivisionBase, IJsonBase<Process, JProcess>
+    public class JProcess : JEntityDivisionBase, IJsonBase<Process, JProcess>
     {
         public bool ValidateRawMaterial { get; set; }
         public string ValidateRawmaterialMessage
@@ -811,7 +811,7 @@ namespace maQx.WebApiModels
         }
     }
 
-    public class JScrap : JsonEntityDivisionBase, IJsonBase<Scrap, JScrap>
+    public class JScrap : JEntityDivisionBase, IJsonBase<Scrap, JScrap>
     {
         public JScrap() { }
         public JScrap(Scrap input)
@@ -826,7 +826,7 @@ namespace maQx.WebApiModels
         }
     }
 
-    public class JRework : JsonEntityDivisionBase, IJsonBase<Rework, JRework>
+    public class JRework : JEntityDivisionBase, IJsonBase<Rework, JRework>
     {
         public JRework() { }
         public JRework(Rework input)
@@ -953,6 +953,34 @@ namespace maQx.WebApiModels
         public JProductProcessRework To(ProductProcessRework input)
         {
             return new JProductProcessRework(input);
+        }
+    }
+
+    public class JMachine : JEntityDivisionBase, IJsonBase<Machine, JMachine>
+    {
+        public double MinLoad { get; set; }
+        public double MaxLoad { get; set; }
+        public MachineTypes MachineType { get; set; }
+        public string MachineTypeString
+        {
+            get
+            {
+                return MachineType.ToString();
+            }
+        }
+
+        public JMachine() { }
+        public JMachine(Machine input)
+            :base(input)
+        {
+            MinLoad = input.MinLoad;
+            MaxLoad = input.MaxLoad;
+            MachineType = input.MachineType;
+        }
+
+        public JMachine To(Machine input)
+        {
+            return new JMachine(input);
         }
     }
 }

@@ -1262,6 +1262,8 @@
     <Content Include="Views\Machines\Details.cshtml" />
     <Content Include="Views\Machines\Edit.cshtml" />
     <Content Include="Views\Machines\Index.cshtml" />
+    <Content Include="Views\Machines\_Form.cshtml" />
+    <Content Include="Views\Machines\_View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

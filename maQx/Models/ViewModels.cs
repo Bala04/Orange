@@ -869,4 +869,46 @@ namespace maQx.Models
         public string Product { get; set; }
         public System.Web.Mvc.SelectList Products { get; set; }
     }
+
+    public class MachineViewModel
+    {
+        public MachineViewModel() { }
+        public MachineViewModel(Machine input)
+        {
+            Code = input.Code;
+            Description = input.Description;
+            MachineType = input.MachineType;
+            MinLoad = input.MinLoad;
+            MaxLoad = input.MaxLoad;
+        }
+
+        [Required, MaxLength(50), Display(Name = "Machine Code")]
+        public string Code { get; set; }
+
+        [Required, MaxLength(50), Display(Name = "Machine Description")]
+        public string Description { get; set; }
+
+        [Required, Display(Name = "Min Load"), RegularExpression(RegExPatterns.Numeric, ErrorMessage = "Please enter a valid min load."), Range(0, int.MaxValue, ErrorMessage = "Please enter a valid min load.")]
+        public double MinLoad { get; set; }
+
+        [Required, Display(Name = "Max Load"), RegularExpression(RegExPatterns.Numeric, ErrorMessage = "Please enter a valid max load."), Range(0, int.MaxValue, ErrorMessage = "Please enter a valid max load.")]
+        public double MaxLoad { get; set; }
+
+        [Required, Range(1, 2, ErrorMessage = "Machine Type field is required."), Display(Name = "Machine Type")]
+        public MachineTypes MachineType { get; set; }
+    }
+
+    public class MachineEditViewModel : MachineViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+
+        public MachineEditViewModel() { }
+        public MachineEditViewModel(Machine input)
+            : base(input)
+        {
+            Key = input.Key;
+        }
+    }
+
 }

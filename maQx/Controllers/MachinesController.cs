@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using maQx.Models;
+using maQx.Utilities;
 
 namespace maQx.Controllers
 {
@@ -16,9 +17,9 @@ namespace maQx.Controllers
         private AppContext db = new AppContext();
 
         // GET: Machines
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            return View(await db.Machines.ToListAsync());
+            return View();
         }
 
         // GET: Machines/Details/5
@@ -43,15 +44,30 @@ namespace maQx.Controllers
         }
 
         // POST: Machines/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Key,MachineType,MinLoad,MaxLoad,Code,Description,UserCreated,UserModified,CreatedAt,UpdatedAt,TimeStamp,ActiveFlag")] Machine machine)
+        public async Task<ActionResult> Create([Bind(Include = "Key,MachineType,MinLoad,MaxLoad,Code,Description")] MachineViewModel machine)
         {
             if (ModelState.IsValid)
             {
-                db.Machines.Add(machine);
+                var Division = await db.Divisions.FindAsync(User.GetDivision());
+
+                if (Division == null)
+                {
+                    return HttpNotFound();
+                }
+
+                db.Machines.Add(new Machine
+                {
+                    Code = machine.Code,
+                    Description = machine.Description,
+                    MachineType = machine.MachineType,
+                    MinLoad = machine.MinLoad,
+                    MaxLoad = machine.MaxLoad,
+                    Division = Division
+                });
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -71,7 +87,7 @@ namespace maQx.Controllers
             {
                 return HttpNotFound();
             }
-            return View(machine);
+            return View(new MachineEditViewModel(machine));
         }
 
         // POST: Machines/Edit/5
@@ -79,11 +95,19 @@ namespace maQx.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Key,MachineType,MinLoad,MaxLoad,Code,Description,UserCreated,UserModified,CreatedAt,UpdatedAt,TimeStamp,ActiveFlag")] Machine machine)
+        public async Task<ActionResult> Edit([Bind(Include = "Key,MachineType,MinLoad,MaxLoad,Code,Description")] MachineEditViewModel machine)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(machine).State = EntityState.Modified;
+                var Machine = await db.Machines.Include(x => x.Division).Where(x => x.Key == machine.Key).FirstOrDefaultAsync();
+
+                Machine.Code = machine.Code;
+                Machine.Description = machine.Description;
+                Machine.MachineType = machine.MachineType;
+                Machine.MinLoad = machine.MinLoad;
+                Machine.MaxLoad = machine.MaxLoad;
+
+                db.Entry(Machine).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }

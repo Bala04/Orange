@@ -738,7 +738,9 @@ namespace maQx.Controllers
                 // AppUsers should belongs to a division and should have access to at least one Menu
                 if (await UserManager.IsInRoleAsync(User.Id, Roles.AppUser))
                 {
-                    var AccessMenus = await db.MenuAccess.Include(x => x.DepartmentMenu.Department.Division.Plant).ToListAsync();
+                    //BUG: var AccessMenus = await db.MenuAccess.Include(x => x.DepartmentMenu.Department.Division.Plant).ToListAsync();
+                    //FIX: AccessMenus Should be checked against the AppUser. 20/03/2015
+                    var AccessMenus = await db.MenuAccess.Include(x => x.DepartmentMenu.Department.Division.Plant).Where(x => x.User.Id == User.Id && x.DepartmentMenu.ActiveFlag).ToListAsync();
 
                     if (AccessMenus.Count() < 1)
                     {

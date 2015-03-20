@@ -117,6 +117,13 @@ namespace maQx.Controllers
             return await Format<ProductRawMaterial, JProductRawMaterial>(Roles.AppUser, db.ProductRawMaterials, "ProductRawMaterialsController", "ProductRawMaterials", x => x.ActiveFlag && x.Product.Division.Key == Division && x.RawMaterial.Division.Key == Division, x => x.Product, x => x.RawMaterial);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> Machines()
+        {
+            var Division = User.GetDivision();
+            return await Format<Machine, JMachine>(Roles.AppUser, db.Machines, "MachinesController", "Machines", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
+        }
+
         /// <summary>
         /// Administrators this instance.
         /// </summary>
@@ -255,10 +262,15 @@ namespace maQx.Controllers
             // FIX: Update SysAdmin with AppUser role. UserMenus are access by the Users with role AppUser. 16/02/2015
             // BUG: return await Format<MenuAccess, JsonListViewModel<JMenus>, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, x => x.User.Id == id, (value) =>
             // FIX: UserMenus should return JsonResult of the type of JsonMenuViewModel instead of JsonListViewModel<JMenus>. 16/02/2015
-            return await Format<MenuAccess, JsonMenuViewModel, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, null, x => x.User.Id == id && x.DepartmentMenu.ActiveFlag, (value) =>
+            // BUG: return await Format<MenuAccess, JsonMenuViewModel, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, null, x => x.User.Id == id && x.DepartmentMenu.ActiveFlag, (value) =>
+            // FIX: Should return only the menus belongs to the user division. 20/03/2015
+            var Division = User.GetDivision();
+
+            return await Format<MenuAccess, JsonMenuViewModel, JMenuAccess>(Roles.AppUser, db.MenuAccess, null, null, x => x.User.Id == id && x.DepartmentMenu.ActiveFlag && x.DepartmentMenu.Department.Division.Key == Division, (value) =>
             {
                 // BUG: return new JsonListViewModel<JMenus>()
                 // FIX: return as JsonMenuViewModel instead of JsonListViewModel<JMenus>. 16/02/2015
+
                 return new JsonMenuViewModel()
                 {
                     Menus = value.Select(x => x.DepartmentMenu.Menu).OrderBy(x => x.Order).ToList()

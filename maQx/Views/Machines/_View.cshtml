@@ -1,7 +1,12 @@
-﻿@model maQx.Models.RawMaterial
+﻿@model maQx.Models.Machine
 
 <table class="table table-responsive detail-table">
     <tbody>
+        <tr>
+            <td><div>Machine Type</div></td>
+            <td>:</td>
+            <td><div class="ui-bold">@Model.MachineType.ToString()</div></td>
+        </tr>
         <tr>
             <td><div>Code</div></td>
             <td>:</td>
@@ -13,14 +18,15 @@
             <td><div class="ui-bold">@Model.Description</div></td>
         </tr>
         <tr>
-            <td><div>Unit Of Measure</div></td>
+            <td><div>Min Load</div></td>
             <td>:</td>
-            <td><div class="ui-bold">@Model.Unit.ToString()</div></td>
+            <td><div class="ui-bold">@Model.MinLoad</div></td>
         </tr>
         <tr>
-            <td><div>Measurement Type</div></td>
+            <td><div>Max Load</div></td>
             <td>:</td>
-            <td><div class="ui-bold">@Model.Measurement.ToString()</div></td>
+            <td><div class="ui-bold">@Model.MaxLoad</div></td>
         </tr>
     </tbody>
 </table>
+

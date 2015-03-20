@@ -9,7 +9,7 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.Key, htmlAttributes: new { @readonly = "readonly" })
+        @Html.HiddenFor(model => model.Key)
 
         <div class="admin-form">
             <h1>Edit details</h1>
