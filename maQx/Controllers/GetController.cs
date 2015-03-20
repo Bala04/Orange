@@ -539,51 +539,40 @@ namespace maQx.Controllers
             return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
         }
 
-        private async Task<JsonResult> _AddDepartmentUserHandler(string id, EntityManupulateHelper Data)
+        private async Task<JsonResult> _AddDepartmentUserHandler(string id, EntityManupulateHelper data)
         {
-            var Department = await db.Departments.FindAsync(Data.Entity);
+            var Department = await db.Departments.FindAsync(data.Entity);
 
             if (Department != null)
             {
                 var DepartmentUser = db.DepartmentUsers;
 
-                foreach (var item in Data.Add)
+                foreach (var item in data.Add)
                 {
-                    var UserAdd = await db.DepartmentUsers.Include(x => x.Department).Include(x => x.User).Where(x => x.User.Id == item && x.Department.Key == Department.Key).FirstOrDefaultAsync();
-
-                    if (UserAdd == null)
-                    {
-                        var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
-
-                        if (User == null)
-                        {
-                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
-                        }
-
-                        DepartmentUser.Add(new DepartmentUser
-                        {
-                            Department = Department,
-                            User = User
-                        });
-                    }
-                    else
-                    {
-                        UserAdd.ActiveFlag = true;
-                        db.Entry(UserAdd).State = EntityState.Modified;
-                    }
-                }
-
-                foreach (var item in Data.Remove)
-                {
-                    var User = await db.DepartmentUsers.Include(x => x.User).Include(x => x.Department).Where(x => x.Key == item).FirstOrDefaultAsync();
+                    var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
 
                     if (User == null)
                     {
                         return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                     }
 
-                    User.ActiveFlag = false;
-                    db.Entry(User).State = EntityState.Modified;
+                    DepartmentUser.Add(new DepartmentUser
+                    {
+                        Department = Department,
+                        User = User
+                    });
+                }
+
+                foreach (var item in data.Remove)
+                {
+                    var User = await db.DepartmentUsers.FindAsync(item);
+
+                    if (User == null)
+                    {
+                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                    }
+
+                    DepartmentUser.Remove(User);
                 }
 
                 Exception Exception = null;
