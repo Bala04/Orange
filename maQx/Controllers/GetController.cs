@@ -539,40 +539,51 @@ namespace maQx.Controllers
             return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
         }
 
-        private async Task<JsonResult> _AddDepartmentUserHandler(string id, EntityManupulateHelper data)
+        private async Task<JsonResult> _AddDepartmentUserHandler(string id, EntityManupulateHelper Data)
         {
-            var Department = await db.Departments.FindAsync(data.Entity);
+            var Department = await db.Departments.FindAsync(Data.Entity);
 
             if (Department != null)
             {
                 var DepartmentUser = db.DepartmentUsers;
 
-                foreach (var item in data.Add)
+                foreach (var item in Data.Add)
                 {
-                    var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
+                    var UserAdd = await db.DepartmentUsers.Include(x => x.Department).Include(x => x.User).Where(x => x.User.Id == item && x.Department.Key == Department.Key).FirstOrDefaultAsync();
 
-                    if (User == null)
+                    if (UserAdd == null)
                     {
-                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                        var User = await db.Users.Where(x => x.Id == item).FirstOrDefaultAsync();
+
+                        if (User == null)
+                        {
+                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                        }
+
+                        DepartmentUser.Add(new DepartmentUser
+                        {
+                            Department = Department,
+                            User = User
+                        });
                     }
-
-                    DepartmentUser.Add(new DepartmentUser
+                    else
                     {
-                        Department = Department,
-                        User = User
-                    });
+                        UserAdd.ActiveFlag = true;
+                        db.Entry(UserAdd).State = EntityState.Modified;
+                    }
                 }
 
-                foreach (var item in data.Remove)
+                foreach (var item in Data.Remove)
                 {
-                    var User = await db.DepartmentUsers.FindAsync(item);
+                    var User = await db.DepartmentUsers.Include(x => x.User).Include(x => x.Department).Where(x => x.Key == item).FirstOrDefaultAsync();
 
                     if (User == null)
                     {
                         return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
                     }
 
-                    DepartmentUser.Remove(User);
+                    User.ActiveFlag = false;
+                    db.Entry(User).State = EntityState.Modified;
                 }
 
                 Exception Exception = null;
@@ -769,6 +780,71 @@ namespace maQx.Controllers
                 {
                     await db.SaveChangesAsync();
                     return await _ProductProcess(id);
+                }
+                catch (Exception ex)
+                {
+                    Exception = ex;
+                }
+
+                return await JsonExceptionViewModel.Get(Exception).toJson();
+            }
+
+            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+        }
+
+        private async Task<JsonResult> _AddProductProcessToolHandler(string id, EntityManupulateHelper Data)
+        {
+            var ProductProcess = await db.ProductProcesses.FindAsync(id);
+
+            if (ProductProcess != null)
+            {
+                var ProductProcessTools = db.ProductProcessesTools;
+
+                foreach (var item in Data.Add)
+                {
+                    var Invoke = await ProductProcessTools.Include(x => x.ProductProcess).Include(x => x.Tool).Where(x => x.Tool.Key == item && x.ProductProcess.Key == id).FirstOrDefaultAsync();
+
+                    if (Invoke == null)
+                    {
+                        var Tool = await db.Tools.FindAsync(item);
+
+                        if (Tool == null)
+                        {
+                            return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                        }
+
+                        ProductProcessTools.Add(new ProductProcessTool
+                        {
+                            ProductProcess = ProductProcess,
+                            Tool = Tool
+                        });
+                    }
+                    else
+                    {
+                        Invoke.ActiveFlag = true;
+                        db.Entry(Invoke).State = EntityState.Modified;
+                    }
+                }
+
+                foreach (var item in Data.Remove)
+                {
+                    var ProdProcessTool = await ProductProcessTools.Include(x => x.ProductProcess).Include(x => x.Tool).Where(x => x.Key == item).FirstOrDefaultAsync();
+
+                    if (ProdProcessTool == null)
+                    {
+                        return await JsonErrorViewModel.GetResourceNotFoundError(Response).toJson();
+                    }
+
+                    ProdProcessTool.ActiveFlag = false;
+                    db.Entry(ProdProcessTool).State = EntityState.Modified;
+                }
+
+                Exception Exception = null;
+
+                try
+                {
+                    await db.SaveChangesAsync();
+                    return await _ProductProcessBase<ProductProcessTool, JProductProcessTool>(db.ProductProcessesTools, id, "Tools");
                 }
                 catch (Exception ex)
                 {
