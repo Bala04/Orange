@@ -249,6 +249,7 @@
     <Compile Include="Controllers\DivisionsController.cs" />
     <Compile Include="Controllers\GetController.cs" />
     <Compile Include="Controllers\InvitesController.cs" />
+    <Compile Include="Controllers\MachinesController.cs" />
     <Compile Include="Controllers\OrganizationsController.cs" />
     <Compile Include="Controllers\PlantsController.cs" />
     <Compile Include="Controllers\ProcessController.cs" />
@@ -1256,6 +1257,11 @@
     <Content Include="Views\ProductProcessTools\Index.cshtml" />
     <Content Include="Views\Shared\_ProductProcessToolDie.cshtml" />
     <Content Include="Views\ProductProcessDies\Index.cshtml" />
+    <Content Include="Views\Machines\Create.cshtml" />
+    <Content Include="Views\Machines\Delete.cshtml" />
+    <Content Include="Views\Machines\Details.cshtml" />
+    <Content Include="Views\Machines\Edit.cshtml" />
+    <Content Include="Views\Machines\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

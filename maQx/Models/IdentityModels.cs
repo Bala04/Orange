@@ -202,6 +202,7 @@ namespace maQx.Models
         public DbSet<ProductProcess> ProductProcesses { get; set; }
         public DbSet<ProductProcessTool> ProductProcessesTools { get; set; }
         public DbSet<ProductProcessDie> ProductProcessesDies { get; set; }
+        public DbSet<Machine> Machines { get; set; }
 
         /// <summary>
         /// Creates this instance.
