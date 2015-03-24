@@ -971,7 +971,7 @@ namespace maQx.WebApiModels
 
         public JMachine() { }
         public JMachine(Machine input)
-            :base(input)
+            : base(input)
         {
             MinLoad = input.MinLoad;
             MaxLoad = input.MaxLoad;
@@ -981,6 +981,61 @@ namespace maQx.WebApiModels
         public JMachine To(Machine input)
         {
             return new JMachine(input);
+        }
+    }
+
+    public class JShfit : JDivisionBase, IJsonBase<Shift, JShfit>
+    {
+        public string Description { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public bool IsDayLight { get; set; }
+        public DateTime CurrentDay { get; set; }
+        public DateTime StartTimeOfTheDay { get; set; }
+        public DateTime EndTimeOfTheDay { get; set; }
+        public double TotalHours { get; set; }
+
+        public string TotalHoursString
+        {
+            get
+            {
+                return TotalHours + " " + ("Hr".Pluralize(TotalHours));
+            }
+        }
+
+        public string StartTimeString
+        {
+            get
+            {
+                return StartTime.ToString("hh:mm tt");
+            }
+        }
+
+        public string EndTimeString
+        {
+            get
+            {
+                return EndTime.ToString("hh:mm tt");
+            }
+        }
+
+        public JShfit() { }
+        public JShfit(Shift input)
+            : base(input)
+        {
+            Description = input.Description;
+            StartTime = input.StartTime;
+            EndTime = input.EndTime;
+            IsDayLight = input.IsDayLight;
+            TotalHours = input.TotalHours;
+            CurrentDay = input.CurrentDay;
+            StartTimeOfTheDay = input.StartTimeOfTheDay;
+            EndTimeOfTheDay = input.EndTimeOfTheDay;
+        }
+
+        public JShfit To(Shift input)
+        {
+            return new JShfit(input);
         }
     }
 }

@@ -12,6 +12,8 @@ using maQx.Utilities;
 
 namespace maQx.Controllers
 {
+    [Authorize(Roles = Roles.AppUser)]
+    [AccessAuthorize]
     public class MachinesController : Controller
     {
         private AppContext db = new AppContext();
@@ -38,6 +40,7 @@ namespace maQx.Controllers
         }
 
         // GET: Machines/Create
+        [Roles(Roles.Create, Roles.CreateEdit)]
         public ActionResult Create()
         {
             return View();
@@ -48,6 +51,7 @@ namespace maQx.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Roles(Roles.Create, Roles.CreateEdit)]
         public async Task<ActionResult> Create([Bind(Include = "Key,MachineType,MinLoad,MaxLoad,Code,Description")] MachineViewModel machine)
         {
             if (ModelState.IsValid)
@@ -76,6 +80,7 @@ namespace maQx.Controllers
         }
 
         // GET: Machines/Edit/5
+        [Roles(Roles.Edit, Roles.CreateEdit, Roles.EditDelete)]
         public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
@@ -95,6 +100,7 @@ namespace maQx.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Roles(Roles.Edit, Roles.CreateEdit, Roles.EditDelete)]
         public async Task<ActionResult> Edit([Bind(Include = "Key,MachineType,MinLoad,MaxLoad,Code,Description")] MachineEditViewModel machine)
         {
             if (ModelState.IsValid)
@@ -115,6 +121,7 @@ namespace maQx.Controllers
         }
 
         // GET: Machines/Delete/5
+        [Roles(Roles.Delete, Roles.EditDelete)]
         public async Task<ActionResult> Delete(string id)
         {
             if (id == null)
@@ -132,6 +139,7 @@ namespace maQx.Controllers
         // POST: Machines/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Roles(Roles.Delete, Roles.EditDelete)]
         public async Task<ActionResult> DeleteConfirmed(string id)
         {
             Machine machine = await db.Machines.FindAsync(id);

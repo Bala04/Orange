@@ -1,0 +1,36 @@
+﻿@model maQx.Models.ShiftViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_FramePage.cshtml";
+}
+
+<div class="generic-template generic-form">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="admin-form">
+            <h1>Create a Shift</h1>
+            <p>Shift</p>
+
+            @{Html.RenderPartial("_Form", Model);}
+
+            <div class="generic-form-bottom-tools">
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm" })
+            </div>
+        </div>
+    }
+
+</div>
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/shift-controller")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').validate().settings.ignore = []
+        });
+    </script>
+}

@@ -28,6 +28,7 @@ namespace maQx.Utilities
     /// <summary>
     ///
     /// </summary>
+
     public static class TableTools
     {
         /// <summary>
@@ -216,6 +217,8 @@ namespace maQx.Utilities
     /// </summary>
     public static class Extensions
     {
+        public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
         /// <summary>
         /// Gets the aes crypto service provider.
         /// </summary>
@@ -864,6 +867,27 @@ namespace maQx.Utilities
             return Roles;
         }
 
+        public static DateTime FromUnixTime(this double unixTime)
+        {
+            return UnixEpoch.AddMilliseconds(unixTime).ToLocalTime();
+        }
+
+        public static double ToUnixTime(this DateTime Date)
+        {
+            return (Date - UnixEpoch.ToLocalTime()).TotalMilliseconds;
+        }
+
+        public static string Pluralize(this string value, double count)
+        {
+            if (count == 1)
+            {
+                return value;
+            }
+            return System.Data.Entity.Design.PluralizationServices.PluralizationService
+                .CreateService(new CultureInfo("en-US"))
+                .Pluralize(value);
+        }
+
         /// <summary>
         /// Gets the organization.
         /// </summary>
@@ -1121,7 +1145,7 @@ namespace maQx.Utilities
             {
                 if (typeof(T1) == typeof(Menus) || User.IsInRole(Role))
                 {
-                 //   if (typeof(T1) != typeof(MenuAccess) && (Role == Roles.AppUser && !await User.HasMenuAccessAsync(Request.RequestContext.RouteData.Values["action"].ToString())))
+                    //   if (typeof(T1) != typeof(MenuAccess) && (Role == Roles.AppUser && !await User.HasMenuAccessAsync(Request.RequestContext.RouteData.Values["action"].ToString())))
 
                     if (typeof(T1) != typeof(MenuAccess) && (Role == Roles.AppUser && !await User.HasMenuAccessAsync(Action)))
                     {

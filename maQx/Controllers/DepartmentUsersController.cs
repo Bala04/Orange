@@ -9,6 +9,7 @@ using maQx.Utilities;
 
 namespace maQx.Controllers
 {
+    [Authorize(Roles = Roles.SysAdmin)]
     public class DepartmentUsersController : Controller
     {
         // GET: DepartmentUsers

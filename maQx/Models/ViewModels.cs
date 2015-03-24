@@ -911,4 +911,34 @@ namespace maQx.Models
         }
     }
 
+    public class ShiftViewModel
+    {
+        [Required, Display(Name = "Shift Name")]
+        public string Description { get; set; }
+        [Required(ErrorMessage = "Select a valid Start Time"), DataType(DataType.Time)]
+        public double StartTime { get; set; }
+        [Required(ErrorMessage = "Select a valid End Time"), DataType(DataType.Time)]
+        public double EndTime { get; set; }
+
+        public ShiftViewModel() { }
+        public ShiftViewModel(Shift input)
+        {
+            Description = input.Description;
+            StartTime = input.StartTime.ToUnixTime();
+            EndTime = input.EndTime.ToUnixTime();
+        }
+    }
+
+    public class ShiftEditViewModel : ShiftViewModel
+    {
+        [Required]
+        public string Key { get; set; }
+
+         public ShiftEditViewModel() { }
+         public ShiftEditViewModel(Shift input)
+            : base(input)
+        {
+            Key = input.Key;
+        }
+    }
 }

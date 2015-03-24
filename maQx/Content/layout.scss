@@ -852,6 +852,12 @@ a.btn + a.btn {
     &.fa-clear {
         padding-right: 0 !important;
     }
+    &.btn-link {
+        color: $base-color;
+        &:hover, &:focus {
+            color: $light-color;
+        }
+    }
     &.app-btn {
         background: $base-color;
         border-color: shade($base-color, 10%);
@@ -898,6 +904,15 @@ a.btn + a.btn {
         &:active {
             background: #E86656;
             border: #C85A5A thin solid;
+        }
+    }
+}
+
+table.time-selector {
+    td {
+        padding: 0 5px;
+        &:first-child, &:nth-child(3) {
+            width: 60px;
         }
     }
 }

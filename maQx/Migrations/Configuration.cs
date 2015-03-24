@@ -50,7 +50,8 @@ namespace maQx.Migrations
                 new Menus { ID = "ProductProcess", Name= "Product - Process", Access = Roles.AppUser, Order = 16, IsMappable = false },
                 new Menus { ID = "ProductProcessTools", Name= "Product - Process - Tool", Access = Roles.AppUser, Order = 17, IsMappable = false },
                 new Menus { ID = "ProductProcessDies", Name= "Product - Process - Die", Access = Roles.AppUser, Order = 18, IsMappable = false },
-                new Menus { ID = "Machines", Name= "Machines", Access = Roles.AppUser, Order = 19, IsMappable = false }
+                new Menus { ID = "Machines", Name= "Machines", Access = Roles.AppUser, Order = 19, IsMappable = false },
+                new Menus { ID = "Shifts", Name= "Shifts", Access = Roles.AppUser, Order = 20, IsMappable = false }
             }).ForEach(x => { context.Menus.AddOrUpdate(x); });
         }
     }

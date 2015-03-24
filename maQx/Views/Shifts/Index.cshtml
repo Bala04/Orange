@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_TablePage.cshtml";
+}
+
+@section Scripts{
+    <script>
+        angular.module("tabularApp").service("DataService", ['$resource', function ($resource) {
+            return {
+                query: function () {
+                    return $resource('get/Shifts').get();
+                },
+                init: function () {
+                    return [{ a: 'Description', b: 'Name' }, { a: 'StartTimeString', b: 'Start Time' }, { a: 'EndTimeString', b: 'End Time' }, { a: 'TotalHoursString', b: 'Duration' }, { a: 'Modified', b: 'Modified' }];
+                }
+            }
+        }]);
+    </script>
+}

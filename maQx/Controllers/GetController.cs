@@ -124,6 +124,13 @@ namespace maQx.Controllers
             return await Format<Machine, JMachine>(Roles.AppUser, db.Machines, "MachinesController", "Machines", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> Shifts()
+        {
+            var Division = User.GetDivision();
+            return await Format<Shift, JShfit>(Roles.AppUser, db.Shifts, "ShiftsController", "Shifts", x => x.ActiveFlag && x.Division.Key == Division, x => x.Division.Plant.Organization);
+        }
+
         /// <summary>
         /// Administrators this instance.
         /// </summary>

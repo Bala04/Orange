@@ -22,6 +22,7 @@ namespace maQx
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                      "~/Scripts/moment.min.js",
                       "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
@@ -70,6 +71,9 @@ namespace maQx
 
             bundles.Add(new ScriptBundle("~/bundles/product-process-controller").Include(
               "~/Scripts/section/product-process-controller.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/shift-controller").Include(
+             "~/Scripts/section/shift-controller.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/access-level-controller").Include(
              "~/Scripts/section/access-level-controller.js"));

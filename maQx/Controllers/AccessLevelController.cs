@@ -10,6 +10,7 @@ using System.Data.Entity;
 
 namespace maQx.Controllers
 {
+    [Authorize(Roles = Roles.SysAdmin)]
     public class AccessLevelController : Controller
     {
         // GET: AccessLevel

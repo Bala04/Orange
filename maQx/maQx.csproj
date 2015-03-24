@@ -154,6 +154,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -259,6 +260,7 @@
     <Compile Include="Controllers\ProductRawMaterialsController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\RawMaterialsController.cs" />
+    <Compile Include="Controllers\ShiftsController.cs" />
     <Compile Include="Controllers\ToolsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1116,6 +1118,10 @@
     <Content Include="Scripts\linq.js" />
     <Content Include="Scripts\linq.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
@@ -1135,6 +1141,7 @@
     <Content Include="Scripts\section\product-raw-material-controller.js" />
     <Content Include="Scripts\section\product-process-controller.js" />
     <Content Include="Scripts\section\shared-controller.js" />
+    <Content Include="Scripts\section\shift-controller.js" />
     <Content Include="Scripts\section\table-controller.js" />
     <Content Include="Scripts\section\user-controller.js" />
     <Content Include="Scripts\ui-bootstrap-0.12.0.min.js" />
@@ -1264,6 +1271,13 @@
     <Content Include="Views\Machines\Index.cshtml" />
     <Content Include="Views\Machines\_Form.cshtml" />
     <Content Include="Views\Machines\_View.cshtml" />
+    <Content Include="Views\Shifts\Create.cshtml" />
+    <Content Include="Views\Shifts\Delete.cshtml" />
+    <Content Include="Views\Shifts\Details.cshtml" />
+    <Content Include="Views\Shifts\Edit.cshtml" />
+    <Content Include="Views\Shifts\Index.cshtml" />
+    <Content Include="Views\Shifts\_Form.cshtml" />
+    <Content Include="Views\Shifts\_View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -61,6 +61,11 @@ namespace maQx.Models
         ProductProcess ProductProcess { get; set; }
     }
 
+    public interface IMachineProcess : IAppBaseStamp
+    {
+        MachineProcess MachineProcess { get; set; }
+    }
+
     public class DateTimeStamp : IDateTimeStamp
     {
         /// <summary>
@@ -1366,10 +1371,32 @@ namespace maQx.Models
         public virtual Process Process { get; set; }
     }
 
+    public class ProductWeight : AppBaseStamp, IProductProcessBase
+    {
+        [Required]
+        public double Quantity { get; set; }
+        /// <summary>
+        /// Gets or sets the product process key.
+        /// </summary>
+        /// <value>
+        /// The product process key.
+        /// </value>
+        [Index("IX_ProductProcessProductWeight", 1, IsUnique = true), ForeignKey("ProductProcess")]
+        public string ProductProcessKey { get; set; }
+        /// <summary>
+        /// Gets or sets the product process.
+        /// </summary>
+        /// <value>
+        /// The product process.
+        /// </value>
+        [Required]
+        public virtual ProductProcess ProductProcess { get; set; }
+    }
+
     /// <summary>
     /// 
     /// </summary>
-    public class Cycletime : AppBaseStamp
+    public class Cycletime : AppBaseStamp, IProductProcessBase, IMachineProcess
     {
         /// <summary>
         /// Gets or sets the seconds.
@@ -1378,7 +1405,7 @@ namespace maQx.Models
         /// The seconds.
         /// </value>
         [Required]
-        public int Seconds { get; set; }
+        public double Seconds { get; set; }
         /// <summary>
         /// Gets or sets the count.
         /// </summary>
@@ -1388,6 +1415,14 @@ namespace maQx.Models
         [Required]
         public double Count { get; set; }
         /// <summary>
+        /// Gets or sets the product process key.
+        /// </summary>
+        /// <value>
+        /// The product process key.
+        /// </value>
+        [Index("IX_ProductProcessCycleTime", 1, IsUnique = true), ForeignKey("ProductProcess")]
+        public string ProductProcessKey { get; set; }
+        /// <summary>
         /// Gets or sets the product process.
         /// </summary>
         /// <value>
@@ -1395,12 +1430,17 @@ namespace maQx.Models
         /// </value>
         [Required]
         public virtual ProductProcess ProductProcess { get; set; }
+
+        [Index("IX_ProductProcessCycleTime", 2, IsUnique = true), ForeignKey("MachineProcess")]
+        public string MachineProcessKey { get; set; }
+
         /// <summary>
         /// Gets or sets the machine process.
         /// </summary>
         /// <value>
         /// The machine process.
         /// </value>
+        ///
         [Required]
         public virtual MachineProcess MachineProcess { get; set; }
     }
@@ -1832,12 +1872,20 @@ namespace maQx.Models
                 return IsDayLight ? (DateTime.Now.Date + EndTime.TimeOfDay) : ((DateTime.Now.TimeOfDay <= EndTime.TimeOfDay) ? (DateTime.Now.Date + EndTime.TimeOfDay) : (DateTime.Now.AddDays(1).Date + EndTime.TimeOfDay));
             }
         }
+
+        public double TotalHours
+        {
+            get
+            {
+                return Math.Abs((EndTime.TimeOfDay - StartTime.TimeOfDay).TotalHours);
+            }
+        }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public class ShiftPlan : AppBaseStamp
+    public class ShiftPlan : AppBaseStamp, IProductProcessBase
     {
         /// <summary>
         /// Gets or sets the product process.

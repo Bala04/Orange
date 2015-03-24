@@ -12,6 +12,8 @@ using maQx.Utilities;
 
 namespace maQx.Controllers
 {
+    [Authorize(Roles = Roles.AppUser)]
+    [AccessAuthorize]
     public class ProductProcessController : Controller
     {
         // GET: ProductProcess

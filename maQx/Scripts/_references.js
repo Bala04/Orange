@@ -45,3 +45,6 @@
 /// <reference path="section/product-raw-material-controller.js" />
 /// <reference path="section/product-process-controller.js" />
 /// <reference path="section/product-process-tool-die-controller.js" />
+/// <reference path="section/shift-controller.js" />
+/// <reference path="moment-with-locales.min.js" />
+/// <reference path="moment.min.js" />
